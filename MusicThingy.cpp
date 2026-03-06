@@ -204,9 +204,11 @@ bool draw_help_menu() {
     std::stringstream buffer;
 
     buffer << "\033[H\033[2J\033[3J" << BLUE;
-    buffer << "\033[5;10H=== MUSIC THINGY HELP MENU ===";
+    buffer << "\033[6;10H             Music Thingy";
+    buffer << "\033[7;10H[S]huffle | Vol [+/-] | [H]elp | [Q]uit";
+    //buffer << "\033[" << (w.ws_row - 20) << ";10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit" ;
 
-    int r = 7; // Start row for shortcuts
+    int r = 11; // Start row for shortcuts
     buffer << "\033[" << r++ << ";10H [s] Shuffle      : Play a random station";
     buffer << "\033[" << r++ << ";10H [f] Play Fav     : Play a random favorite";
     buffer << "\033[" << r++ << ";10H [l] List Favs    : Open scrollable favorite menu";
@@ -326,7 +328,7 @@ void draw_ui() {
     buffer << "\033[H\033[2J\033[3J"; // Full Clear
     buffer << BLUE; // Set the color to BLUE for everything following
 
-    buffer << "\033[" << (w.ws_row - 21) << ";10H"  "              Music Thingy" << "\n";
+    buffer << "\033[" << (w.ws_row - 21) << ";10H"  "             Music Thingy" << "\n";
     buffer << "\033[" << (w.ws_row - 20) << ";10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit" << "\n";
 
     if (std::time(nullptr) < statusExpiry) {
