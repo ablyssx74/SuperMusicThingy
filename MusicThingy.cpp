@@ -206,7 +206,6 @@ bool draw_help_menu() {
     buffer << "\033[H\033[2J\033[3J" << BLUE;
     buffer << "\033[6;10H             Music Thingy";
     buffer << "\033[7;10H[S]huffle | Vol [+/-] | [H]elp | [Q]uit";
-    //buffer << "\033[" << (w.ws_row - 20) << ";10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit" ;
 
     int r = 11; // Start row for shortcuts
     buffer << "\033[" << r++ << ";10H [s] Shuffle      : Play a random station";
@@ -268,7 +267,9 @@ bool draw_favorites_menu() {
 
     // 2. Build UI
     buffer << "\033[H\033[2J\033[3J" << BLUE;
-    buffer << "\033[5;10H=== FAVORITES ( [j/k] Scroll | [Enter] Play | [b] Back ) ===";
+    buffer << "\033[6;10H             Music Thingy";
+    buffer << "\033[7;10H[S]huffle | Vol [+/-] | [H]elp | [Q]uit";
+    buffer << "\033[8;10H[j/k] Scroll | [Enter] Play | [b] Back";
 
     int maxVisible = 10;
     if (favUrls.empty()) {
@@ -279,7 +280,7 @@ bool draw_favorites_menu() {
 
         for (int i = 0; i < maxVisible && (i + scrollOffset) < (int)favUrls.size(); ++i) {
             int idx = i + scrollOffset;
-            buffer << "\033[" << (7 + i) << ";10H";
+            buffer << "\033[" << (11 + i) << ";10H";
             if (idx == selectedFav) buffer << WHITE << " > " << favUrls[idx] << BLUE;
             else buffer << "   " << favUrls[idx];
         }
