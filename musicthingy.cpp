@@ -20,9 +20,6 @@
 #endif
 #include <limits.h> 
 
-#include <limits.h>
-
-// For PATH_MAX on Linux
 
 // --- OS Path Helper ---
 std::string get_self_path() {
@@ -40,28 +37,6 @@ std::string get_self_path() {
 #endif
     return "";
 }
-
-// --- Linux Terminal Searcher (Only compiles on Linux) ---
-#ifndef __HAIKU__
-std::string get_linux_terminal_cmd(const std::string& path) {
-    struct Term { std::string name; std::string flag; };
-    std::vector<Term> terms = {
-        {"x-terminal-emulator", "-e"},
-        {"konsole", "-e"},
-        {"gnome-terminal", "--"}, 
-        {"xfce4-terminal", "-e"},
-        {"xterm", "-e"}
-    };
-
-    for (const auto& t : terms) {
-        if (system(("command -v " + t.name + " >/dev/null 2>&1").c_str()) == 0) {
-            return t.name + " " + t.flag + " \"" + path + "\" &";
-        }
-    }
-    return "";
-}
-#endif
-
 
 
 
@@ -391,21 +366,50 @@ for(const auto& ch : channels) {
 
 
 // --- Main Engine ---
+
+
+
 int main(int argc, char* argv[]) {
-    if (!isatty(STDOUT_FILENO)) {
+    // Check if we are running in a terminal (not piped or clicked from GUI)
+    if (!isatty(STDIN_FILENO)) {
         std::string path = get_self_path();
-        std::string cmd;
+        if (path.empty()) return 1;
 
-#ifdef __HAIKU__
-        cmd = "Terminal \"" + path + "\" &";
-#else
-        // Linux: x-terminal-emulator is the standard wrapper
-        cmd = "x-terminal-emulator -e \"" + path + "\" &";
-#endif
+        std::string cmd = "";
 
-        if (!path.empty()) system(cmd.c_str());
-        return 0; 
+        #ifdef __HAIKU__
+        // Haiku: 'Terminal' is always available.
+        cmd = "Terminal -e \"" + path + "\" &";
+        #else
+        // Linux: Search for available terminals
+        struct Term { std::string name; std::string flag; };
+        std::vector<Term> terms = {
+            {"x-terminal-emulator", "-e"},
+            {"konsole", "-e"},
+            {"gnome-terminal", "--"}, // Modern GNOME requires '--' for command execution
+            {"xfce4-terminal", "-e"},
+            {"xterm", "-e"}
+        };
+
+        for (const auto& t : terms) {
+            // Check if the terminal exists in the user's PATH
+            if (system(("command -v " + t.name + " >/dev/null 2>&1").c_str()) == 0) {
+                cmd = t.name + " " + t.flag + " \"" + path + "\" &";
+                break;
+            }
+        }
+        #endif
+
+        if (!cmd.empty()) {
+            system(cmd.c_str());
+            return 0; // Exit the background process
+        } else {
+            // Optional: Fallback error if no terminal is found
+            return 1;
+        }
     }
+
+
 
     srand(time(0));
     signal(SIGWINCH, handle_resize); // Listen for window resize
