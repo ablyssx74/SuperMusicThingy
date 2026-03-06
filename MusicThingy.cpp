@@ -19,7 +19,7 @@
 #include <OS.h>
 #endif
 #include <limits.h>
-
+#include <sstream>
 
 // --- OS Path Helper ---
 std::string get_self_path() {
@@ -193,57 +193,48 @@ std::string get_vol_bar() {
     return bar;
 }
 
+//[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]
 
 void draw_ui() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::string BLUE = "\033[94m", RED = "\033[91m", YELLOW = "\033[33m", GREEN = "\033[38;5;46m", RESET = "\033[0m";
 
-    std::cout << "\033[H\033[2J\033[3J"; // Full Clear
+    // This is your 'back buffer'
+    std::stringstream buffer;
 
-    // Top Info
-    std::cout << "\033[" << (w.ws_row - 12) << ";10H" << BLUE << "                                 Music Thingy" << RESET;
-    std::cout << "\033[" << (w.ws_row - 11) << ";10H" << BLUE << "[S]huffle | S[a]ve | Add [F]avorite | [D]elete Favorite | Vol [+/-] [M]ute | [Q]uit" << RESET;
+    // Build the frame in memory
+    buffer << "\033[H\033[2J\033[3J"; // Full Clear
+    buffer << BLUE; // Set the color to BLUE for everything following
+
+    buffer << "\033[" << (w.ws_row - 21) << ";10H"  "                                Music Thingy" << "\n";
+    buffer << "\033[" << (w.ws_row - 20) << ";10H" << "[S]huffle | [F]av Play | [A]dd Fav | [D]el Fav | Vol [+/-] [M]ute | [Q]uit" << "\n";
 
     if (std::time(nullptr) < statusExpiry) {
-        std::cout << "\033[" << (w.ws_row - 9) << ";10H" << GREEN << ">> " << statusMsg << RESET;
+        buffer << "\033[" << (w.ws_row - 16) << ";10H" << GREEN << ">> " << statusMsg << "\n" << RESET << BLUE ;
     }
 
-    if (std::time(nullptr) < statusExpiry) {
-        std::cout << "\033[" << (w.ws_row - 9) << ";10H" << BLUE << ">> " << statusMsg << RESET;
+    if (!currentSong.empty() && currentSong != "None")
+        buffer << "\033[" << (w.ws_row - 15) << ";10H" << " * " << currentSong << "\n";
+
+    if (!currentDesc.empty() && currentDesc != "None" && currentDesc != "None") {
+        buffer << "\033[" << (w.ws_row - 14) << ";10H" << " * " << currentDesc;
     }
 
-    // Content Block (relative to bottom)
-    // Only print the Song line if there is actual metadata
-    if (!currentSong.empty() && currentSong != "None" && currentSong != "\033[94mNone\033[0m") {
-        std::cout << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * " << currentSong << RESET;
-    }
-    // Only print the Song line if there is actual metadata
-    if (!currentDesc.empty() && currentDesc != "None" && currentDesc != "\033[94mNone\033[0m") {
-        std::cout << "\033[" << (w.ws_row - 6) << ";10H" << BLUE << " * " << currentDesc << RESET;
-    }
+    buffer << "\033[" << (w.ws_row - 13) << ";10H" << BLUE << " * "  << currentStation;
+    if (is_favorite()) buffer << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << RESET;
 
-    // Station Line with Dynamic Favorite Tag
-    std::cout << "\033[" << (w.ws_row - 5) << ";10H" << BLUE << " * " << currentStation;
-    if (is_favorite()) {
-        std::cout << BLUE << " [ \033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m ]" << RESET;
-    }
+    if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" << BLUE << " * Listeners: " << currentListeners;
 
-    if(!currentListeners.empty())
-        std::cout << BLUE << " (" << currentListeners << " listeners)" << RESET;
+    buffer << "\033[" << (w.ws_row - 11) << ";10H" << " * Favorites: " << count_favorites() << "\n";
+    buffer << "\033[" << (w.ws_row - 10) << ";10H" << " * Vol: " << get_vol_bar() << "\n";
 
-    // Stats Line: Shows Favs / Total
-    std::cout << "\033[" << (w.ws_row - 4) << ";10H" << BLUE  << " * Favorites: " << count_favorites() << RESET;
-    std::cout << "\033[" << (w.ws_row - 3) << ";10H" << BLUE  << " * Total Channels: " << channels.size() << RESET;
+    buffer << "\033[" << w.ws_row << ";0H" << RED << "MusicThingy> ";
 
-    int mute;
-    mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
-    std::string volColor = mute ? "\033[91m" : "\033[92m"; // Red if muted, Green if not
-
-    std::cout << "\033[" << (w.ws_row - 2) << ";10H" << BLUE  << " * Vol: " << volColor << get_vol_bar() << RESET << std::flush;
-
-    // Prompt at the very bottom
-    std::cout << "\033[" << w.ws_row << ";0H" << RED << "MusicThingy> " << RESET << std::flush;
+    buffer << RESET;
+    // ONE SINGLE WRITE to the physical screen (The 'Swap')
+    std::cout << buffer.str() << std::flush;
 }
+
 
 void save_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
