@@ -7,8 +7,8 @@
 #include <curl/curl.h>
 #include <mpv/client.h>
 #include "nlohmann/json.hpp"
-#include <poll.h> 
-#include <csignal> 
+#include <poll.h>
+#include <csignal>
 #include <fstream>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -18,23 +18,23 @@
 #include <image.h>
 #include <OS.h>
 #endif
-#include <limits.h> 
+#include <limits.h>
 
 
 // --- OS Path Helper ---
 std::string get_self_path() {
     char buffer[PATH_MAX];
-#ifdef __HAIKU__
+    #ifdef __HAIKU__
     image_info info;
     int32 cookie = 0;
     while (get_next_image_info(0, &cookie, &info) == B_OK) {
         if (info.type == B_APP_IMAGE) return std::string(info.name);
     }
-#else
-    // Linux/Unix 
+    #else
+    // Linux/Unix
     ssize_t count = readlink("/proc/self/exe", buffer, PATH_MAX);
     if (count > 0) return std::string(buffer, count);
-#endif
+    #endif
     return "";
 }
 
@@ -47,11 +47,11 @@ const std::string BASE_URL = "https://somafm.com/";
 using json = nlohmann::json;
 
 // --- Global State ---
-struct Channel { 
-    std::string title; 
-    std::string id; 
-    std::string desc;     
-    std::string listeners; 
+struct Channel {
+    std::string title;
+    std::string id;
+    std::string desc;
+    std::string listeners;
 };
 
 mpv_handle *mpv = nullptr;
@@ -91,10 +91,10 @@ void fetch_channels() {
                 auto data = json::parse(buffer);
                 for (auto& ch : data["channels"]) {
                     channels.push_back({
-                        ch.value("title", ""), 
-                        ch.value("id", ""),
-                        ch.value("description", ""), 
-                        ch.value("listeners", "0")    
+                        ch.value("title", ""),
+                                       ch.value("id", ""),
+                                       ch.value("description", ""),
+                                       ch.value("listeners", "0")
                     });
                 }
             } catch(...) {}
@@ -107,7 +107,7 @@ void init_mpv() {
     mpv = mpv_create();
     if (!mpv) exit(1);
     mpv_set_option_string(mpv, "input-default-bindings", "yes");
-    mpv_set_option_string(mpv, "terminal", "no"); 
+    mpv_set_option_string(mpv, "terminal", "no");
     mpv_initialize(mpv);
     mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
 }
@@ -118,9 +118,9 @@ void play_random() {
     currentStation = channels[idx].title;
     currentDesc = channels[idx].desc;
     currentListeners = channels[idx].listeners;
-    
+
     // In play_random and play_favorite
-	std::string url = BASE_URL + channels[idx].id + ".pls";
+    std::string url = BASE_URL + channels[idx].id + ".pls";
     const char *cmd[] = {"loadfile", url.c_str(), NULL};
     mpv_command(mpv, cmd);
 }
@@ -143,7 +143,11 @@ void toggle_mute() {
 
 int count_favorites() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.tx");
+    #else
     std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
+    #endif
     int lines = 0;
     std::string line;
     while (std::getline(infile, line)) if (!line.empty()) lines++;
@@ -152,16 +156,20 @@ int count_favorites() {
 
 bool is_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.txt");
+    #else
     std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
-    
+    #endif
 
-std::string currentUrl = "";
-for(const auto& ch : channels) {
-    if(ch.title == currentStation) { 
-        currentUrl = BASE_URL + ch.id + ".pls"; 
-        break; 
+
+    std::string currentUrl = "";
+    for(const auto& ch : channels) {
+        if(ch.title == currentStation) {
+            currentUrl = BASE_URL + ch.id + ".pls";
+            break;
+        }
     }
-}
 
     if (currentUrl.empty()) return false;
 
@@ -191,66 +199,74 @@ void draw_ui() {
     std::string BLUE = "\033[94m", RED = "\033[91m", YELLOW = "\033[33m", GREEN = "\033[38;5;46m", RESET = "\033[0m";
 
     std::cout << "\033[H\033[2J\033[3J"; // Full Clear
-    
+
     // Top Info
     std::cout << "\033[" << (w.ws_row - 12) << ";10H" << BLUE << "                                 Music Thingy" << RESET;
     std::cout << "\033[" << (w.ws_row - 11) << ";10H" << BLUE << "[S]huffle | S[a]ve | Add [F]avorite | [D]elete Favorite | Vol [+/-] [M]ute | [Q]uit" << RESET;
-  
-     if (std::time(nullptr) < statusExpiry) {
+
+    if (std::time(nullptr) < statusExpiry) {
         std::cout << "\033[" << (w.ws_row - 9) << ";10H" << GREEN << ">> " << statusMsg << RESET;
     }
-  
+
     if (std::time(nullptr) < statusExpiry) {
         std::cout << "\033[" << (w.ws_row - 9) << ";10H" << BLUE << ">> " << statusMsg << RESET;
     }
-  
+
     // Content Block (relative to bottom)
     // Only print the Song line if there is actual metadata
-	if (!currentSong.empty() && currentSong != "None" && currentSong != "\033[94mNone\033[0m") {
-    std::cout << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * " << currentSong << RESET;
-}
-// Only print the Song line if there is actual metadata
-if (!currentDesc.empty() && currentDesc != "None" && currentDesc != "\033[94mNone\033[0m") {
-    std::cout << "\033[" << (w.ws_row - 6) << ";10H" << BLUE << " * " << currentDesc << RESET;
-}
-
-     // Station Line with Dynamic Favorite Tag
-    std::cout << "\033[" << (w.ws_row - 5) << ";10H" << BLUE << " * " << currentStation;
-      if (is_favorite()) {
-        std::cout << BLUE << " [ \033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m ]" << RESET; 
+    if (!currentSong.empty() && currentSong != "None" && currentSong != "\033[94mNone\033[0m") {
+        std::cout << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * " << currentSong << RESET;
     }
-  
-    if(!currentListeners.empty()) 
+    // Only print the Song line if there is actual metadata
+    if (!currentDesc.empty() && currentDesc != "None" && currentDesc != "\033[94mNone\033[0m") {
+        std::cout << "\033[" << (w.ws_row - 6) << ";10H" << BLUE << " * " << currentDesc << RESET;
+    }
+
+    // Station Line with Dynamic Favorite Tag
+    std::cout << "\033[" << (w.ws_row - 5) << ";10H" << BLUE << " * " << currentStation;
+    if (is_favorite()) {
+        std::cout << BLUE << " [ \033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m ]" << RESET;
+    }
+
+    if(!currentListeners.empty())
         std::cout << BLUE << " (" << currentListeners << " listeners)" << RESET;
-    
-  // Stats Line: Shows Favs / Total
+
+    // Stats Line: Shows Favs / Total
     std::cout << "\033[" << (w.ws_row - 4) << ";10H" << BLUE  << " * Favorites: " << count_favorites() << RESET;
     std::cout << "\033[" << (w.ws_row - 3) << ";10H" << BLUE  << " * Total Channels: " << channels.size() << RESET;
-    
+
     int mute;
     mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
     std::string volColor = mute ? "\033[91m" : "\033[92m"; // Red if muted, Green if not
-              
+
     std::cout << "\033[" << (w.ws_row - 2) << ";10H" << BLUE  << " * Vol: " << volColor << get_vol_bar() << RESET << std::flush;
-     
+
     // Prompt at the very bottom
     std::cout << "\033[" << w.ws_row << ";0H" << RED << "MusicThingy> " << RESET << std::flush;
 }
 
 void save_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::string dir = home + "/config/settings/MusicThingy";
+    std::string path = dir + "/favorites.txt";
+    #else
     std::string dir = home + "/.config/MusicThingy";
     std::string path = dir + "/favorites.txt";
+    #endif
+
+
+
     mkdir(dir.c_str(), 0755);
 
     // 1. Determine the URL for the current station
-std::string currentUrl = "";
-for(const auto& ch : channels) {
-    if(ch.title == currentStation) { 
-        currentUrl = BASE_URL + ch.id + ".pls"; 
-        break; 
+    std::string currentUrl = "";
+    for(const auto& ch : channels) {
+        if(ch.title == currentStation) {
+            currentUrl = BASE_URL + ch.id + ".pls";
+            break;
+        }
     }
-}
 
 
     if (currentUrl.empty()) {
@@ -290,13 +306,19 @@ for(const auto& ch : channels) {
 
 void play_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::string path = home + "/config/settings/MusicThingy/favorites.txt";
+    #else
     std::string path = home + "/.config/MusicThingy/favorites.txt";
-    
+    #endif
+
+
+
     std::ifstream infile(path);
     std::vector<std::string> favs;
     std::string line;
     while (std::getline(infile, line)) if (!line.empty()) favs.push_back(line);
-    
+
     if (favs.empty()) {
         statusMsg = "No favorites saved!";
         statusExpiry = std::time(nullptr) + 2;
@@ -329,16 +351,20 @@ void play_favorite() {
 
 void delete_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::string path = home + "/config/settings/MusicThingy/favorites.txt";
+    #else
     std::string path = home + "/.config/MusicThingy/favorites.txt";
-    
+    #endif
 
-std::string currentUrl = "";
-for(const auto& ch : channels) {
-    if(ch.title == currentStation) { 
-        currentUrl = BASE_URL + ch.id + ".pls"; 
-        break; 
+
+    std::string currentUrl = "";
+    for(const auto& ch : channels) {
+        if(ch.title == currentStation) {
+            currentUrl = BASE_URL + ch.id + ".pls";
+            break;
+        }
     }
-}
 
 
     if (currentUrl.empty()) return;
@@ -379,7 +405,7 @@ int main(int argc, char* argv[]) {
 
         #ifdef __HAIKU__
         // Haiku: 'Terminal' is always available.
-          cmd = "Terminal -t \"Music Thingy\" " + path + " &";
+        cmd = "Terminal -t \"Music Thingy\" " + path + " &";
         #else
         // Linux: Search for available terminals
         struct Term { std::string name; std::string flag; };
@@ -413,22 +439,22 @@ int main(int argc, char* argv[]) {
 
     srand(time(0));
     signal(SIGWINCH, handle_resize); // Listen for window resize
-    
+
     init_mpv();
     fetch_channels();
-    
+
     system("stty raw -echo");
 
     draw_ui();
 
     while (true) {
         bool needsRedraw = false;
-        
-   		// Auto-clear status message after timeout
-    if (!statusMsg.empty() && std::time(nullptr) >= statusExpiry) {
-        statusMsg = "";
-        needsRedraw = true;
-    }
+
+        // Auto-clear status message after timeout
+        if (!statusMsg.empty() && std::time(nullptr) >= statusExpiry) {
+            statusMsg = "";
+            needsRedraw = true;
+        }
         // Check if terminal was resized
         if (resized) {
             resized = 0;
@@ -453,19 +479,19 @@ int main(int argc, char* argv[]) {
             if (input == 'q') break;
             switch (input) {
                 case 's': play_random(); currentSong = "Buffering..."; break;
-                case 'a': save_favorite(); break; 
-                case 'f': play_favorite(); break; 
-                case 'd': delete_favorite(); break; 
+                case 'a': save_favorite(); break;
+                case 'f': play_favorite(); break;
+                case 'd': delete_favorite(); break;
                 case '+': case '-': set_volume(input); break;
                 case 'm': toggle_mute(); break;
             }
             needsRedraw = true;
         }
         if (needsRedraw) draw_ui();
-        usleep(10000); 
+        usleep(10000);
     }
 
-end:
+    end:
     system("stty cooked echo");
     if (mpv) mpv_terminate_destroy(mpv);
     return 0;
