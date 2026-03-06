@@ -14,11 +14,15 @@
 #include <sys/types.h>
 #include <ctime>
 #include <unistd.h>
+#ifdef __HAIKU__
 #include <image.h>
 #include <OS.h>
+#endif
 #include <limits.h> 
 
-#include <limits.h> // For PATH_MAX on Linux
+#include <limits.h>
+
+// For PATH_MAX on Linux
 
 // --- OS Path Helper ---
 std::string get_self_path() {
