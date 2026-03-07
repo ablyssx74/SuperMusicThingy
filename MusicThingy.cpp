@@ -728,6 +728,12 @@ bool draw_config_menu() {
     else buffer << "   ";
     buffer << "Audio Quality: [" << cfg.quality << "]" << BLUE;
 
+    // 2. Add the "Note" if Highest is selected
+    if (cfg.quality == "highest") {
+        buffer << "\033[" << (4 + qIdx + 2) << ";10H"
+        << "\033[93m" << "! Note: 'Highest' may delay notifications" << BLUE;
+    }
+
     buffer << "\033[" << (w.ws_row - 2) << ";10H" << "Settings saved to: " << configPath << RESET;
     std::cout << buffer.str() << std::flush;
 
