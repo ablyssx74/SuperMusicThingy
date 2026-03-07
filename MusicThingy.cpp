@@ -49,6 +49,7 @@ struct Config {
     bool showAlbumArt = true;
     bool startMuted = false;
     int defaultVolume = 100;
+    std::string quality = "high"; // Options: "highest", "high", "low"
 } cfg;
 
 int selectedConfig = 0; // Current menu selection
@@ -56,6 +57,7 @@ int selectedConfig = 0; // Current menu selection
 
 void save_config() {
     json j;
+    j["quality"] = cfg.quality;
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
     j["showAlbumArt"] = cfg.showAlbumArt;
@@ -71,6 +73,7 @@ void load_config() {
     if (infile.is_open()) {
         try {
             json j = json::parse(infile);
+            cfg.quality = j.value("quality", "highest");
             cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
             cfg.showAlbumArt = j.value("showAlbumArt", true);
@@ -149,6 +152,7 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
 // --- Logic Functions ---
 
 void fetch_channels() {
+    channels.clear();
     CURL* curl = curl_easy_init();
     std::string buffer;
     if(curl) {
@@ -182,18 +186,55 @@ void init_mpv() {
     mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
 }
 
+void fade_volume(mpv_handle *mpv, double target_vol, double duration_ms) {
+    double current_vol;
+    mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &current_vol);
+
+    int steps = 20; // Number of small volume jumps
+    double step_size = (target_vol - current_vol) / steps;
+    int step_duration = (int)(duration_ms * 1000 / steps); // in microseconds
+
+    for (int i = 0; i < steps; ++i) {
+        current_vol += step_size;
+        mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &current_vol);
+        usleep(step_duration);
+    }
+    // Ensure we hit the exact target
+    mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &target_vol);
+}
+
+std::string get_quality_url(const std::string& id) {
+        if (cfg.quality == "highest") return BASE_URL + id + "256.pls"; // 256k MP3
+        if (cfg.quality == "low")     return BASE_URL + id + "64.pls";  // 64k AAC-HE
+        return BASE_URL + id + "130.pls"; // Default High (128k AAC)
+}
+
 void play_random() {
     if (channels.empty()) return;
+
+    // 1. Fade Out
+    double original_vol;
+    mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
+    fade_volume(mpv, 0, 300);
+
+    // 2. Pick Station & Load URL
     int idx = rand() % channels.size();
     currentStation = channels[idx].title;
     currentDesc = channels[idx].desc;
     currentListeners = channels[idx].listeners;
+    currentSong = "Buffering...";
 
-    // In play_random and play_favorite
-    std::string url = BASE_URL + channels[idx].id + ".pls";
+    // USE THE HELPER HERE
+    std::string url = get_quality_url(channels[idx].id);
+
     const char *cmd[] = {"loadfile", url.c_str(), NULL};
     mpv_command(mpv, cmd);
+
+    // 3. Fade In
+    fade_volume(mpv, original_vol, 500);
 }
+
+
 
 void set_volume(char direction) {
     double vol;
@@ -385,12 +426,23 @@ bool draw_favorites_menu() {
 
 //[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]
 
+std::string get_bitrate_text() {
+    if (cfg.quality == "highest") return "256k";
+    if (cfg.quality == "low")     return "64k";
+    return "128k"; // Default for "high"
+}
+
+
 void draw_ui() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::string BLUE = "\033[94m", RED = "\033[91m", YELLOW = "\033[33m", GREEN = "\033[38;5;46m", RESET = "\033[0m";
 
     // This is your 'back buffer'
     std::stringstream buffer;
+
+    int mute;
+    mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
+    std::string volColor = mute ? "\033[91m" : "\033[92m"; // Red if muted
 
     // Build the frame in memory
     buffer << "\033[H\033[2J\033[3J"; // Full Clear
@@ -415,10 +467,15 @@ void draw_ui() {
 
     if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" << BLUE << " * Listeners: " << currentListeners;
 
-    buffer << "\033[" << (w.ws_row - 11) << ";10H" << " * Favorites: " << count_favorites() << "\n";
-    buffer << "\033[" << (w.ws_row - 10) << ";10H" << " * Vol: " << get_vol_bar() << "\n";
+    buffer << "\033[" << (w.ws_row - 11) << ";10H"  << " * Total Channels: " << (int)channels.size();
 
-    buffer << "\033[" << w.ws_row << ";0H" << RED << "MusicThingy> ";
+    buffer << "\033[" << (w.ws_row - 10) << ";10H" << " * Favorites: " << count_favorites() << "\n";
+
+    buffer << "\033[" << (w.ws_row - 9) << ";10H" << " * Bitrate: " << get_bitrate_text() << "\n";
+
+    buffer << "\033[" << (w.ws_row - 8) << ";10H" << " * Vol: " << volColor << get_vol_bar() << "\n";
+
+    buffer << "\033[" << w.ws_row << ";0H" << RED << "Music Thingy~ $: ";
 
     buffer << RESET;
     // ONE SINGLE WRITE to the physical screen (The 'Swap')
@@ -634,30 +691,42 @@ void send_notification(const std::string& station, const std::string& song) {
 }
 
 bool draw_config_menu() {
+
+
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
     std::string BLUE = "\033[94m", WHITE = "\033[97m", RESET = "\033[0m";
     std::stringstream buffer;
+
+    buffer << "\033[H\033[2J\033[3J" << BLUE; // <--- FULL CLEAR AND HOME
+    buffer << "\033[H\033[2J\033[3J" << BLUE;
+    buffer << "\033[6;10H             Music Thingy";
+    buffer << "\033[7;10H[S]huffle | Vol [+/-] | [H]elp | [Q]uit";
 
     // Define the list of options to display
     struct MenuItem { std::string label; bool* val; };
     std::vector<MenuItem> items = {
         {"Desktop Notifications", &cfg.showNotifications},
         {"Auto-Shuffle on Start", &cfg.autoShuffle},
-        {"Show Album Art HUD",    &cfg.showAlbumArt},
         {"Start Muted",           &cfg.startMuted}
     };
 
-    buffer << "\033[H\033[2J\033[3J" << BLUE;
-    buffer << "\033[5;10H=== CONFIGURATION ([j/k] Move | [Enter] Toggle | [b] Back) ===";
+    int totalItems = items.size() + 1; // Toggles + 1 for Quality
 
-    for (int i = 0; i < (int)items.size(); ++i) {
-        buffer << "\033[" << (7 + i) << ";10H";
+    // 2. Draw standard toggles
+    for (int i = 0; i < items.size(); ++i) {
+        buffer << "\033[" << (11 + i) << ";10H";
         if (i == selectedConfig) buffer << WHITE << " > " << BLUE;
         else buffer << "   ";
-
-        buffer << items[i].label << ": "
-        << (*(items[i].val) ? "\033[92m[ON]" : "\033[91m[OFF]") << BLUE;
+        buffer << items[i].label << ": " << (*(items[i].val) ? "[ON]" : "[OFF]") << BLUE;
     }
+
+    // 3. Draw the Quality Selector row
+    int qIdx = items.size(); // The index for this new row
+    buffer << "\033[" << (11 + qIdx) << ";10H";
+    if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
+    else buffer << "   ";
+    buffer << "Audio Quality: [" << cfg.quality << "]" << BLUE;
 
     buffer << "\033[" << (w.ws_row - 2) << ";10H" << "Settings saved to: " << configPath << RESET;
     std::cout << buffer.str() << std::flush;
@@ -666,14 +735,26 @@ bool draw_config_menu() {
         char c = std::tolower(getchar());
         if (c == 'b' || c == 27) return false;
         if (c == 'k' && selectedConfig > 0) selectedConfig--;
-        if (c == 'j' && selectedConfig < (int)items.size() - 1) selectedConfig++;
+        if (c == 'j' && selectedConfig < totalItems - 1) selectedConfig++;
+
+        // Handling the Enter Key to Toggle/Cycle
         if (c == '\n' || c == '\r') {
-            *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
-            save_config(); // Save immediately on toggle
+            if (selectedConfig < items.size()) {
+                // Toggle the boolean items
+                *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
+            } else {
+                // Cycle the Quality string: highest -> high -> low -> highest
+                if (cfg.quality == "highest") cfg.quality = "high";
+                else if (cfg.quality == "high") cfg.quality = "low";
+                else cfg.quality = "highest";
+            }
+            save_config(); // Save immediately to disk
         }
     }
     return true;
 }
+
+
 
 
 // --- Main Engine ---
@@ -804,19 +885,24 @@ int main(int argc, char* argv[]) {
         if (bytes > 0) {
             cmdBuf[bytes] = '\0';
             std::string cmd(cmdBuf);
+
+            // --- Inside the FIFO Listener (Player side) ---
             if (cmd == "status") {
-                // The sender already created respPath, we just open and write to it
                 int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
                 if (respFd != -1) {
                     std::stringstream ss;
                     ss << "Station:   " << currentStation << "\n"
                     << "Now Play:  " << currentSong << "\n"
-                    << "Listeners: " << currentListeners;
+                    << "Quality: " << get_bitrate_text() << "\n"
+                    << "Listeners: " << currentListeners << "\n"
+                    << "Stats:     " << count_favorites() << " Favorites | " << channels.size() << " Total Channels";
+
                     std::string reply = ss.str();
                     write(respFd, reply.c_str(), reply.length());
                     close(respFd);
                 }
             }
+
 
             else if (cmd == "favorites") {
                 play_favorite(); // Reuse existing play_favorite() random logic
