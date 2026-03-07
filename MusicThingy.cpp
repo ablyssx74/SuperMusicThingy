@@ -44,7 +44,9 @@ std::string configPath = getenv("HOME") + std::string("/.config/MusicThingy/conf
 
 
 struct Config {
+    bool showNotifications = true;
     bool autoShuffle = false;
+    bool showAlbumArt = true;
     bool startMuted = false;
     int defaultVolume = 100;
     std::string quality = "high"; // Options: "highest", "high", "low"
@@ -56,7 +58,9 @@ int selectedConfig = 0; // Current menu selection
 void save_config() {
     json j;
     j["quality"] = cfg.quality;
+    j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
+    j["showAlbumArt"] = cfg.showAlbumArt;
     j["startMuted"] = cfg.startMuted;
     j["defaultVolume"] = cfg.defaultVolume;
 
@@ -70,7 +74,9 @@ void load_config() {
         try {
             json j = json::parse(infile);
             cfg.quality = j.value("quality", "highest");
+            cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
+            cfg.showAlbumArt = j.value("showAlbumArt", true);
             cfg.startMuted = j.value("startMuted", false);
             cfg.defaultVolume = j.value("defaultVolume", 100);
         } catch(...) {}
@@ -121,15 +127,14 @@ struct Channel {
 mpv_handle *mpv = nullptr;
 std::vector<Channel> channels;
 volatile sig_atomic_t resized = 0; // Flag for resize signal
-bool needsRedraw = false;
 
-
+std::string pendingSong = "";
+std::time_t notifyTimer = 0;
 
 std::string currentSong = "None";
 std::string currentDesc = "None";
 std::string currentStation = "Press [s] to shuffle!";
 std::string currentListeners = "";
-
 
 // --- Helper Functions ---
 void handle_resize(int sig) { resized = 1; }
@@ -199,24 +204,34 @@ void fade_volume(mpv_handle *mpv, double target_vol, double duration_ms) {
 }
 
 std::string get_quality_url(const std::string& id) {
-        if (cfg.quality == "highest") return BASE_URL + id + "256.pls"; // 256k MP3
-        if (cfg.quality == "low")     return BASE_URL + id + "64.pls";  // 64k AAC-HE
-        return BASE_URL + id + "130.pls"; // Default High (128k AAC)
+    if (cfg.quality == "highest") return BASE_URL + id + "256.pls"; // 256k MP3
+    if (cfg.quality == "low")     return BASE_URL + id + "64.pls";  // 64k AAC-HE
+    return BASE_URL + id + "130.pls"; // Default High (128k AAC)
 }
 
 void play_random() {
     if (channels.empty()) return;
 
+    // 1. Fade Out
+    double original_vol;
+    mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
+    fade_volume(mpv, 0, 300);
+
+    // 2. Pick Station & Load URL
     int idx = rand() % channels.size();
     currentStation = channels[idx].title;
     currentDesc = channels[idx].desc;
+    currentListeners = channels[idx].listeners;
     currentSong = "Buffering...";
 
+    // USE THE HELPER HERE
     std::string url = get_quality_url(channels[idx].id);
+
     const char *cmd[] = {"loadfile", url.c_str(), NULL};
     mpv_command(mpv, cmd);
 
-    needsRedraw = true;
+    // 3. Fade In
+    fade_volume(mpv, original_vol, 500);
 }
 
 
@@ -665,6 +680,14 @@ void send_notification(const std::string& station, const std::string& song) {
     if (song.empty() || song.find("http://") == 0 || song.find("https://") == 0 || song.find("-aac") != std::string::npos || song.find("-mp3") != std::string::npos) {
         return;
     }
+
+    std::string cmd;
+    #ifdef __HAIKU__
+    cmd = "notify --title \"Music Thingy\" \"" + station + ": " + song + "\" &";
+    #else
+    cmd = "notify-send \"Music Thingy\" \"" + station + "\n" + song + "\" &";
+    #endif
+    system(cmd.c_str());
 }
 
 bool draw_config_menu() {
@@ -683,6 +706,7 @@ bool draw_config_menu() {
     // Define the list of options to display
     struct MenuItem { std::string label; bool* val; };
     std::vector<MenuItem> items = {
+        {"Desktop Notifications", &cfg.showNotifications},
         {"Auto-Shuffle on Start", &cfg.autoShuffle},
         {"Start Muted",           &cfg.startMuted}
     };
@@ -837,7 +861,22 @@ int main(int argc, char* argv[]) {
 
     // 4. Main Loop
     while (true) {
-        needsRedraw = false;
+        bool needsRedraw = false;
+
+        // --- Inside while(true) loop ---
+
+        // ONLY fire the notification here when the fuse burns down
+        if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
+            currentSong = pendingSong;
+
+            // IMPORTANT: This is the ONLY place send_notification should be called
+            if (cfg.showNotifications) {
+                send_notification(currentStation, currentSong);
+            }
+
+            notifyTimer = 0; // Reset the fuse
+            needsRedraw = true;
+        }
 
 
         // A. FIFO LISTENER
@@ -937,7 +976,6 @@ int main(int argc, char* argv[]) {
             needsRedraw = true;
         }
         // D. MPV EVENTS
-        // --- Inside main() while(true) loop ---
         while (true) {
             mpv_event *event = mpv_wait_event(mpv, 0);
             if (event->event_id == MPV_EVENT_NONE) break;
@@ -945,18 +983,14 @@ int main(int argc, char* argv[]) {
             if (event->event_id == MPV_EVENT_PROPERTY_CHANGE) {
                 mpv_event_property *prop = (mpv_event_property *)event->data;
                 if (prop->data && std::string(prop->name) == "media-title") {
-                    currentSong = *(char **)prop->data;
+                    std::string newTitle = *(char **)prop->data;
 
-                    // Refresh listener count for the current station
-                    for (const auto& ch : channels) {
-                        if (ch.title == currentStation) {
-                            // Note: This uses the cached count from fetch_channels()
-                            // To get LIVE counts, we'd need to re-run fetch_channels()
-                            currentListeners = ch.listeners;
-                            break;
-                        }
+                    // 1. Filter out URLs and duplicates
+                    if (newTitle != currentSong && newTitle.find("http") != 0) {
+                        pendingSong = newTitle;            // Save the "upcoming" song
+                        notifyTimer = std::time(nullptr) + 2; // Set the fuse for 2 seconds
+                        // Note: Don't update currentSong here; let the timer do it!
                     }
-                    needsRedraw = true;
                 }
 
             }
@@ -965,8 +999,7 @@ int main(int argc, char* argv[]) {
 
 
 
-
-          // E. KEYBOARD INPUT
+        // E. KEYBOARD INPUT
         if (kbhit()) {
             char input = getchar();
             if (input == 'q') break;
