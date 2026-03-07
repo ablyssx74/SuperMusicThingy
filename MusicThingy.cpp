@@ -13,13 +13,87 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <ctime>
-#include <unistd.h>
 #ifdef __HAIKU__
 #include <image.h>
 #include <OS.h>
 #endif
 #include <limits.h>
 #include <sstream>
+#include <fcntl.h>
+
+
+
+
+std::string statusMsg = "";
+std::time_t statusExpiry = 0;
+const std::string BASE_URL = "https://somafm.com/";
+using json = nlohmann::json;
+int selectedFav = 0;
+int scrollOffset = 0;
+bool showMenu = false;
+bool showHelp = false;
+bool showNotifications = false;
+bool showConfig = false;
+
+// Path for the config file
+#ifdef __HAIKU__
+std::string configPath = getenv("HOME") + std::string("/config/settings/MusicThingy/config.txt");
+#else
+std::string configPath = getenv("HOME") + std::string("/.config/MusicThingy/config.txt");
+#endif
+
+
+struct Config {
+    bool showNotifications = true;
+    bool autoShuffle = false;
+    bool showAlbumArt = true;
+    bool startMuted = false;
+    int defaultVolume = 100;
+} cfg;
+
+int selectedConfig = 0; // Current menu selection
+
+
+void save_config() {
+    json j;
+    j["showNotifications"] = cfg.showNotifications;
+    j["autoShuffle"] = cfg.autoShuffle;
+    j["showAlbumArt"] = cfg.showAlbumArt;
+    j["startMuted"] = cfg.startMuted;
+    j["defaultVolume"] = cfg.defaultVolume;
+
+    std::ofstream outfile(configPath);
+    outfile << j.dump(4);
+}
+
+void load_config() {
+    std::ifstream infile(configPath);
+    if (infile.is_open()) {
+        try {
+            json j = json::parse(infile);
+            cfg.showNotifications = j.value("showNotifications", true);
+            cfg.autoShuffle = j.value("autoShuffle", false);
+            cfg.showAlbumArt = j.value("showAlbumArt", true);
+            cfg.startMuted = j.value("startMuted", false);
+            cfg.defaultVolume = j.value("defaultVolume", 100);
+        } catch(...) {}
+    }
+}
+
+
+
+//----EndConfig
+
+// --- For reading arguments from keyboard shortcuts ---
+const char* fifoPath = "/tmp/musicthingy_fifo";
+const char* respPath = "/tmp/musicthingy_resp";
+int fifoFd = -1;
+
+// Delete fifo on exit
+void cleanup_fifo() {
+    unlink(fifoPath);
+    unlink(respPath);
+}
 
 // --- OS Path Helper ---
 std::string get_self_path() {
@@ -39,18 +113,6 @@ std::string get_self_path() {
 }
 
 
-
-std::string statusMsg = "";
-std::time_t statusExpiry = 0;
-const std::string BASE_URL = "https://somafm.com/";
-
-using json = nlohmann::json;
-
-int selectedFav = 0;
-int scrollOffset = 0;
-bool showMenu = false;
-bool showHelp = false;
-
 // --- Global State ---
 struct Channel {
     std::string title;
@@ -62,6 +124,9 @@ struct Channel {
 mpv_handle *mpv = nullptr;
 std::vector<Channel> channels;
 volatile sig_atomic_t resized = 0; // Flag for resize signal
+
+std::string pendingSong = "";
+std::time_t notifyTimer = 0;
 
 std::string currentSong = "None";
 std::string currentDesc = "None";
@@ -149,7 +214,7 @@ void toggle_mute() {
 int count_favorites() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.tx");
+    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.txt");
     #else
     std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
     #endif
@@ -198,6 +263,7 @@ std::string get_vol_bar() {
     return bar;
 }
 
+
 bool draw_help_menu() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::string BLUE = "\033[94m", RESET = "\033[0m";
@@ -216,6 +282,7 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";10H [+/-] Volume     : Increase/Decrease volume";
     buffer << "\033[" << r++ << ";10H [m] Mute         : Toggle audio mute";
     buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
+    buffer << "\033[" << r++ << ";10H [c] Config       : Config Manager";
     buffer << "\033[" << r++ << ";10H [q] Quit         : Exit Music Thingy";
 
     buffer << "\033[" << (r+2) << ";10H Press [b] or [Esc] to return to player...";
@@ -550,12 +617,105 @@ void delete_favorite() {
     statusExpiry = std::time(nullptr) + 2;
 }
 
+void send_notification(const std::string& station, const std::string& song) {
+
+    // Filter out common URL patterns to prevent "URL notifications"
+    if (song.empty() || song.find("http://") == 0 || song.find("https://") == 0 || song.find("-mp3") != std::string::npos) {
+        return;
+    }
+
+    std::string cmd;
+    #ifdef __HAIKU__
+    cmd = "notify --title \"Music Thingy\" \"" + station + ": " + song + "\" &";
+    #else
+    cmd = "notify-send \"Music Thingy\" \"" + station + "\n" + song + "\" &";
+    #endif
+    system(cmd.c_str());
+}
+
+bool draw_config_menu() {
+    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    std::string BLUE = "\033[94m", WHITE = "\033[97m", RESET = "\033[0m";
+    std::stringstream buffer;
+
+    // Define the list of options to display
+    struct MenuItem { std::string label; bool* val; };
+    std::vector<MenuItem> items = {
+        {"Desktop Notifications", &cfg.showNotifications},
+        {"Auto-Shuffle on Start", &cfg.autoShuffle},
+        {"Show Album Art HUD",    &cfg.showAlbumArt},
+        {"Start Muted",           &cfg.startMuted}
+    };
+
+    buffer << "\033[H\033[2J\033[3J" << BLUE;
+    buffer << "\033[5;10H=== CONFIGURATION ([j/k] Move | [Enter] Toggle | [b] Back) ===";
+
+    for (int i = 0; i < (int)items.size(); ++i) {
+        buffer << "\033[" << (7 + i) << ";10H";
+        if (i == selectedConfig) buffer << WHITE << " > " << BLUE;
+        else buffer << "   ";
+
+        buffer << items[i].label << ": "
+        << (*(items[i].val) ? "\033[92m[ON]" : "\033[91m[OFF]") << BLUE;
+    }
+
+    buffer << "\033[" << (w.ws_row - 2) << ";10H" << "Settings saved to: " << configPath << RESET;
+    std::cout << buffer.str() << std::flush;
+
+    if (kbhit()) {
+        char c = std::tolower(getchar());
+        if (c == 'b' || c == 27) return false;
+        if (c == 'k' && selectedConfig > 0) selectedConfig--;
+        if (c == 'j' && selectedConfig < (int)items.size() - 1) selectedConfig++;
+        if (c == '\n' || c == '\r') {
+            *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
+            save_config(); // Save immediately on toggle
+        }
+    }
+    return true;
+}
+
 
 // --- Main Engine ---
 
-
-
 int main(int argc, char* argv[]) {
+    // --- PART A: SENDER LOGIC (Shortcuts/Terminal Commands) ---
+    if (argc > 1) {
+        std::string cmd = argv[1]; // Get the command (e.g., "shuffle")
+        int fd = open(fifoPath, O_WRONLY | O_NONBLOCK);
+
+        if (fd == -1) {
+            std::cerr << "MusicThingy is not running." << std::endl;
+            return 1;
+        }
+
+        if (cmd == "status") {
+            mkfifo(respPath, 0666);
+            int respFd = open(respPath, O_RDONLY | O_NONBLOCK);
+            write(fd, "status", 6);
+            close(fd);
+
+            // Wait for response
+            for(int i = 0; i < 50; ++i) {
+                char buf[512] = {0};
+                if (read(respFd, buf, sizeof(buf)-1) > 0) {
+                    std::cout << buf << std::endl;
+                    close(respFd); unlink(respPath);
+                    return 0;
+                }
+                usleep(10000);
+            }
+            close(respFd); unlink(respPath);
+            return 1;
+        }
+
+        // For all other commands (shuffle, quit, etc.)
+        write(fd, cmd.c_str(), cmd.length());
+        close(fd);
+        return 0; // EXIT SENDER IMMEDIATELY
+    }
+
+
     // Check if we are running in a terminal (not piped or clicked from GUI)
     if (!isatty(STDIN_FILENO)) {
         std::string path = get_self_path();
@@ -586,32 +746,122 @@ int main(int argc, char* argv[]) {
         }
         #endif
 
-        if (!cmd.empty()) {
-            system(cmd.c_str());
-            return 0; // Exit the background process
-        } else {
-            // Optional: Fallback error if no terminal is found
-            return 1;
-        }
+        if (!cmd.empty()) { system(cmd.c_str()); return 0; }
+        return 1;
     }
 
 
-
+    // 3. PLAYER INITIALIZATION
     srand(time(0));
     signal(SIGWINCH, handle_resize); // Listen for window resize
+    atexit(cleanup_fifo);
+
+    mkfifo(fifoPath, 0666);
+    int fifoFd = open(fifoPath, O_RDWR | O_NONBLOCK); // Open for Player
 
     init_mpv();
     fetch_channels();
-
     system("stty raw -echo");
-
     draw_ui();
 
+    // --- PLAYER SETUP ---
+    load_config();      // Load your new JSON config
+    fetch_channels();   // Load SomaFM channels
+    init_mpv();
+
+    // --- AUTO-SHUFFLE LOGIC ---
+    if (cfg.autoShuffle) {
+        play_random(); // Triggers your existing shuffle function
+    }
+
+    system("stty raw -echo");
+    draw_ui();
+
+
+    // 4. Main Loop
     while (true) {
+        bool needsRedraw = false;
+
+        // --- Inside while(true) loop ---
+
+        // ONLY fire the notification here when the fuse burns down
+        if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
+            currentSong = pendingSong;
+
+            // IMPORTANT: This is the ONLY place send_notification should be called
+            if (cfg.showNotifications) {
+                send_notification(currentStation, currentSong);
+            }
+
+            notifyTimer = 0; // Reset the fuse
+            needsRedraw = true;
+        }
+
+
+        // A. FIFO LISTENER
+        char cmdBuf[64]; // Buffer for incoming commands
+        ssize_t bytes = read(fifoFd, cmdBuf, sizeof(cmdBuf) - 1);
+        if (bytes > 0) {
+            cmdBuf[bytes] = '\0';
+            std::string cmd(cmdBuf);
+            if (cmd == "status") {
+                // The sender already created respPath, we just open and write to it
+                int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
+                if (respFd != -1) {
+                    std::stringstream ss;
+                    ss << "Station:   " << currentStation << "\n"
+                    << "Now Play:  " << currentSong << "\n"
+                    << "Listeners: " << currentListeners;
+                    std::string reply = ss.str();
+                    write(respFd, reply.c_str(), reply.length());
+                    close(respFd);
+                }
+            }
+
+            else if (cmd == "favorites") {
+                play_favorite(); // Reuse existing play_favorite() random logic
+                needsRedraw = true;
+            }
+            else if (cmd == "add_fav") {
+                save_favorite();
+            }
+            else if (cmd == "del_fav") {
+                delete_favorite();
+            }
+            else if (cmd == "quit") {
+                goto end; // Jumps to your cleanup and exit logic
+            }
+            else if (cmd == "shuffle") {
+                play_random();
+                needsRedraw = true;
+
+            }
+            else if (cmd == "vol_up") {
+                set_volume('+');
+                needsRedraw = true;
+            }
+            else if (cmd == "vol_down") {
+                set_volume('-');
+                needsRedraw = true;
+            }
+
+        }
+
+        // B. MENU SCREENS
+
+        if (showConfig) {
+            showConfig = draw_config_menu(); // Update state directly from the function
+            if (!showConfig) {
+                draw_ui();
+            }
+            usleep(10000);
+            continue;
+        }
+
         if (showHelp) {
             showHelp = draw_help_menu(); // Update state directly from the function
             if (!showHelp) {
-                draw_ui(); // Instant redraw of player when help closes
+                draw_ui();
             }
             usleep(10000);
             continue;
@@ -627,7 +877,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        bool needsRedraw = false;
+        // C. STATUS EXPIRY
 
         // Auto-clear status message after timeout
         if (!statusMsg.empty() && std::time(nullptr) >= statusExpiry) {
@@ -639,20 +889,31 @@ int main(int argc, char* argv[]) {
             resized = 0;
             needsRedraw = true;
         }
-
+        // D. MPV EVENTS
         while (true) {
             mpv_event *event = mpv_wait_event(mpv, 0);
             if (event->event_id == MPV_EVENT_NONE) break;
+
             if (event->event_id == MPV_EVENT_PROPERTY_CHANGE) {
                 mpv_event_property *prop = (mpv_event_property *)event->data;
                 if (prop->data && std::string(prop->name) == "media-title") {
-                    currentSong = *(char **)prop->data;
-                    needsRedraw = true;
+                    std::string newTitle = *(char **)prop->data;
+
+                    // 1. Filter out URLs and duplicates
+                    if (newTitle != currentSong && newTitle.find("http") != 0) {
+                        pendingSong = newTitle;            // Save the "upcoming" song
+                        notifyTimer = std::time(nullptr) + 2; // Set the fuse for 2 seconds
+                        // Note: Don't update currentSong here; let the timer do it!
+                    }
                 }
+
             }
             if (event->event_id == MPV_EVENT_SHUTDOWN) goto end;
         }
 
+
+
+          // E. KEYBOARD INPUT
         if (kbhit()) {
             char input = getchar();
             if (input == 'q') break;
@@ -660,6 +921,7 @@ int main(int argc, char* argv[]) {
                 case 'l': showMenu = true; selectedFav = 0; break;
                 case 's': play_random(); currentSong = "Buffering..."; break;
                 case 'a': save_favorite(); break;
+                case 'c': showConfig = true; break; // Open Help
                 case 'f': play_favorite(); break;
                 case 'd': delete_favorite(); break;
                 case 'h': showHelp = true; break; // Open Help
@@ -673,6 +935,7 @@ int main(int argc, char* argv[]) {
             draw_ui();
         }
         usleep(20000);
+
     }
 
     end:
