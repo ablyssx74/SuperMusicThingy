@@ -7,7 +7,8 @@ Build requires libcurl and libmpv
 ```shell
 #Haiku
 g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv -lbe
-
+```
+```shell
 #Linux
 g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv 
 ```
@@ -22,6 +23,9 @@ g++ ./SuperMusicThingy.cpp -o SuperMusicThingy \
     -I/boot/home/config/non-packaged/include \
     -L/boot/home/config/non-packaged/lib \
     -lprojectM-4 -lmpv -lcurl -lGL -lopenal
+
+```
+```shell
 
 #Linux
 g++ ./SuperMusicThingy.cpp -o SuperMusicThingy \
