@@ -1,5 +1,5 @@
 # Music Thingy
-- a c++ terminal app to play random music from somafm.com 
+- c++ terminal app to play random music from somafm.com 
 
 ## Build Basic
 Build requires libcurl and libmpv
