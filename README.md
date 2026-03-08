@@ -1,7 +1,8 @@
-# MusicThingy
+# MusicThingy amd SuperMusicThingy
 - c++ terminal app to play random music from somafm.com 
-
-## Build Basic
+- SuperMusicThingy has a projectM visualizer. 
+- Haiku support is not 100% yet. The visuals don't jitter to the music, and requires https://github.com/X547/nvidia-haiku and https://github.com/projectM-visualizer/projectm 
+## Build MusicThingy
 Build requires libcurl and libmpv
 ```shell
 #Haiku
@@ -10,7 +11,7 @@ g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv -lbe
 #Linux
 g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv 
 ```
-## SuperMusicThingy
+## Build SuperMusicThingy
 Build requires libcurl, libmpv, libsdl2, libprojectM and GL
 ```shell
 
