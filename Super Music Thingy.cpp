@@ -1037,7 +1037,7 @@ int main(int argc, char* argv[]) {
 
         #ifdef __HAIKU__
         // Haiku: 'Terminal' is always available.
-        cmd = "Terminal -t \"Music Thingy\" " + path + " &";
+        cmd = "Terminal -t \"Super Music Thingy\" " + path + " &";
         #else
         // Linux: Search for available terminals
         struct Term { std::string name; std::string flag; };
