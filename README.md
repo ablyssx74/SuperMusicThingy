@@ -11,7 +11,7 @@ g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv -lbe
 g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv 
 ```
 # Build Super
-Build requires libcurl, libmpv, libprojectM. and GL
+Build requires libcurl, libmpv, libsdl2, libprojectM and GL
 ```shell
 
 #Haiku
