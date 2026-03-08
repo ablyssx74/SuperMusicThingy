@@ -10,8 +10,15 @@ Linux: g++ ./MusicThingy.cpp -o MusicThingy -lcurl -lmpv
 # Build Super
 Build requires libcurl, libmpv, libprojectM. and GL
 ```shell
-Haiku: g++ ./Super\ Music\ Thingy -o Super\ Music\ Thingy -lcurl -lmpv -lbe
-Linux: g++ ./Super\ Music\ Thingy.cpp -o Super\ Music\ Thingy -lprojectM-4 -lmpv -lcurl $(pkg-config --cflags --libs sdl2 gl)
+
+##Haiku
+### libprojectM-4 installed in /boot/home/config/non-packaged/
+g++ ./Super\ Music\ Thingy.cpp -o MusicThingy \ 
+$(pkg-config --cflags --libs sdl2) -I/boot/home/config/non-packaged/include  \
+-L/boot/home/config/non-packaged/lib  -lprojectM-4 -lmpv -lcurl -lGL -lopenal
+
+##Linux
+g++ ./Super\ Music\ Thingy.cpp -o Super\ Music Thingy -lprojectM-4 -lmpv -lcurl $(pkg-config --cflags --libs sdl2 gl)
 
 
 
