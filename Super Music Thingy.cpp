@@ -44,6 +44,8 @@ uint32_t lastPresetChange = 0;
 const uint32_t PRESET_DURATION = 30000; // 30 seconds in milliseconds
 void update_visuals_logic();
 std::string currentPresetName = "None";
+ALCdevice *alcCaptureDevice; 
+
 
 
 projectm_handle pm = nullptr;
@@ -239,42 +241,66 @@ void fetch_channels() {
 namespace fs = std::filesystem;
 
 void load_random_preset(projectm_handle pm) {
-    std::string path = "/home/ablyss/Dev/presets/tests/";
+    const char* home = getenv("HOME");
+    if (!home) return; 
+
+    // 1. Set Path based on OS
+#ifdef __HAIKU__
+    std::string configPath = std::string(home) + "/config/settings/MusicThingy/milk_presets/";
+#else
+    std::string configPath = std::string(home) + "/.config/MusicThingy/milk_presets/";
+#endif
+
     std::vector<std::string> presets;
 
     try {
-        for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        // 2. Check if directory exists
+        if (!std::filesystem::exists(configPath)) {
+            std::filesystem::create_directories(configPath);
+            return; 
+        }
+
+        // 3. Scan the directory for .milk files
+        for (const auto& entry : std::filesystem::directory_iterator(configPath)) {
             if (entry.is_regular_file() && entry.path().extension() == ".milk") {
                 presets.push_back(entry.path().string());
             }
         }
 
-        if (presets.empty()) return;
+        if (presets.empty()) {
+            std::cerr << "No presets found in: " << configPath << std::endl;
+            return;
+        }
 
-        static std::mt19937 rng(std::time(nullptr));
+        // 4. Random selection
+		static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
         std::uniform_int_distribution<int> dist(0, presets.size() - 1);
         std::string selected = presets[dist(rng)];
 
-        // projectM-4: Third argument 'true' forces a transition immediately
+        // 5. Load into projectM and update UI string
         projectm_load_preset_file(pm, selected.c_str(), true);
-
-        // Update the name for your draw_ui display
         currentPresetName = std::filesystem::path(selected).filename().string();
 
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "FS Error: " << e.what() << std::endl;
     }
-}
-
+} // End of function
 
 void init_visuals() {
-    // 1. SET ENVIRONMENT HINTS FIRST (CRITICAL)
-    // These must happen before SDL_Init to show "Monitor" devices
+    // 1. SET ENVIRONMENT (Only for Non-Haiku)
+#ifndef __HAIKU__
     setenv("SDL_PULSEAUDIO_INCLUDE_MONITORS", "1", 1);
     setenv("SDL_AUDIODRIVER", "pulseaudio", 1);
+    
+    
+#endif
 
-    // 2. Initialize SDL Subsystems
+    // 2. Initialize SDL (Haiku only needs VIDEO now)
+#ifdef __HAIKU__
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+#else
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+#endif
         std::cerr << "SDL Error: " << SDL_GetError() << std::endl;
         return;
     }
@@ -293,10 +319,26 @@ void init_visuals() {
 
     glContext = SDL_GL_CreateContext(visualWin);
     SDL_GL_MakeCurrent(visualWin, glContext);
+    
+    // Disable VSync for better responsiveness on Haiku
+    SDL_GL_SetSwapInterval(0);
 
-    // 5. THE "EARS" LOGIC (Slight delay to let PipeWire export monitor nodes)
+    // 5. THE "EARS" LOGIC
+#ifdef __HAIKU__
+    alcCaptureDevice = alcCaptureOpenDevice(NULL, 48000, AL_FORMAT_STEREO16, 8192);
+    if (!alcCaptureDevice) {
+        // HAIL MARY: Open the "null" backend just to get a node in Cortex
+        alcCaptureDevice = alcCaptureOpenDevice("null", 48000, AL_FORMAT_STEREO16, 8192);
+    }
+    
+    if (alcCaptureDevice) {
+        alcCaptureStart(alcCaptureDevice);
+    }
+    // REMOVE any 'return' here so the rest of projectM initializes!
+#else
+
+    // Linux PulseAudio logic (unchanged)
     SDL_Delay(100);
-
     if (captureDevice == 0) {
         SDL_AudioSpec wanted;
         SDL_zero(wanted);
@@ -304,25 +346,21 @@ void init_visuals() {
         wanted.format = AUDIO_F32;
         wanted.channels = 2;
         wanted.samples = 1024;
-
-        int count = SDL_GetNumAudioDevices(1); // 1 = capture/recording
+        int count = SDL_GetNumAudioDevices(1);
         const char* monitorDeviceName = NULL;
-
         for (int i = 0; i < count; ++i) {
             const char* name = SDL_GetAudioDeviceName(i, 1);
-            // Search for "monitor" in the device name string
             if (name && (strstr(name, "monitor") || strstr(name, "Monitor"))) {
                 monitorDeviceName = name;
                 break;
             }
         }
-
-        // Open the monitor (or NULL for default if not found)
         captureDevice = SDL_OpenAudioDevice(monitorDeviceName, 1, &wanted, NULL, 0);
         if (captureDevice > 0) SDL_PauseAudioDevice(captureDevice, 0);
     }
+#endif
 
-    // 6. Initialize projectM-4
+    // 6. Initialize projectM
     pm = projectm_create();
     if (pm) {
         projectm_set_window_size(pm, 800, 600);
@@ -905,7 +943,7 @@ bool draw_config_menu() {
     }
     if (cfg.showVisuals) {
         // 1. Start the buffer with the position
-        buffer << "\033[" << (1 + qIdx + 1) << ";10H";
+        buffer << "\033[" << (3 + qIdx + 1) << ";10H";
 
         #ifdef __HAIKU__
         // 2. Handle Haiku output
@@ -1309,25 +1347,46 @@ int main(int argc, char* argv[]) {
             draw_ui();
         }
 
-        // --- VISUALS LOGIC ---
+     
+        // F. --- VISUALS LOGIC ---
         if (visualsRunning && pm) {
+	//# Haiku not working atm.  But getting there!
+	#ifdef __HAIKU__
+    // Explicitly try the 'haiku' backend if NULL fails
+    alcCaptureDevice = alcCaptureOpenDevice("haiku", 44100, AL_FORMAT_STEREO16, 4096);
+    
+    if (!alcCaptureDevice) {
+        // Fallback to the 'null' backend just to create a visible node in Cortex
+        alcCaptureDevice = alcCaptureOpenDevice("null", 44100, AL_FORMAT_STEREO16, 4096);
+    }
 
-            // 2. Read from the system capture
-            float pcm_data[4096];
+    if (alcCaptureDevice) {
+        alcCaptureStart(alcCaptureDevice);
+        std::cout << "Node created! Check Cortex for a Yellow tab." << std::endl;
+    }
+
+
+            #else
+
+            // --- LINUX/SDL PUMP ---
             uint32_t queued = SDL_GetQueuedAudioSize(captureDevice);
             if (queued >= sizeof(audioBuffer)) {
                 SDL_DequeueAudio(captureDevice, audioBuffer, sizeof(audioBuffer));
+                // projectM-4 uses projectm_pcm_add_float for SDL's F32 format
                 projectm_pcm_add_float(pm, audioBuffer, 1024, PROJECTM_STEREO);
             }
+            #endif
 
+            // Render and Swap
             projectm_opengl_render_frame(pm);
             SDL_GL_SwapWindow(visualWin);
 
-            // SDL Events
+            // Handle window events (closing the visualizer window)
             SDL_Event e;
-            while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) visualsRunning = false; }
+            while (SDL_PollEvent(&e)) { 
+                if (e.type == SDL_QUIT) visualsRunning = false; 
+            }
         }
-
 
         usleep(16000);
     }
