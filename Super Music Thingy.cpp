@@ -43,7 +43,7 @@
 uint32_t lastPresetChange = 0;
 const uint32_t PRESET_DURATION = 30000; // 30 seconds in milliseconds
 void update_visuals_logic();
-std::string currentPresetName = "None";
+std::string currentPresetName = "Presets folder is empty";
 
 
 projectm_handle pm = nullptr;
