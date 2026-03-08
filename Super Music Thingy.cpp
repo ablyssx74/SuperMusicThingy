@@ -43,7 +43,7 @@
 uint32_t lastPresetChange = 0;
 const uint32_t PRESET_DURATION = 30000; // 30 seconds in milliseconds
 void update_visuals_logic();
-std::string currentPresetName = "Presets folder is empty";
+std::string currentPresetName = "None";
 
 
 projectm_handle pm = nullptr;
@@ -639,7 +639,7 @@ void draw_ui() {
 
     buffer << "\033[" << (w.ws_row - 8) << ";10H" << " * Vol: " << volColor << get_vol_bar() << "\n";
 
-    buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << volColor << currentPresetName << "\n";
+   // buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << volColor << currentPresetName << "\n";
 
     buffer << get_ui_footer(w.ws_row);
 
@@ -900,13 +900,27 @@ bool draw_config_menu() {
 
     // 3. Add the "Note" if Highest is selected
     if (cfg.quality == "highest") {
-        buffer << "\033[" << (4 + qIdx + 2) << ";10H"
+        buffer << "\033[" << (3 + qIdx + 2) << ";10H"
         << "\033[93m" << "! Note: 'Highest' may delay notifications" << BLUE;
     }
     if (cfg.showVisuals) {
-        buffer << "\033[" << (4 + qIdx + 2) << ";10H" // Adjusted position so it doesn't overlap
-        << "\033[93m" << "! Note: Use pavucontrol to switch recording to 'Monitor' for this to work." << BLUE;
+        // 1. Start the buffer with the position
+        buffer << "\033[" << (1 + qIdx + 1) << ";10H";
+
+        #ifdef __HAIKU__
+        // 2. Handle Haiku output
+        buffer << "You will need to add milkdrop presets to $HOME/config/settings/MusicThingy/milk_presets/" << BLUE << "\n";
+        #else
+        // 3. Handle Linux output with the row skip
+        buffer << "\033[93m" << "! Note:\n"
+        << "\033[" << (3 + qIdx + 1) << ";10H"
+        << "\033[93m" << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
+        << "\033[" << (1 + qIdx + 4) << ";10H" // Added one more skip so the "Also" isn't at column 1
+        << "Also, you will need to add milkdrop presets to $HOME/.config/MusicThingy/milk_presets/" << BLUE << "\n";
+        #endif
     }
+
+
 
 
 
