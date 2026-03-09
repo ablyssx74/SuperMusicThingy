@@ -36,12 +36,6 @@
 #include <algorithm>
 #include <random>
 
-//g++ MusicThingy.cpp -o MusicThingy     -lprojectM-4 -lmpv -lcurl     $(pkg-config --cflags --libs sdl2 gl)
-
-
-
-
-
 namespace fs = std::filesystem;
 // --- Global State ---
 
