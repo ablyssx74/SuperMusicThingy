@@ -96,7 +96,7 @@ const std::string RESET  = "\033[0m";
 std::string get_ui_header(int rows) {
     std::stringstream header;
     header << "\033[40m" << "\033[H\033[2J\033[3J" << BLUE;
-    header << "\033[2;10H" << "             Super Music Thingy\n";
+    header << "\033[2;10H" << "             SuperMusicThingy\n";
     header << "\033[3;10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
     header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [b] Back\n";
     return header.str();
@@ -106,7 +106,7 @@ std::string get_ui_header(int rows) {
 std::string get_ui_footer(int rows) {
     std::stringstream footer;
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    footer << "\033[" << w.ws_row << ";0H" << RED << "Music Thingy~ $: ";
+    footer << "\033[" << w.ws_row << ";0H" << RED << "SuperMusicThingy~ $: ";
     return footer.str();
 }
 
