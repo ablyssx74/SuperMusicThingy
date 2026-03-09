@@ -49,6 +49,20 @@ SDL_AudioDeviceID captureDevice = 0;   // Linux uses SDL2/Pulse for "Ears"
 #endif
 
 
+void cleanup_capture_device() {
+#ifdef __HAIKU__
+    if (alcCaptureDevice) {
+        alcCaptureCloseDevice(alcCaptureDevice);
+        alcCaptureDevice = nullptr;
+    }
+#else
+    if (captureDevice > 0) {
+        SDL_CloseAudioDevice(captureDevice);
+        captureDevice = 0;
+    }
+#endif
+}
+
 
 std::time_t saveMessageTimer = 0;
 projectm_handle pm = nullptr;
@@ -887,6 +901,7 @@ void send_notification(const std::string& station, const std::string& song) {
     system(cmd.c_str());
 }
 
+
 bool draw_config_menu() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
@@ -972,18 +987,21 @@ bool draw_config_menu() {
                 *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
 
                 // 2. NEW: Sync the Visualizer Window if "Show Visuals" was toggled
-                if (items[selectedConfig].label == "Show Visuals") {
-                    if (cfg.showVisuals) {
-                        if (!visualsRunning) init_visuals();
-                    } else {
-                        if (visualsRunning) {
-                            visualsRunning = false;
-                            if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-                            if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                            if (captureDevice > 0) { SDL_CloseAudioDevice(captureDevice); captureDevice = 0; }
-                        }
-                    }
-                }
+			if (items[selectedConfig].label == "Show Visuals") {
+    			if (cfg.showVisuals) {
+     			   if (!visualsRunning) init_visuals();
+   			 } else {
+ 			       if (visualsRunning) {
+     			       visualsRunning = false;
+     		       if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+     		       if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+            
+     		       // CLEAN WRAPPER CALLED HERE
+      		      cleanup_capture_device(); 
+    		   }
+  			  }
+			}
+
             } else {
                 // Cycle the Quality string...
                 if (cfg.quality == "highest") cfg.quality = "high";
