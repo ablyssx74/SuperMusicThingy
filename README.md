@@ -7,12 +7,12 @@
 Build requires libcurl and libmpv
 ```shell
 
-# To build without projectm, sds2 and GL support and just the player
+# To build without projectm, sds2 and GL support.
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 ```
 ```shell
-# To build wtih projectm, sds2 and GL support and just the player
+# To build wtih projectm, sds2 and GL support
 cmake -B build
 cmake --build build
 ```
