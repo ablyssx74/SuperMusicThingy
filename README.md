@@ -1,3 +1,4 @@
+[![CMake on multiple platforms](https://github.com/ablyssx74/music_thingy/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/ablyssx74/music_thingy/actions/workflows/cmake-multi-platform.yml)
 # <p align="center"> SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
 ## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/6334a669-472f-4d92-8841-0542d56f06d6" /></p>
