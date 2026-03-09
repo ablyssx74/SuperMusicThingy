@@ -96,7 +96,12 @@ const std::string RESET  = "\033[0m";
 
 std::string get_ui_header(int rows) {
     std::stringstream header;
-    header << "\033[40m" << "\033[H\033[2J\033[3J" << BLUE;
+// 1. Set background to TrueColor Black
+// 2. Set foreground to BLUE
+header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
+
+
+
     header << "\033[2;10H" << "                     SuperMusicThingy\n";
     header << "\033[3;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
     header << "\033[4;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
@@ -125,9 +130,9 @@ bool showConfig = false;
 
 // Path for the config file
 #ifdef __HAIKU__
-std::string configPath = getenv("HOME") + std::string("/config/settings/MusicThingy/config.txt");
+std::string configPath = getenv("HOME") + std::string("/config/settings/SuperMusicThingy/config.txt");
 #else
-std::string configPath = getenv("HOME") + std::string("/.config/MusicThingy/config.txt");
+std::string configPath = getenv("HOME") + std::string("/.config/SuperMusicThingy/config.txt");
 #endif
 
 
@@ -172,8 +177,8 @@ void load_config() {
 
 
 // --- For reading arguments from keyboard shortcuts ---
-const char* fifoPath = "/tmp/musicthingy_fifo";
-const char* respPath = "/tmp/musicthingy_resp";
+const char* fifoPath = "/tmp/SuperMusicThingy_fifo";
+const char* respPath = "/tmp/SuperMusicThingy_resp";
 int fifoFd = -1;
 
 // Delete fifo on exit
@@ -242,7 +247,7 @@ void fetch_channels() {
         curl_easy_setopt(curl, CURLOPT_URL, (BASE_URL + "channels.json").c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, "MusicThingy/1.0");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "SuperMusicThingy/1.0");
         if(curl_easy_perform(curl) == CURLE_OK) {
             try {
                 auto data = json::parse(buffer);
@@ -266,9 +271,9 @@ void load_random_preset(projectm_handle pm) {
     const char* home = getenv("HOME");
     if (!home) return; 
 #ifdef __HAIKU__
-    std::string configPath = std::string(home) + "/config/settings/MusicThingy/milk_presets/";
+    std::string configPath = std::string(home) + "/config/settings/SuperMusicThingy/milk_presets/";
 #else
-    std::string configPath = std::string(home) + "/.config/MusicThingy/milk_presets/";
+    std::string configPath = std::string(home) + "/.config/SuperMusicThingy/milk_presets/";
 #endif
 
     std::vector<std::string> presets;
@@ -482,9 +487,9 @@ void toggle_mute() {
 int count_favorites() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/config/settings/SuperMusicThingy/favorites.txt");
     #else
-    std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/.config/SuperMusicThingy/favorites.txt");
     #endif
     int lines = 0;
     std::string line;
@@ -495,9 +500,9 @@ int count_favorites() {
 bool is_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/config/settings/SuperMusicThingy/favorites.txt");
     #else
-    std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/.config/SuperMusicThingy/favorites.txt");
     #endif
 
 
@@ -595,9 +600,9 @@ bool draw_favorites_menu() {
     // 1. Load favorites
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::ifstream infile(home + "/config/settings/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/config/settings/SuperMusicThingy/favorites.txt");
     #else
-    std::ifstream infile(home + "/.config/MusicThingy/favorites.txt");
+    std::ifstream infile(home + "/.config/SuperMusicThingy/favorites.txt");
     #endif
 
     std::vector<std::string> favUrls;
@@ -717,9 +722,9 @@ void draw_ui() {
 void list_favorites() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::string path = home + "/config/settings/MusicThingy/favorites.txt";
+    std::string path = home + "/config/settings/SuperMusicThingy/favorites.txt";
     #else
-    std::string path = home + "/.config/MusicThingy/favorites.txt";
+    std::string path = home + "/.config/SuperMusicThingy/favorites.txt";
     #endif
 
     std::ifstream infile(path);
@@ -764,10 +769,10 @@ void list_favorites() {
 void save_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::string dir = home + "/config/settings/MusicThingy";
+    std::string dir = home + "/config/settings/SuperMusicThingy";
     std::string path = dir + "/favorites.txt";
     #else
-    std::string dir = home + "/.config/MusicThingy";
+    std::string dir = home + "/.config/SuperMusicThingy";
     std::string path = dir + "/favorites.txt";
     #endif
 
@@ -820,9 +825,9 @@ void save_favorite() {
 void play_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::string path = home + "/config/settings/MusicThingy/favorites.txt";
+    std::string path = home + "/config/settings/SuperMusicThingy/favorites.txt";
     #else
-    std::string path = home + "/.config/MusicThingy/favorites.txt";
+    std::string path = home + "/.config/SuperMusicThingy/favorites.txt";
     #endif
 
     std::ifstream infile(path);
@@ -863,9 +868,9 @@ void play_favorite() {
 void delete_favorite() {
     std::string home = getenv("HOME") ? getenv("HOME") : ".";
     #ifdef __HAIKU__
-    std::string path = home + "/config/settings/MusicThingy/favorites.txt";
+    std::string path = home + "/config/settings/SuperMusicThingy/favorites.txt";
     #else
-    std::string path = home + "/.config/MusicThingy/favorites.txt";
+    std::string path = home + "/.config/SuperMusicThingy/favorites.txt";
     #endif
 
 
@@ -969,14 +974,14 @@ bool draw_config_menu() {
 
         #ifdef __HAIKU__
         // 2. Handle Haiku output
-        buffer << "You will need to add milkdrop presets to $HOME/config/settings/MusicThingy/milk_presets/" << BLUE << "\n";
+        buffer << "You will need to add milkdrop presets to $HOME/config/settings/SuperMusicThingy/milk_presets/" << BLUE << "\n";
         #else
         // 3. Handle Linux output with the row skip
         buffer << "\033[93m" << "! Note:\n"
         << "\033[" << (2 + qIdx + 1) << ";10H"
         << "\033[93m" << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
         << "\033[" << (3 + qIdx + 1) << ";10H" // Added one more skip so the "Also" isn't at column 1
-        << "Also, you will need to add milkdrop presets to $HOME/.config/MusicThingy/milk_presets/" << BLUE << "\n";
+        << "Also, you will need to add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
         #endif
     }
 
@@ -1088,14 +1093,14 @@ int main(int argc, char* argv[]) {
         int fd = open(fifoPath, O_WRONLY | O_NONBLOCK);
 
         if (fd == -1) {
-            std::cerr << "MusicThingy is not running." << std::endl;
+            std::cerr << "SuperMusicThingy is not running." << std::endl;
             return 1;
         }
         // --- NEW: HELP COMMAND (Doesn't need the FIFO running) ---
         if (cmd == "help" || cmd == "--help" || cmd == "-h") {
             std::cout << "\n--- SuperMusicThingy CLI Help ---" << BLUE  << "\n"
             << "--------------------------\n" << BLUE
-            << "Usage: MusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
+            << "Usage: SuperMusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
             << "Commands:\n"
             << niceGreenColor << "  status        " << BLUE << "  - Show current song, volume, and visualizer preset\n" << BLUE
             << niceGreenColor << "  shuffle       " << BLUE << "  - Skip to the next song in the queue\n" << BLUE
@@ -1105,7 +1110,7 @@ int main(int argc, char* argv[]) {
             << niceGreenColor << "  mute          " << BLUE << "  - Toggle audio\n" << BLUE
             << niceGreenColor << "  toggle        " << BLUE << "  - Play/Pause the music\n" << BLUE
             << niceGreenColor << "  stop          " << BLUE << "  - Stop the music\n" << BLUE
-            << niceGreenColor << "  quit          " << BLUE << "  - Close the running MusicThingy instance\n" << BLUE
+            << niceGreenColor << "  quit          " << BLUE << "  - Close the running SuperMusicThingy instance\n" << BLUE
             << "--------------------------\n" << std::endl;
             return 0; // Exit help immediately
         }
