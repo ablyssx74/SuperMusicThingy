@@ -40,7 +40,7 @@ namespace fs = std::filesystem;
 // --- Global State ---
 
 uint32_t lastPresetChange = 0;
-const uint32_t PRESET_DURATION = 30000; // 30 seconds in milliseconds
+const uint32_t PRESET_DURATION = 30000;
 void update_visuals_logic();
 std::string currentPresetName = "None";
 #ifdef __HAIKU__
@@ -48,25 +48,26 @@ std::string currentPresetName = "None";
 #include <OS.h>
 #include <AL/al.h>
 #include <AL/alc.h>
-ALCdevice *alcCaptureDevice = nullptr; // Haiku uses OpenAL for "Ears"
-#else
-SDL_AudioDeviceID captureDevice = 0;   // Linux uses SDL2/Pulse for "Ears"
+ALCdevice *alcCaptureDevice = nullptr;
+#elif defined(USE_SDL2)
+SDL_AudioDeviceID captureDevice = 0;
 #endif
 
 
 void cleanup_capture_device() {
-#ifdef __HAIKU__
+    #ifdef __HAIKU__
     if (alcCaptureDevice) {
         alcCaptureCloseDevice(alcCaptureDevice);
         alcCaptureDevice = nullptr;
     }
-#else
+    #elif defined(USE_SDL2)
     if (captureDevice > 0) {
         SDL_CloseAudioDevice(captureDevice);
         captureDevice = 0;
     }
-#endif
+    #endif
 }
+
 
 
 std::time_t saveMessageTimer = 0;
@@ -94,14 +95,10 @@ const std::string RESET  = "\033[0m";
 
 std::string get_ui_header(int rows) {
     std::stringstream header;
-    // 1. Clear screen and Home cursor (0,0)
-    header << "\033[H\033[2J\033[3J" << BLUE;
-
-    // 2. Use fixed row numbers (1, 2, 3) to stay at the top
-    header << "\033[2;10H" << "             Music Thingy\n";
+    header << "\033[40m" << "\033[H\033[2J\033[3J" << BLUE;
+    header << "\033[2;10H" << "             Super Music Thingy\n";
     header << "\033[3;10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
     header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [b] Back\n";
-
     return header.str();
 }
 
@@ -135,14 +132,14 @@ std::string configPath = getenv("HOME") + std::string("/.config/MusicThingy/conf
 
 struct Config {
     bool showNotifications = true;
-    bool showVisuals = false; // Add this line
+    bool showVisuals = false;
     bool autoShuffle = false;
     bool startMuted = false;
     int defaultVolume = 100;
-    std::string quality = "high"; // Options: "highest", "high", "low"
+    std::string quality = "high";
 } cfg;
 
-int selectedConfig = 0; // Current menu selection
+int selectedConfig = 0;
 
 
 void save_config() {
@@ -171,7 +168,7 @@ void load_config() {
     }
 }
 
-//----EndConfig
+
 
 // --- For reading arguments from keyboard shortcuts ---
 const char* fifoPath = "/tmp/musicthingy_fifo";
@@ -202,7 +199,6 @@ std::string get_self_path() {
 }
 
 
-// --- Global State ---
 struct Channel {
     std::string title;
     std::string id;
@@ -212,7 +208,7 @@ struct Channel {
 
 mpv_handle *mpv = nullptr;
 std::vector<Channel> channels;
-volatile sig_atomic_t resized = 0; // Flag for resize signal
+volatile sig_atomic_t resized = 0;
 
 std::string pendingSong = "";
 std::time_t notifyTimer = 0;
@@ -268,9 +264,6 @@ void fetch_channels() {
 void load_random_preset(projectm_handle pm) {
     const char* home = getenv("HOME");
     if (!home) return; 
-
-
-    // 1. Set Path based on OS
 #ifdef __HAIKU__
     std::string configPath = std::string(home) + "/config/settings/MusicThingy/milk_presets/";
 #else
@@ -280,49 +273,49 @@ void load_random_preset(projectm_handle pm) {
     std::vector<std::string> presets;
 
     try {
-        // 2. Check if directory exists
+
         if (!std::filesystem::exists(configPath)) {
             std::filesystem::create_directories(configPath);
             return; 
         }
 
-        // 3. Scan the directory for .milk files
-        for (const auto& entry : std::filesystem::directory_iterator(configPath)) {
+        // Change from directory_iterator to recursive_directory_iterator
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(configPath)) {
+            // is_regular_file ensures we don't try to "load" a folder as a preset
             if (entry.is_regular_file() && entry.path().extension() == ".milk") {
                 presets.push_back(entry.path().string());
             }
         }
+
 
         if (presets.empty()) {
             std::cerr << "No presets found in: " << configPath << std::endl;
             return;
         }
 
-        // 4. Random selection
 		static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
         std::uniform_int_distribution<int> dist(0, presets.size() - 1);
         std::string selected = presets[dist(rng)];
 
-        // 5. Load into projectM and update UI string
         projectm_load_preset_file(pm, selected.c_str(), true);
         currentPresetName = std::filesystem::path(selected).filename().string();
 
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "FS Error: " << e.what() << std::endl;
     }
-} // End of function
+}
 #endif
 
 
 #ifdef USE_PROJECTM
 void init_visuals() {
-    // 1. SET ENVIRONMENT (Only for Non-Haiku)
+    // 1.
 #ifndef __HAIKU__
     setenv("SDL_PULSEAUDIO_INCLUDE_MONITORS", "1", 1);
     setenv("SDL_AUDIODRIVER", "pulseaudio", 1);       
 #endif
 
-    // 2. Initialize SDL (Haiku only needs VIDEO now)
+    // 2.
 #ifdef __HAIKU__
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 #else
@@ -332,13 +325,13 @@ void init_visuals() {
         return;
     }
 
-    // 3. Setup OpenGL (Modern 3.3 Core Profile)
+    // 3.
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // 4. Create Window & GL Context
+    // 4.
     visualWin = SDL_CreateWindow("Music Thingy Visuals",
                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                  800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -361,7 +354,7 @@ void init_visuals() {
     if (alcCaptureDevice) {
         alcCaptureStart(alcCaptureDevice);
     }
-    // REMOVE any 'return' here so the rest of projectM initializes!
+
 #else
 
     // Linux PulseAudio logic (unchanged)
@@ -445,25 +438,25 @@ std::string get_quality_url(const std::string& id) {
 void play_random() {
     if (channels.empty()) return;
 
-    // 1. Fade Out
+    // 1.
     double original_vol;
     mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
     fade_volume(mpv, 0, 300);
 
-    // 2. Pick Station & Load URL
+    // 2.
     int idx = rand() % channels.size();
     currentStation = channels[idx].title;
     currentDesc = channels[idx].desc;
     currentListeners = channels[idx].listeners;
     currentSong = "Buffering...";
 
-    // USE THE HELPER HERE
+    // USE THE HELPER
     std::string url = get_quality_url(channels[idx].id);
 
     const char *cmd[] = {"loadfile", url.c_str(), NULL};
     mpv_command(mpv, cmd);
 
-    // 3. Fade In
+    // 3.
     fade_volume(mpv, original_vol, 500);
 }
 
@@ -545,7 +538,7 @@ bool draw_help_menu() {
 
     buffer << get_ui_header(w.ws_row);
 
-    int r = 10; // Start row for shortcuts
+    int r = 10;
     buffer << "\033[" << r++ << ";10H [s] Shuffle      : Play a random station";
     buffer << "\033[" << r++ << ";10H [f] Play Fav     : Play a random favorite";
     buffer << "\033[" << r++ << ";10H [l] List Favs    : Open scrollable favorite menu";
@@ -707,7 +700,7 @@ void draw_ui() {
     buffer << get_ui_footer(w.ws_row);
 
     buffer << RESET;
-    // ONE SINGLE WRITE to the physical screen (The 'Swap')
+
     std::cout << buffer.str() << std::flush;
 }
 
