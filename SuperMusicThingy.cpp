@@ -1010,7 +1010,7 @@ bool draw_config_menu() {
         << "\033[" << (2 + qIdx + 1) << ";10H"
         << "\033[93m" << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
         << "\033[" << (3 + qIdx + 1) << ";10H" // Added one more skip so the "Also" isn't at column 1
-        << "Also, you will need to add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
+        << "Also, add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
         #endif
     }
 
