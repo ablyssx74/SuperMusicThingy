@@ -17,16 +17,20 @@ add_executable(SuperMusicThingy SuperMusicThingy.cpp)
 
 find_package(PkgConfig REQUIRED)
 
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /boot/home/config/non-packaged/lib)
-set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} /boot/home/config/non-packaged/include)
+# Only add Haiku paths if we are actually on Haiku
+if(HAIKU)
+    list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
+    list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
+    target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include)
+endif()
 
 pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(CURL REQUIRED IMPORTED_TARGET libcurl)
 find_library(OPENAL_LIB openal REQUIRED)
 
-target_link_libraries(SuperMusicThingy PRIVATE 
-    PkgConfig::MPV 
-    PkgConfig::CURL 
+target_link_libraries(SuperMusicThingy PRIVATE
+    PkgConfig::MPV
+    PkgConfig::CURL
     ${OPENAL_LIB}
 )
 
@@ -37,17 +41,22 @@ if(ENABLE_SDL2)
 endif()
 
 if(ENABLE_PROJECTM)
-    find_library(PROJECTM_LIBRARY 
-        NAMES projectM-4 
-        PATHS /boot/home/config/non-packaged/lib
-        NO_DEFAULT_PATH
-    )
+    # On Linux, try pkg-config first as it's more reliable for projectM-4
+    pkg_check_modules(PROJECTM libprojectM-4 IMPORTED_TARGET)
 
-    if(PROJECTM_LIBRARY)
-        target_link_libraries(SuperMusicThingy PRIVATE ${PROJECTM_LIBRARY})
+    if(TARGET PkgConfig::PROJECTM)
+        target_link_libraries(SuperMusicThingy PRIVATE PkgConfig::PROJECTM)
         target_compile_definitions(SuperMusicThingy PRIVATE USE_PROJECTM)
     else()
-        message(FATAL_ERROR "projectM-4 not found in /boot/home/config/non-packaged/lib")
+        # Fallback to find_library (useful for Haiku or custom Linux builds)
+        find_library(PROJECTM_LIBRARY NAMES projectM-4)
+
+        if(PROJECTM_LIBRARY)
+            target_link_libraries(SuperMusicThingy PRIVATE ${PROJECTM_LIBRARY})
+            target_compile_definitions(SuperMusicThingy PRIVATE USE_PROJECTM)
+        else()
+            message(FATAL_ERROR "projectM-4 library not found. Install libprojectm-dev or similar.")
+        endif()
     endif()
 endif()
 
@@ -56,5 +65,3 @@ if(ENABLE_GL)
     target_link_libraries(SuperMusicThingy PRIVATE OpenGL::GL)
     target_compile_definitions(SuperMusicThingy PRIVATE USE_GL)
 endif()
-
-target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include)
