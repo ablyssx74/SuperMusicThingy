@@ -83,7 +83,7 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Upload Build Artifact
-      uses: actions/checkout@v4
+      uses: actions/upload-artifact@v4
       with:
         name: SuperMusicThingy-Linux
         path: ${{ steps.strings.outputs.build-output-dir }}/SuperMusicThingy
