@@ -43,24 +43,30 @@ if(ENABLE_SDL2)
 endif()
 
 if(ENABLE_PROJECTM)
-    # On Linux, try pkg-config first as it's more reliable for projectM-4
-    pkg_check_modules(PROJECTM projectM-4 IMPORTED_TARGET)
+    # 1. Use pkg-config to get the correct include paths and library hints
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(PM4 projectM-4) # Note: Removed IMPORTED_TARGET for more control
 
-    if(TARGET PkgConfig::PROJECTM)
-        target_link_libraries(SuperMusicThingy PRIVATE PkgConfig::PROJECTM)
-        target_compile_definitions(SuperMusicThingy PRIVATE USE_PROJECTM)
-    else()
-        # Fallback to find_library (useful for Haiku or custom Linux builds)
-        find_library(PROJECTM_LIBRARY NAMES projectM-4)
+    if(PM4_FOUND)
+        # 2. Use the hints from pkg-config to find the actual library file
+        find_library(PROJECTM_LIBRARY
+            NAMES projectM-4 projectM libprojectM-4
+            HINTS ${PM4_LIBRARY_DIRS}
+        )
 
         if(PROJECTM_LIBRARY)
             target_link_libraries(SuperMusicThingy PRIVATE ${PROJECTM_LIBRARY})
+            target_include_directories(SuperMusicThingy PRIVATE ${PM4_INCLUDE_DIRS})
             target_compile_definitions(SuperMusicThingy PRIVATE USE_PROJECTM)
+            message(STATUS "Found projectM: ${PROJECTM_LIBRARY}")
         else()
-            message(FATAL_ERROR "projectM-4 library not found. Install libprojectm-dev or similar.")
+            message(FATAL_ERROR "Found projectM-4.pc but couldn't find the .so file!")
         endif()
+    else()
+        message(FATAL_ERROR "projectM-4.pc not found. Install libprojectm-dev.")
     endif()
 endif()
+
 
 if(ENABLE_GL)
     find_package(OpenGL REQUIRED)
