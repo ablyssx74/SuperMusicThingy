@@ -16,6 +16,7 @@
 #include <limits.h>
 #include <sstream>
 #include <fcntl.h>
+#include <filesystem>
 
 #ifdef USE_SDL2
 #include <SDL2/SDL.h>
@@ -68,6 +69,32 @@ void cleanup_capture_device() {
     #endif
 }
 
+
+void ensure_config_dir() {
+    std::string path;
+
+    #ifdef __HAIKU__
+        path = "/boot/home/config/settings/SuperMusicThingy";
+    #else
+        const char* home = getenv("HOME");
+        if (home) {
+            path = std::string(home) + "/.config/SuperMusicThingy";
+        } else {
+            path = "./config"; 
+        }
+    #endif
+
+    try {
+        if (!fs::exists(path)) {
+            
+            if (fs::create_directories(path)) {
+                std::cout << "Created config directory: " << path << std::endl;
+            }
+        }
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Error creating directory: " << e.what() << std::endl;
+    }
+}
 
 
 std::time_t saveMessageTimer = 0;
@@ -927,6 +954,8 @@ bool draw_config_menu() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
     buffer << get_ui_header(w.ws_row);
+
+	ensure_config_dir();
 
     // Define the list of options to display
     struct MenuItem { std::string label; bool* val; };
