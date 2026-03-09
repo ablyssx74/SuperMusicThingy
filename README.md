@@ -2,7 +2,7 @@
 
 # <p align="center"> SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
-## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot"src="https://github.com/user-attachments/assets/a788097e-0b5c-4ca9-845f-40c08308aadb" /></p>
+## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/a788097e-0b5c-4ca9-845f-40c08308aadb" /></p>
 ## Includes
 
 
