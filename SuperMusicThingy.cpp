@@ -118,6 +118,7 @@ const std::string ORANGE = "\033[93m";
 const std::string WHITE  = "\033[97m";
 const std::string YELLOW = "\033[33m";
 const std::string GREEN  = "\033[38;5;46m";
+const std::string BLACK  = "\033[2J\033[3J\033[H";
 const std::string niceGreenColor ="\033[92m";
 const std::string RESET  = "\033[0m";
 
@@ -704,12 +705,14 @@ void draw_ui() {
     std::string volBar = mute ? "\033[91m" : "\033[92m";
 
     // Build the frame in memory
-    buffer << "\033[H\033[2J\033[3J"; // Full Clear
+
 
     buffer << get_ui_header(w.ws_row);
+   //  buffer << "\033[H\033[2J\033[3J"; // Full Clear
 
     if (std::time(nullptr) < statusExpiry) {
-        buffer << "\033[" << (w.ws_row - 16) << ";10H" << GREEN << ">> " << statusMsg << "\n" << RESET << BLUE ;
+        buffer << "\033[" << (w.ws_row - 16) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
+
     }
 
     if (!currentSong.empty() && currentSong != "None")
@@ -720,7 +723,7 @@ void draw_ui() {
     }
 
     buffer << "\033[" << (w.ws_row - 13) << ";10H" << BLUE << " * "  << currentStation;
-    if (is_favorite()) buffer << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << RESET;
+    if (is_favorite()) buffer << BLUE << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << BLUE ;
 
     if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" <<  BLUE << " * Listeners: " << niceGreenColor << currentListeners;
 
