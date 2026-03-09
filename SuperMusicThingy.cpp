@@ -888,6 +888,7 @@ void send_notification(const std::string& station, const std::string& song) {
 }
 
 bool draw_config_menu() {
+
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
 
@@ -1186,11 +1187,17 @@ int main(int argc, char* argv[]) {
                 int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
                 if (respFd != -1) {
                     std::stringstream ss;
-                    ss << "Station:   " << currentStation << "\n"
-                    << "Now Play:  " << currentSong << "\n"
-                    << "Quality: " << get_bitrate_text() << "\n"
+                    ss << "\033[1;36m--- Music Thingy Status ---\033[0m\n"
+                    << "Song:      " << currentSong << "\n"
+                    << "Desc:      " << currentDesc << "\n"
+                    << "Station:   " << currentStation << "\n"
                     << "Listeners: " << currentListeners << "\n"
-                    << "Stats:     " << count_favorites() << " Favorites | " << channels.size() << " Total Channels";
+                    << "Total Ch:  " << channels.size() << "\n"
+                    << "Favorites: " << count_favorites() << "\n"
+                    << "Quality:   " << get_bitrate_text() << "\n"
+                    << "Volume:    " << get_vol_bar() << "\n"
+                    << "Visual:    " << currentPresetName << "\n"
+                    << "\033[1;36m---------------------------\033[0m";
 
                     std::string reply = ss.str();
                     write(respFd, reply.c_str(), reply.length());
