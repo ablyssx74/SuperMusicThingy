@@ -888,10 +888,8 @@ void send_notification(const std::string& station, const std::string& song) {
 }
 
 bool draw_config_menu() {
-
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
-
     buffer << get_ui_header(w.ws_row);
 
     // Define the list of options to display
@@ -919,7 +917,6 @@ bool draw_config_menu() {
         } else {
             buffer << RED << "[OFF]" << BLUE;  // Red if false
         }
-
     }
 
     // 2. Draw the Quality Selector row (High is usually Green, others Yellow/Red)
@@ -956,7 +953,6 @@ bool draw_config_menu() {
     if (std::time(nullptr) < saveMessageTimer) {
         buffer << "\033[" << (w.ws_row - 3) << ";10H" << "Settings saved to: " << ORANGE << configPath << RESET;
     }
-
 
 
     buffer << get_ui_footer(w.ws_row);
