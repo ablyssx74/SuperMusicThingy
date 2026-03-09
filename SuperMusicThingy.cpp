@@ -1456,11 +1456,34 @@ int main(int argc, char* argv[]) {
             SDL_GL_SwapWindow(visualWin);
 
             // Handle window events (closing the visualizer window)
+            // Handle window events
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
-                if (e.type == SDL_QUIT) visualsRunning = false;
+                if (e.type == SDL_QUIT) {
+                    visualsRunning = false;
+                }
+                // --- NEW: for resizing ---
+                else if (e.type == SDL_WINDOWEVENT) {
+                    if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
+                        e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+
+                        int newW = e.window.data1;
+                    int newH = e.window.data2;
+
+                    // 1. Tell OpenGL the new drawing area
+                    glViewport(0, 0, newW, newH);
+
+                    // 2. Tell projectM the new internal resolution
+                    projectm_set_window_size(pm, newW, newH);
+                        }
+                    }
+                }
             }
-        }  
+
+
+
+        //End The Main Loop
+
         #endif
         usleep(16000);     
     }
