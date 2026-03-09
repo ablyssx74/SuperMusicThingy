@@ -98,7 +98,7 @@ std::string get_ui_header(int rows) {
     header << "\033[40m" << "\033[H\033[2J\033[3J" << BLUE;
     header << "\033[2;10H" << "             SuperMusicThingy\n";
     header << "\033[3;10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-    header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [b] Back\n";
+    header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [B]ack\n";
     return header.str();
 }
 
@@ -546,6 +546,8 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";10H [d] Delete Fav   : Remove current station from list";
     buffer << "\033[" << r++ << ";10H [+/-] Volume     : Increase/Decrease volume";
     buffer << "\033[" << r++ << ";10H [m] Mute         : Toggle audio mute";
+    buffer << "\033[" << r++ << ";10H [j/k] Scroll     : Scroll up/down selection";
+    buffer << "\033[" << r++ << ";10H [enter] Play     : Play or Update selection";
     buffer << "\033[" << r++ << ";10H [v] Shuffle      : Shuffle milk drop presets";
     buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen Visual Effects Window";
     buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
