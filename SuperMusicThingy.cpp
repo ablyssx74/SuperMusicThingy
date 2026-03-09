@@ -91,6 +91,7 @@ const std::string ORANGE = "\033[93m";
 const std::string WHITE  = "\033[97m";
 const std::string YELLOW = "\033[33m";
 const std::string GREEN  = "\033[38;5;46m";
+const std::string niceGreenColor ="\033[92m";
 const std::string RESET  = "\033[0m";
 
 std::string get_ui_header(int rows) {
@@ -550,6 +551,8 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";10H [enter] Play     : Play or Update selection";
     buffer << "\033[" << r++ << ";10H [v] Shuffle      : Shuffle milk drop presets";
     buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen visual effects window";
+    buffer << "\033[" << r++ << ";10H [x] Stop         : Stop the music";
+    buffer << "\033[" << r++ << ";10H [p] Toggle       : Play/Pause the music";
     buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
     buffer << "\033[" << r++ << ";10H [c] Config       : Config Manager";
     buffer << "\033[" << r++ << ";10H [q] Quit         : Exit Music Thingy";
@@ -666,7 +669,7 @@ void draw_ui() {
 
     int mute;
     mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
-    std::string niceGreenColor = mute ? "\033[91m" : "\033[92m"; // Red if muted
+    std::string volBar = mute ? "\033[91m" : "\033[92m";
 
     // Build the frame in memory
     buffer << "\033[H\033[2J\033[3J"; // Full Clear
@@ -695,7 +698,7 @@ void draw_ui() {
 
     buffer << "\033[" << (w.ws_row - 9) << ";10H" <<  BLUE << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
 
-    buffer << "\033[" << (w.ws_row - 8) << ";10H" <<  BLUE << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
+    buffer << "\033[" << (w.ws_row - 8) << ";10H" <<  BLUE << " * Vol: " << volBar << get_vol_bar() << "\n";
 
     #ifdef USE_PROJECTM
     if (visualsRunning) {
@@ -1090,15 +1093,19 @@ int main(int argc, char* argv[]) {
         }
         // --- NEW: HELP COMMAND (Doesn't need the FIFO running) ---
         if (cmd == "help" || cmd == "--help" || cmd == "-h") {
-            std::cout << "\n\033[1;36mMusic Thingy CLI Help\033[0m\n"
-            << "--------------------------\n"
-            << "Usage: MusicThingy [command]\n\n"
+            std::cout << "\n--- SuperMusicThingy CLI Help ---" << BLUE  << "\n"
+            << "--------------------------\n" << BLUE
+            << "Usage: MusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
             << "Commands:\n"
-            << "  \033[1;32mstatus\033[0m   - Show current song, volume, and visualizer preset\n"
-            << "  \033[1;32mshuffle\033[0m  - Skip to the next song in the queue\n"
-            << "  \033[1;32mvisual\033[0m   - Shuffle to a new random Milkdrop preset\n"
-            << "  \033[1;32mtoggle\033[0m   - Play/Pause the music\n"
-            << "  \033[1;32mquit\033[0m     - Close the running MusicThingy instance\n"
+            << niceGreenColor << "  status        " << BLUE << "  - Show current song, volume, and visualizer preset\n" << BLUE
+            << niceGreenColor << "  shuffle       " << BLUE << "  - Skip to the next song in the queue\n" << BLUE
+            << niceGreenColor << "  visual        " << BLUE << "  - Shuffle to a new random Milkdrop preset\n" << BLUE
+            << niceGreenColor << "  vol_up        " << BLUE << "  - Increase volume\n" << BLUE
+            << niceGreenColor << "  vol_down      " << BLUE << "  - Decrease volume\n" << BLUE
+            << niceGreenColor << "  mute          " << BLUE << "  - Toggle audio\n" << BLUE
+            << niceGreenColor << "  toggle        " << BLUE << "  - Play/Pause the music\n" << BLUE
+            << niceGreenColor << "  stop          " << BLUE << "  - Stop the music\n" << BLUE
+            << niceGreenColor << "  quit          " << BLUE << "  - Close the running MusicThingy instance\n" << BLUE
             << "--------------------------\n" << std::endl;
             return 0; // Exit help immediately
         }
@@ -1223,22 +1230,22 @@ int main(int argc, char* argv[]) {
                 int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
                 if (respFd != -1) {
                     std::stringstream ss;
-                    ss << "\033[1;36m--- Music Thingy Status ---\033[0m\n"
-                    << "Song:      " << currentSong << "\n"
-                    << "Desc:      " << currentDesc << "\n"
-                    << "Station:   " << currentStation << "\n"
-                    << "Listeners: " << currentListeners << "\n"
-                    << "Total Ch:  " << channels.size() << "\n"
-                    << "Favorites: " << count_favorites() << "\n"
-                    << "Quality:   " << get_bitrate_text() << "\n"
-                    << "Volume:    " << get_vol_bar() << "\n";
+                    ss << BLUE << "\n--- SuperMusicThingy Status ---" << BLUE  << "\n"
+                    << BLUE << "Song:      " << niceGreenColor << currentSong << RESET << "\n"
+                    << BLUE << "Desc:      " << niceGreenColor << currentDesc << RESET << "\n"
+                    << BLUE << "Station:   " << niceGreenColor << currentStation << RESET << "\n"
+                    << BLUE << "Listeners: " << niceGreenColor << currentListeners << RESET << "\n"
+                    << BLUE << "Total Ch:  " << niceGreenColor << channels.size() << RESET << "\n"
+                    << BLUE << "Favorites: " << niceGreenColor << count_favorites() << RESET << "\n"
+                    << BLUE << "Quality:   " << niceGreenColor << get_bitrate_text() << RESET << "\n"
+                    << BLUE << "Volume:    " << niceGreenColor << get_vol_bar() << RESET << "\n";
                     #ifdef USE_PROJECTM
                     if (visualsRunning) {
-                        ss << "Visual:    " << currentPresetName << "\n";
+                        ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
                     }
                     #endif
 
-                   ss << "\033[1;36m---------------------------\033[0m";
+                   ss << BLUE << "---------------------------" << RESET ;
 
                     std::string reply = ss.str();
                     write(respFd, reply.c_str(), reply.length());
@@ -1246,7 +1253,15 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-
+            else if (cmd == "toggle") {
+                const char* cmd_pause[] = {"cycle", "pause", NULL};
+                mpv_command(mpv, cmd_pause);
+                needsRedraw = true;
+            }
+            else if (cmd == "stop") {
+                const char* cmd_stop[] = {"stop", NULL};
+                mpv_command(mpv, cmd_stop);
+            }
             else if (cmd == "favorites") {
                 play_favorite(); // Reuse existing play_favorite() random logic
                 needsRedraw = true;
@@ -1270,6 +1285,11 @@ int main(int argc, char* argv[]) {
             }
             else if (cmd == "vol_down") {
                 set_volume('-');
+                needsRedraw = true;
+            }
+            else if (cmd == "mute") {
+                const char* cmd_mute[] = {"cycle", "mute", NULL};
+                mpv_command(mpv, cmd_mute);
                 needsRedraw = true;
             }
 
@@ -1373,6 +1393,17 @@ int main(int argc, char* argv[]) {
                 case 'c': showConfig = true; break;
                 case 'f': play_favorite(); break;
                 case 'd': delete_favorite(); break;
+                case 'x': {
+                    const char* cmd_stop[] = {"stop", NULL};
+                    mpv_command(mpv, cmd_stop);
+                    currentSong = "Stopped"; // Update UI text
+                    break;
+                }
+                case 'p': {
+                    const char* cmd_pause[] = {"cycle", "pause", NULL};
+                    mpv_command(mpv, cmd_pause);
+                    break;
+                }
 
 			#ifdef USE_PROJECTM
                 case 'v':
