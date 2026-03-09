@@ -35,10 +35,19 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+        
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libmpv-dev libcurl4-openssl-dev libsdl2-dev libopenal-dev libgl1-mesa-dev libglm-dev
+        sudo apt-get install -y \
+          libmpv-dev \
+          libcurl4-openssl-dev \
+          libsdl2-dev \
+          libopenal-dev \
+          libgl1-mesa-dev \
+          libglm-dev \
+          nlohmann-json3-dev
 
     - name: Build projectM-4 from Source
       run: |
