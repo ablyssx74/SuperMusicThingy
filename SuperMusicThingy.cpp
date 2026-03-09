@@ -549,7 +549,7 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";10H [j/k] Scroll     : Scroll up/down selection";
     buffer << "\033[" << r++ << ";10H [enter] Play     : Play or Update selection";
     buffer << "\033[" << r++ << ";10H [v] Shuffle      : Shuffle milk drop presets";
-    buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen Visual Effects Window";
+    buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen visual effects window";
     buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
     buffer << "\033[" << r++ << ";10H [c] Config       : Config Manager";
     buffer << "\033[" << r++ << ";10H [q] Quit         : Exit Music Thingy";
