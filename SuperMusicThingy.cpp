@@ -13,12 +13,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <ctime>
-#ifdef __HAIKU__
-#include <image.h>
-#include <OS.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-#endif
 #include <limits.h>
 #include <sstream>
 #include <fcntl.h>
@@ -37,27 +31,33 @@
 
 
 
-
+namespace fs = std::filesystem;
 // --- Global State ---
 #include <projectM-4/projectM.h>
 uint32_t lastPresetChange = 0;
 const uint32_t PRESET_DURATION = 30000; // 30 seconds in milliseconds
 void update_visuals_logic();
 std::string currentPresetName = "None";
-ALCdevice *alcCaptureDevice; 
+#ifdef __HAIKU__
+#include <image.h>
+#include <OS.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+ALCdevice *alcCaptureDevice = nullptr; // Haiku uses OpenAL for "Ears"
+#else
+SDL_AudioDeviceID captureDevice = 0;   // Linux uses SDL2/Pulse for "Ears"
+#endif
 
 
 
+std::time_t saveMessageTimer = 0;
 projectm_handle pm = nullptr;
 bool needsRedraw = true;
 bool visualsRunning = false;
 SDL_Window* visualWin = nullptr;
 SDL_GLContext glContext = nullptr;
-SDL_AudioDeviceID captureDevice = 0;
+
 float audioBuffer[2048];
-
-
-
 
 // --- Global UI Colors ---
 const std::string BLUE   = "\033[94m";
@@ -70,11 +70,17 @@ const std::string RESET  = "\033[0m";
 
 std::string get_ui_header(int rows) {
     std::stringstream header;
-    header << "\033[H\033[2J\033[3J" << BLUE; // <--- FULL CLEAR then BLUE
-    header << "\033[" << (rows - 21) << ";10H" << "             Music Thingy\n";
-    header << "\033[" << (rows - 20) << ";10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+    // 1. Clear screen and Home cursor (0,0)
+    header << "\033[H\033[2J\033[3J" << BLUE;
+
+    // 2. Use fixed row numbers (1, 2, 3) to stay at the top
+    header << "\033[2;10H" << "             Music Thingy\n";
+    header << "\033[3;10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+    header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [b] Back\n";
+
     return header.str();
 }
+
 
 std::string get_ui_footer(int rows) {
     std::stringstream footer;
@@ -82,9 +88,6 @@ std::string get_ui_footer(int rows) {
     footer << "\033[" << w.ws_row << ";0H" << RED << "Music Thingy~ $: ";
     return footer.str();
 }
-
-
-
 
 
 std::string statusMsg = "";
@@ -143,8 +146,6 @@ void load_config() {
         } catch(...) {}
     }
 }
-
-
 
 //----EndConfig
 
@@ -238,7 +239,7 @@ void fetch_channels() {
     }
 }
 
-namespace fs = std::filesystem;
+
 
 void load_random_preset(projectm_handle pm) {
     const char* home = getenv("HOME");
@@ -385,7 +386,7 @@ void init_mpv() {
     mpv_set_option_string(mpv, "terminal", "no");
     if (mpv_initialize(mpv) < 0) exit(1);
     mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
-   // mpv_observe_property(mpv, 0, "paused-for-cache", MPV_FORMAT_FLAG);
+    mpv_observe_property(mpv, 0, "paused-for-cache", MPV_FORMAT_FLAG);
 }
 
 
@@ -517,8 +518,6 @@ bool draw_help_menu() {
 
     buffer << get_ui_header(w.ws_row);
 
-    buffer << "\033[6;10H               [b] Back";
-
     int r = 10; // Start row for shortcuts
     buffer << "\033[" << r++ << ";10H [s] Shuffle      : Play a random station";
     buffer << "\033[" << r++ << ";10H [f] Play Fav     : Play a random favorite";
@@ -527,6 +526,8 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";10H [d] Delete Fav   : Remove current station from list";
     buffer << "\033[" << r++ << ";10H [+/-] Volume     : Increase/Decrease volume";
     buffer << "\033[" << r++ << ";10H [m] Mute         : Toggle audio mute";
+    buffer << "\033[" << r++ << ";10H [v] Shuffle      : Shuffle milk drop presets";
+    buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen Visual Effects Window";
     buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
     buffer << "\033[" << r++ << ";10H [c] Config       : Config Manager";
     buffer << "\033[" << r++ << ";10H [q] Quit         : Exit Music Thingy";
@@ -582,9 +583,6 @@ bool draw_favorites_menu() {
 
     buffer << get_ui_header(w.ws_row);
 
-
-    buffer << "\033[6;10H [j/k] Scroll | [Enter] Play | [b] Back";
-
     int maxVisible = 10;
     if (favUrls.empty()) {
         buffer << "\033[7;14H  (No favorites saved yet)";
@@ -630,7 +628,7 @@ bool draw_favorites_menu() {
     return true; // Keep menu open if no exit key was pressed
 }
 
-
+// Rainbow Text template
 //[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]
 
 std::string get_bitrate_text() {
@@ -743,8 +741,6 @@ void save_favorite() {
     std::string path = dir + "/favorites.txt";
     #endif
 
-
-
     mkdir(dir.c_str(), 0755);
 
     // 1. Determine the URL for the current station
@@ -755,7 +751,6 @@ void save_favorite() {
             break;
         }
     }
-
 
     if (currentUrl.empty()) {
         statusMsg = "Cannot save: No station selected.";
@@ -799,8 +794,6 @@ void play_favorite() {
     #else
     std::string path = home + "/.config/MusicThingy/favorites.txt";
     #endif
-
-
 
     std::ifstream infile(path);
     std::vector<std::string> favs;
@@ -913,7 +906,7 @@ bool draw_config_menu() {
 
     // 1. Draw standard toggles
     for (int i = 0; i < items.size(); ++i) {
-        buffer << "\033[" << (12 + i) << ";10H";
+        buffer << "\033[" << (10 + i) << ";10H";
         if (i == selectedConfig) buffer << WHITE << " > " << BLUE;
         else buffer << "   ";
 
@@ -930,7 +923,7 @@ bool draw_config_menu() {
 
     // 2. Draw the Quality Selector row (High is usually Green, others Yellow/Red)
     int qIdx = items.size();
-    buffer << "\033[" << (12 + qIdx) << ";10H";
+    buffer << "\033[" << (10 + qIdx) << ";10H";
     if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
     else buffer << "   ";
 
@@ -938,12 +931,12 @@ bool draw_config_menu() {
 
     // 3. Add the "Note" if Highest is selected
     if (cfg.quality == "highest") {
-        buffer << "\033[" << (3 + qIdx + 2) << ";10H"
-        << "\033[93m" << "! Note: 'Highest' may delay notifications" << BLUE;
+        buffer << "\033[" << (1 + qIdx + 1) << ";10H"
+        << "\033[93m" << "! Note: 'Highest' may delay or stall notifications and title updates." << BLUE;
     }
     if (cfg.showVisuals) {
         // 1. Start the buffer with the position
-        buffer << "\033[" << (3 + qIdx + 1) << ";10H";
+        buffer << "\033[" << (2 + qIdx + 1) << ";10H";
 
         #ifdef __HAIKU__
         // 2. Handle Haiku output
@@ -951,18 +944,22 @@ bool draw_config_menu() {
         #else
         // 3. Handle Linux output with the row skip
         buffer << "\033[93m" << "! Note:\n"
-        << "\033[" << (3 + qIdx + 1) << ";10H"
+        << "\033[" << (2 + qIdx + 1) << ";10H"
         << "\033[93m" << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
-        << "\033[" << (1 + qIdx + 4) << ";10H" // Added one more skip so the "Also" isn't at column 1
+        << "\033[" << (3 + qIdx + 1) << ";10H" // Added one more skip so the "Also" isn't at column 1
         << "Also, you will need to add milkdrop presets to $HOME/.config/MusicThingy/milk_presets/" << BLUE << "\n";
         #endif
     }
 
 
+    if (std::time(nullptr) < saveMessageTimer) {
+        buffer << "\033[" << (w.ws_row - 3) << ";10H" << "Settings saved to: " << ORANGE << configPath << RESET;
+    }
 
 
 
-    buffer << "\033[" << (w.ws_row - 2) << ";10H" << "Settings saved to: " << configPath << RESET;
+    buffer << get_ui_footer(w.ws_row);
+    buffer << RESET;
     std::cout << buffer.str() << std::flush;
 
     if (kbhit()) {
@@ -997,6 +994,11 @@ bool draw_config_menu() {
                 else cfg.quality = "highest";
             }
             save_config(); // Save immediately to disk
+
+            // --- START THE TIMER HERE ---
+            saveMessageTimer = std::time(nullptr) + 3; // Show for 3 seconds
+            needsRedraw = true;                        // Trigger a UI refresh
+
             // --- ADD THIS AT THE BOTTOM OF draw_config_menu ---
             if (visualsRunning && pm != nullptr) {
                 // 1. Keep the window responsive and handle inputs
@@ -1053,6 +1055,21 @@ int main(int argc, char* argv[]) {
             std::cerr << "MusicThingy is not running." << std::endl;
             return 1;
         }
+        // --- NEW: HELP COMMAND (Doesn't need the FIFO running) ---
+        if (cmd == "help" || cmd == "--help" || cmd == "-h") {
+            std::cout << "\n\033[1;36mMusic Thingy CLI Help\033[0m\n"
+            << "--------------------------\n"
+            << "Usage: MusicThingy [command]\n\n"
+            << "Commands:\n"
+            << "  \033[1;32mstatus\033[0m   - Show current song, volume, and visualizer preset\n"
+            << "  \033[1;32mshuffle\033[0m  - Skip to the next song in the queue\n"
+            << "  \033[1;32mvisual\033[0m   - Shuffle to a new random Milkdrop preset\n"
+            << "  \033[1;32mtoggle\033[0m   - Play/Pause the music\n"
+            << "  \033[1;32mquit\033[0m     - Close the running MusicThingy instance\n"
+            << "--------------------------\n" << std::endl;
+            return 0; // Exit help immediately
+        }
+
 
         if (cmd == "status") {
             mkfifo(respPath, 0666);
@@ -1253,11 +1270,10 @@ int main(int argc, char* argv[]) {
             resized = 0;
             needsRedraw = true;
         }
-        // D. MPV EVENTS
+
+        // D. MPV EVENTS (Buffered + Delayed Notification Version)
         while (true) {
             mpv_event *event = mpv_wait_event(mpv, 0);
-
-            // Stop if there are no more events to process this frame
             if (event->event_id == MPV_EVENT_NONE) break;
 
             if (event->event_id == MPV_EVENT_PROPERTY_CHANGE) {
@@ -1265,34 +1281,36 @@ int main(int argc, char* argv[]) {
                 if (prop && prop->data) {
                     std::string propName = prop->name;
 
+                    // 1. Handle Title Changes
                     if (propName == "media-title") {
                         char* title_ptr = *(char **)prop->data;
                         if (title_ptr) {
                             std::string newTitle = title_ptr;
-                            // Ignore URLs
-                            if (newTitle.find("http") != 0) {
-                                currentSong = newTitle;
-                                needsRedraw = true;
+                            if (newTitle.find("http") != 0 && newTitle != currentSong) {
+                                // RE-ENABLE THE FUSE:
+                                pendingSong = newTitle;
+                                notifyTimer = std::time(nullptr) + 2;
                             }
                         }
                     }
+                    // 2. Handle Buffering Safety
                     else if (propName == "paused-for-cache") {
                         int is_buffering = *(int *)prop->data;
                         if (!is_buffering) {
-                            // Force a title refresh when buffering ends
                             char* t = mpv_get_property_string(mpv, "media-title");
-                            if (t && std::string(t).find("http") != 0) {
-                                currentSong = t;
-                                needsRedraw = true;
+                            if (t && std::string(t).find("http") != 0 && std::string(t) != currentSong) {
+                                // RE-ENABLE THE FUSE HERE TOO:
+                                pendingSong = t;
+                                notifyTimer = std::time(nullptr) + 2;
                             }
                             if (t) mpv_free(t);
                         }
                     }
                 }
             }
-
             if (event->event_id == MPV_EVENT_SHUTDOWN) goto end;
         }
+
 
 
 
@@ -1347,25 +1365,27 @@ int main(int argc, char* argv[]) {
             draw_ui();
         }
 
-     
+
         // F. --- VISUALS LOGIC ---
         if (visualsRunning && pm) {
-	//# Haiku not working atm.  But getting there!
-	#ifdef __HAIKU__
-    // Explicitly try the 'haiku' backend if NULL fails
-    alcCaptureDevice = alcCaptureOpenDevice("haiku", 44100, AL_FORMAT_STEREO16, 4096);
-    
-    if (!alcCaptureDevice) {
-        // Fallback to the 'null' backend just to create a visible node in Cortex
-        alcCaptureDevice = alcCaptureOpenDevice("null", 44100, AL_FORMAT_STEREO16, 4096);
-    }
+            #ifdef __HAIKU__
+            if (alcCaptureDevice) {
+                ALCint samples = 0;
+                // Check how many samples are ready in the OpenAL buffer
+                alcGetIntegerv(alcCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &samples);
 
-    if (alcCaptureDevice) {
-        alcCaptureStart(alcCaptureDevice);
-        std::cout << "Node created! Check Cortex for a Yellow tab." << std::endl;
-    }
+                if (samples > 1024) {
+                    short buffer[2048]; // Stereo 16-bit
+                    alcCaptureSamples(alcCaptureDevice, (ALCvoid*)buffer, 1024);
 
-
+                    // Convert Short (Int16) to Float for projectM
+                    float floatBuffer[2048];
+                    for (int i = 0; i < 2048; ++i) {
+                        floatBuffer[i] = buffer[i] / 32768.0f;
+                    }
+                    projectm_pcm_add_float(pm, floatBuffer, 1024, PROJECTM_STEREO);
+                }
+            }
             #else
 
             // --- LINUX/SDL PUMP ---
@@ -1383,8 +1403,8 @@ int main(int argc, char* argv[]) {
 
             // Handle window events (closing the visualizer window)
             SDL_Event e;
-            while (SDL_PollEvent(&e)) { 
-                if (e.type == SDL_QUIT) visualsRunning = false; 
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) visualsRunning = false;
             }
         }
 
