@@ -97,9 +97,9 @@ const std::string RESET  = "\033[0m";
 std::string get_ui_header(int rows) {
     std::stringstream header;
     header << "\033[40m" << "\033[H\033[2J\033[3J" << BLUE;
-    header << "\033[2;10H" << "             SuperMusicThingy\n";
-    header << "\033[3;10H" << "[S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-    header << "\033[4;10H" << "[j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+    header << "\033[2;10H" << "                     SuperMusicThingy\n";
+    header << "\033[3;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+    header << "\033[4;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
     return header.str();
 }
 
@@ -910,9 +910,9 @@ void send_notification(const std::string& station, const std::string& song) {
 
     std::string cmd;
     #ifdef __HAIKU__
-    cmd = "notify --title \"Music Thingy\" \"" + station + ": " + song + "\" &";
+    cmd = "notify --title \"SuperMusicThingy\" \"" + station + ": " + song + "\" &";
     #else
-    cmd = "notify-send \"Music Thingy\" \"" + station + "\n" + song + "\" &";
+    cmd = "notify-send \"SuperMusicThingy\" \"" + station + "\n" + song + "\" &";
     #endif
     system(cmd.c_str());
 }
