@@ -11,7 +11,7 @@
 -	 a backend for sending keyboard shortcuts like vol_up, shuffle, status, --help
 -	 isolated volume control.
 ## Tested on CachyOS and Haiku OS
-- Haiku support is not 100% yet. The visuals don't jitter to the music, and require [nvidia-haiku](https://github.com/X547/nvidia-haiku) and building [projectM](https://github.com/projectM-visualizer/projectm) from source.
+- Haiku support is not 100% yet. The visuals don't jitter to the music, and require [nvidia-haiku](https://github.com/X547/nvidia-haiku) and building [projectM](https://github.com/projectM-visualizer/projectm).
 ## Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and intall in SuperMusicThingy config presets folder.
 
