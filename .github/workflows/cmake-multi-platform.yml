@@ -88,4 +88,11 @@ jobs:
         name: SuperMusicThingy-Linux
         path: ${{ steps.strings.outputs.build-output-dir }}/SuperMusicThingy
 
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ${{ steps.strings.outputs.build-output-dir }}/SuperMusicThingy
+
+
       
