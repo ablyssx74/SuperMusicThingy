@@ -2,7 +2,7 @@
 
 # <p align="center"> SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
-## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/a788097e-0b5c-4ca9-845f-40c08308aadb" /></p>
+## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/d8fb1f90-a787-4c04-9035-ad499ce2734c" /></p>
 ## Includes
 
 
@@ -18,6 +18,7 @@
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.
 
 ## Build SuperMusicThingy
+
 
 ```shell
 # To build without projectm, sds2 and GL, and only libcurl and libmpv.
