@@ -333,7 +333,7 @@ void init_visuals() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // 4.
-    visualWin = SDL_CreateWindow("Music Thingy Visuals",
+    visualWin = SDL_CreateWindow("SuperMusicThingy Visuals",
                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                  800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (!visualWin) return;
