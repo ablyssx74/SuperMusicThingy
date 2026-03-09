@@ -5,7 +5,7 @@
 -    shuffle stations.
 -	 save/delete/play favorites.
 -	 config manger.
--	 terminanl backend for sending keyboard shortcuts.
+-	 a backend for sending keyboard shortcuts like vol_up, shuffle, status, --help
 -	 isoalted volume control.
 ## Tested on CachyOS and Haiku OS
 - Haiku support is not 100% yet. The visuals don't jitter to the music, and require [nvidia-haiku](https://github.com/X547/nvidia-haiku) and [projectM](https://github.com/projectM-visualizer/projectm)
