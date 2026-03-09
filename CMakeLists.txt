@@ -17,7 +17,6 @@ add_executable(SuperMusicThingy SuperMusicThingy.cpp)
 
 find_package(PkgConfig REQUIRED)
 
-# Only add Haiku paths if we are actually on Haiku
 if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
@@ -42,7 +41,7 @@ endif()
 
 if(ENABLE_PROJECTM)
     # On Linux, try pkg-config first as it's more reliable for projectM-4
-    pkg_check_modules(PROJECTM libprojectM-4 IMPORTED_TARGET)
+    pkg_check_modules(PROJECTM projectM-4 IMPORTED_TARGET)
 
     if(TARGET PkgConfig::PROJECTM)
         target_link_libraries(SuperMusicThingy PRIVATE PkgConfig::PROJECTM)
