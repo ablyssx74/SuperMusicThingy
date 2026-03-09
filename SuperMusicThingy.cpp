@@ -666,7 +666,7 @@ void draw_ui() {
 
     int mute;
     mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
-    std::string volColor = mute ? "\033[91m" : "\033[92m"; // Red if muted
+    std::string niceGreenColor = mute ? "\033[91m" : "\033[92m"; // Red if muted
 
     // Build the frame in memory
     buffer << "\033[H\033[2J\033[3J"; // Full Clear
@@ -687,19 +687,19 @@ void draw_ui() {
     buffer << "\033[" << (w.ws_row - 13) << ";10H" << BLUE << " * "  << currentStation;
     if (is_favorite()) buffer << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << RESET;
 
-    if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" << BLUE << " * Listeners: " << currentListeners;
+    if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" <<  BLUE << " * Listeners: " << niceGreenColor << currentListeners;
 
-    buffer << "\033[" << (w.ws_row - 11) << ";10H"  << " * Total Channels: " << (int)channels.size();
+    buffer << "\033[" << (w.ws_row - 11) << ";10H"  <<  BLUE << " * Total Channels: " << niceGreenColor << (int)channels.size();
 
-    buffer << "\033[" << (w.ws_row - 10) << ";10H" << " * Favorites: " << count_favorites() << "\n";
+    buffer << "\033[" << (w.ws_row - 10) << ";10H" <<  BLUE << " * Favorites: " << niceGreenColor << count_favorites() << "\n";
 
-    buffer << "\033[" << (w.ws_row - 9) << ";10H" << " * Bitrate: " << get_bitrate_text() << "\n";
+    buffer << "\033[" << (w.ws_row - 9) << ";10H" <<  BLUE << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
 
-    buffer << "\033[" << (w.ws_row - 8) << ";10H" << " * Vol: " << volColor << get_vol_bar() << "\n";
+    buffer << "\033[" << (w.ws_row - 8) << ";10H" <<  BLUE << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
 
     #ifdef USE_PROJECTM
     if (visualsRunning) {
-        buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << volColor << currentPresetName << "\033[K\n";
+        buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << niceGreenColor << currentPresetName << "\033[K\n";
     }
     #endif
 
