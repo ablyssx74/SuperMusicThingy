@@ -42,8 +42,11 @@ jobs:
 
     - name: Build projectM-4 from Source
       run: |
-        git clone --depth 1 https://github.com
+        git clone https://github.com/projectM-visualizer/projectm.git projectm-libprojectm
         cd projectm-libprojectm
+        git fetch --all --tags
+        git submodule init
+        git submodule update
         mkdir build && cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release
         make -j$(nproc)
