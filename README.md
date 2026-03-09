@@ -2,7 +2,7 @@
 
 # <p align="center"> SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
-## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/cf2cc133-46fb-433f-a64b-e690efcf7dd2" /></p>
+## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/f0d0951b-2a63-4a11-9a74-b5fa7b24e162" /></p>
 ## Includes
 
 
@@ -21,6 +21,7 @@
 
 ```shell
 # To build without projectm, sds2 and GL, and only libcurl and libmpv.
+
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 ```
