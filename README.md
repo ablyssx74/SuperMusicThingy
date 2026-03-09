@@ -1,6 +1,6 @@
 # SuperMusicThingy
 - c++ terminal app to play random music from [SomaFM](https://somafm.com/)
-- <img width="320" height="300" alt="Screenshot_20260309_080556" src="https://github.com/user-attachments/assets/6334a669-472f-4d92-8841-0542d56f06d6" />
+  <img width="320" height="300" alt="Screenshot_20260309_080556" src="https://github.com/user-attachments/assets/6334a669-472f-4d92-8841-0542d56f06d6" />
 ## Includes
 -	 projectM milkdrop visualizer.
 -    shuffle stations.
