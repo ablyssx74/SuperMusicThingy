@@ -28,6 +28,19 @@ endif()
 
 pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(CURL REQUIRED IMPORTED_TARGET libcurl)
+
+find_path(JSON_INCLUDE_DIR NAMES nlohmann/json.hpp
+    HINTS /usr/local/include /usr/include /boot/home/config/non-packaged/include
+)
+
+if(JSON_INCLUDE_DIR)
+    target_include_directories(SuperMusicThingy PRIVATE ${JSON_INCLUDE_DIR})
+    message(STATUS "Found nlohmann-json headers at: ${JSON_INCLUDE_DIR}")
+else()
+    message(FATAL_ERROR "nlohmann/json.hpp not found! Please install nlohmann-json3-dev (Linux) or nlohmann_json (Haiku).")
+endif()
+
+
 find_library(OPENAL_LIB openal REQUIRED)
 
 target_link_libraries(SuperMusicThingy PRIVATE
