@@ -695,7 +695,12 @@ void draw_ui() {
 
     buffer << "\033[" << (w.ws_row - 8) << ";10H" << " * Vol: " << volColor << get_vol_bar() << "\n";
 
-   // buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << volColor << currentPresetName << "\n";
+    #ifdef USE_PROJECTM
+    if (visualsRunning) {
+        buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << volColor << currentPresetName << "\033[K\n";
+    }
+    #endif
+
 
     buffer << get_ui_footer(w.ws_row);
 
@@ -1224,9 +1229,14 @@ int main(int argc, char* argv[]) {
                     << "Total Ch:  " << channels.size() << "\n"
                     << "Favorites: " << count_favorites() << "\n"
                     << "Quality:   " << get_bitrate_text() << "\n"
-                    << "Volume:    " << get_vol_bar() << "\n"
-                    << "Visual:    " << currentPresetName << "\n"
-                    << "\033[1;36m---------------------------\033[0m";
+                    << "Volume:    " << get_vol_bar() << "\n";
+                    #ifdef USE_PROJECTM
+                    if (visualsRunning) {
+                        ss << "Visual:    " << currentPresetName << "\n";
+                    }
+                    #endif
+
+                   ss << "\033[1;36m---------------------------\033[0m";
 
                     std::string reply = ss.str();
                     write(respFd, reply.c_str(), reply.length());
