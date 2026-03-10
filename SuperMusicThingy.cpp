@@ -159,17 +159,17 @@ std::string get_ui_header(int rows) {
 
 
 
-    int headercurrentRow = w.ws_row - 23;
-    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "                    SuperMusicThingy\n";
-    headercurrentRow++;
-    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-    headercurrentRow++;
-    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
-    headercurrentRow++;
+   // int headercurrentRow = w.ws_row - 23;
+   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "                    SuperMusicThingy\n";
+   // headercurrentRow++;
+   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+   // headercurrentRow++;
+   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+   // headercurrentRow++;
 
-  //  header << "\033[1;10H" << "                     SuperMusicThingy\n";
-   // header << "\033[2;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-   // header << "\033[3;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+    header << "\033[1;10H" << "                     SuperMusicThingy\n";
+    header << "\033[2;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+    header << "\033[3;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
     return header.str();
 }
 
@@ -755,7 +755,7 @@ void draw_ui() {
         buffer << "\033[" << (w.ws_row - 17) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
     }
 
-    int currentRow = w.ws_row - 16;
+    int currentRow = w.ws_row - 12;
 
     if (!currentSong.empty() && currentSong != "None") {
         buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * " << currentSong << BLUE << "\n";
