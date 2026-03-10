@@ -9,7 +9,7 @@
 -	 projectM milkdrop visualizer.
 -    shuffle stations.
 -	 save/delete/play favorites.
--	 optiona notifications
+-	 optional notifications
 -	 config manger.
 -	 a CLI API backend for sending keyboard shortcuts like vol_up, shuffle, status. See SuperMusicThingy --help for details.
 -	 isolated volume control.
