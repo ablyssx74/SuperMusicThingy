@@ -102,7 +102,7 @@ std::time_t saveMessageTimer = 0;
 projectm_handle pm = nullptr;
 #endif
 bool needsRedraw = true;
-bool visualsRunning = true;
+bool visualsRunning = false;
 
 #ifdef USE_SDL2
 SDL_Window* visualWin = nullptr;
