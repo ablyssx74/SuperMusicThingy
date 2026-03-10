@@ -1,22 +1,26 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cstdlib>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#include <algorithm>
 #include <curl/curl.h>
-#include <mpv/client.h>
-#include "nlohmann/json.hpp"
-#include <poll.h>
 #include <csignal>
-#include <fstream>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <cstdlib>
 #include <ctime>
-#include <limits.h>
-#include <sstream>
+#include <cstring>
 #include <fcntl.h>
 #include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <limits.h>
+#include <mpv/client.h>
+#include <mutex>
+#include "nlohmann/json.hpp"
+#include <poll.h>
+#include <random>
+#include <unistd.h>
+#include <sstream>
+#include <string>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <vector>
 
 #ifdef USE_SDL2
 #include <SDL2/SDL.h>
@@ -30,12 +34,6 @@
 #ifdef USE_PROJECTM
 #include <projectM-4/projectM.h>
 #endif
-
-#include <mutex>
-#include <cstring>
-#include <filesystem>
-#include <algorithm>
-#include <random>
 
 namespace fs = std::filesystem;
 // --- Global State ---
@@ -122,42 +120,13 @@ const std::string BLACK  = "\033[2J\033[3J\033[H";
 const std::string niceGreenColor ="\033[92m";
 const std::string RESET  = "\033[0m";
 
-int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
-    if (text.empty() || text == "None") return 0;
-
-    std::stringstream words(text);
-    std::string word;
-    std::string currentLine = "";
-    int linesUsed = 1;
-    int maxLineWidth = termWidth - 15;
-
-    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
-
-    while (words >> word) {
-        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
-            if (!currentLine.empty()) currentLine += " ";
-            currentLine += word;
-        } else {
-            ss << currentLine; // Print the line
-            linesUsed++;
-            currentLine = word;
-            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
-        }
-    }
-    ss << currentLine; // Print final line
-    return linesUsed;
-}
-
-
 
 std::string get_ui_header(int rows) {
-    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+//    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream header;
 // 1. Set background to TrueColor Black
 // 2. Set foreground to BLUE
     header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
-
-
 
    // int headercurrentRow = w.ws_row - 23;
    // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "                    SuperMusicThingy\n";
@@ -608,24 +577,25 @@ bool draw_help_menu() {
     std::stringstream buffer;
 
     buffer << get_ui_header(w.ws_row);
+    buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
 
-    int r = 10;
-    buffer << "\033[" << r++ << ";10H [s] Shuffle      : Play a random station";
-    buffer << "\033[" << r++ << ";10H [f] Play Fav     : Play a random favorite";
-    buffer << "\033[" << r++ << ";10H [l] List Favs    : Open scrollable favorite menu";
-    buffer << "\033[" << r++ << ";10H [a] Add Fav      : Save current station to list";
-    buffer << "\033[" << r++ << ";10H [d] Delete Fav   : Remove current station from list";
-    buffer << "\033[" << r++ << ";10H [+/-] Volume     : Increase/Decrease volume";
-    buffer << "\033[" << r++ << ";10H [m] Mute         : Toggle audio mute";
-    buffer << "\033[" << r++ << ";10H [j/k] Scroll     : Scroll up/down selection";
-    buffer << "\033[" << r++ << ";10H [enter] Play     : Play or Update selection";
-    buffer << "\033[" << r++ << ";10H [v] Shuffle      : Shuffle milk drop presets";
-    buffer << "\033[" << r++ << ";10H [k] Fullscreen   : Fullscreen visual effects window";
-    buffer << "\033[" << r++ << ";10H [x] Stop         : Stop the music";
-    buffer << "\033[" << r++ << ";10H [p] Toggle       : Play/Pause the music";
-    buffer << "\033[" << r++ << ";10H [h] Help         : Show this menu";
-    buffer << "\033[" << r++ << ";10H [c] Config       : Config Manager";
-    buffer << "\033[" << r++ << ";10H [q] Quit         : Exit Music Thingy";
+    int r = 7;
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "s" << BLUE << "] Shuffle      : Play a random station";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to list";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from list";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "enter" << BLUE << "] Play     : Play or Update selection";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "c" << BLUE << "] Config       : Config Manager";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy"; 
 
     buffer << get_ui_footer(w.ws_row);
     buffer << RESET;
@@ -677,17 +647,17 @@ bool draw_favorites_menu() {
     // 2. Build UI
 
     buffer << get_ui_header(w.ws_row);
-
+    buffer << "\033[5;30H" <<  ORANGE << "--- FAVORITES ---" << BLUE;
     int maxVisible = 10;
     if (favUrls.empty()) {
-        buffer << "\033[7;14H  (No favorites saved yet)";
+        buffer << "\033[7;25H  (No favorites saved yet)";
     } else {
         if (selectedFav < scrollOffset) scrollOffset = selectedFav;
         if (selectedFav >= scrollOffset + maxVisible) scrollOffset = selectedFav - maxVisible + 1;
 
         for (int i = 0; i < maxVisible && (i + scrollOffset) < (int)favUrls.size(); ++i) {
             int idx = i + scrollOffset;
-            buffer << "\033[" << (10 + i) << ";10H";
+            buffer << "\033[" << (7 + i) << ";19H";
             if (idx == selectedFav) buffer << BLUE << " > " <<  ORANGE << favUrls[idx] << BLUE;
             else buffer << "   " << favUrls[idx];
         }
@@ -732,7 +702,31 @@ std::string get_bitrate_text() {
     return "128k"; // Default for "high"
 }
 
+int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
+    if (text.empty() || text == "None") return 0;
 
+    std::stringstream words(text);
+    std::string word;
+    std::string currentLine = "";
+    int linesUsed = 1;
+    int maxLineWidth = termWidth - 15;
+
+    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+
+    while (words >> word) {
+        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            if (!currentLine.empty()) currentLine += " ";
+            currentLine += word;
+        } else {
+            ss << currentLine; // Print the line
+            linesUsed++;
+            currentLine = word;
+            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+        }
+    }
+    ss << currentLine; // Print final line
+    return linesUsed;
+}
 
 
 void draw_ui() {
@@ -751,15 +745,17 @@ void draw_ui() {
 
 
 
-    if (std::time(nullptr) < statusExpiry) {
-        buffer << "\033[" << (w.ws_row - 17) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
+   int currentRow = w.ws_row - 11;
+    
+   if (std::time(nullptr) < statusExpiry) {
+        buffer << "\033[" << currentRow <<";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
+        currentRow++; 
     }
-
-    int currentRow = w.ws_row - 12;
+    
 
     if (!currentSong.empty() && currentSong != "None") {
         buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * " << currentSong << BLUE << "\n";
-        currentRow++; // Move down 1
+        currentRow++; 
     }
 
     int descHeight = draw_wrapped_description(buffer, currentDesc, w.ws_col, currentRow);
@@ -1001,9 +997,9 @@ bool draw_config_menu() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
     buffer << get_ui_header(w.ws_row);
-
 	ensure_config_dir();
-
+	
+   
     // Define the list of options to display
     struct MenuItem { std::string label; bool* val; };
     std::vector<MenuItem> items = {
@@ -1041,8 +1037,8 @@ bool draw_config_menu() {
 
     // 3. Add the "Note" if Highest is selected
     if (cfg.quality == "highest") {
-        buffer << "\033[" << (1 + qIdx + 1) << ";10H"
-        << "\033[93m" << "! Note: 'Highest' may delay or stall notifications and title updates." << BLUE;
+       buffer << "\033[" << (1 + qIdx + 1) << ";10H"
+       << ORANGE << "! Note: 'Highest' may delay or stall notifications and title updates." << BLUE;
     }
     if (cfg.showVisuals) {
         // 1. Start the buffer with the position
@@ -1050,23 +1046,22 @@ bool draw_config_menu() {
 
         #ifdef __HAIKU__
         // 2. Handle Haiku output
-        buffer << "You will need to add milkdrop presets to $HOME/config/settings/SuperMusicThingy/milk_presets/" << BLUE << "\n";
+        buffer << ORANGE << "Add milkdrop presets to $HOME/config/settings/SuperMusicThingy/milk_presets/"  << BLUE << "\n";
         #else
         // 3. Handle Linux output with the row skip
         buffer << "\033[93m" << "! Note:\n"
         << "\033[" << (2 + qIdx + 1) << ";10H"
-        << "\033[93m" << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
+        << "\033[93m" << ORANGE << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
         << "\033[" << (3 + qIdx + 1) << ";10H" // Added one more skip so the "Also" isn't at column 1
-        << "Also, add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
+        << ORANGE << "Add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
         #endif
     }
-
-
-    if (std::time(nullptr) < saveMessageTimer) {
-        buffer << "\033[" << (w.ws_row - 3) << ";10H" << "Settings saved to: " << ORANGE << configPath << RESET;
+    
+    if (std::time(nullptr) < saveMessageTimer) {    		
+        buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;
+       // buffer << "\033[6;10H" << ORANGE << configPath << RESET;
     }
-
-
+    
     buffer << get_ui_footer(w.ws_row);
     buffer << RESET;
     std::cout << buffer.str() << std::flush;
@@ -1501,6 +1496,9 @@ int main(int argc, char* argv[]) {
 
 			#ifdef USE_PROJECTM
                		case 'k': {
+               		// Don't crash if visual screen not open
+               		if (!visualsRunning) break;
+               		
                     // 1. Get current window flags
                     uint32_t flags = SDL_GetWindowFlags(visualWin);
                     bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -1608,6 +1606,7 @@ int main(int argc, char* argv[]) {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
+    buffer << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
     buffer << get_ui_footer(w.ws_row) << BLUE << "Good bye! " << RESET << std::endl;
     std::cout << buffer.str();
 
