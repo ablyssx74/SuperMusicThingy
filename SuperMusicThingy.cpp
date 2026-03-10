@@ -122,17 +122,54 @@ const std::string BLACK  = "\033[2J\033[3J\033[H";
 const std::string niceGreenColor ="\033[92m";
 const std::string RESET  = "\033[0m";
 
+int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
+    if (text.empty() || text == "None") return 0;
+
+    std::stringstream words(text);
+    std::string word;
+    std::string currentLine = "";
+    int linesUsed = 1;
+    int maxLineWidth = termWidth - 15;
+
+    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+
+    while (words >> word) {
+        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            if (!currentLine.empty()) currentLine += " ";
+            currentLine += word;
+        } else {
+            ss << currentLine; // Print the line
+            linesUsed++;
+            currentLine = word;
+            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+        }
+    }
+    ss << currentLine; // Print final line
+    return linesUsed;
+}
+
+
+
 std::string get_ui_header(int rows) {
+    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream header;
 // 1. Set background to TrueColor Black
 // 2. Set foreground to BLUE
-header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
+    header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
 
 
 
-    header << "\033[2;10H" << "                     SuperMusicThingy\n";
-    header << "\033[3;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-    header << "\033[4;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+    int headercurrentRow = w.ws_row - 23;
+    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "                    SuperMusicThingy\n";
+    headercurrentRow++;
+    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+    headercurrentRow++;
+    header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+    headercurrentRow++;
+
+  //  header << "\033[1;10H" << "                     SuperMusicThingy\n";
+   // header << "\033[2;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
+   // header << "\033[3;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
     return header.str();
 }
 
@@ -695,31 +732,7 @@ std::string get_bitrate_text() {
     return "128k"; // Default for "high"
 }
 
-int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
-    if (text.empty() || text == "None") return 0;
 
-    std::stringstream words(text);
-    std::string word;
-    std::string currentLine = "";
-    int linesUsed = 1;
-    int maxLineWidth = termWidth - 15;
-
-    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
-
-    while (words >> word) {
-        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
-            if (!currentLine.empty()) currentLine += " ";
-            currentLine += word;
-        } else {
-            ss << currentLine; // Print the line
-            linesUsed++;
-            currentLine = word;
-            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
-        }
-    }
-    ss << currentLine; // Print final line
-    return linesUsed;
-}
 
 
 void draw_ui() {
@@ -742,7 +755,8 @@ void draw_ui() {
         buffer << "\033[" << (w.ws_row - 17) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
     }
 
-        int currentRow = w.ws_row - 16;
+    int currentRow = w.ws_row - 16;
+
     if (!currentSong.empty() && currentSong != "None") {
         buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * " << currentSong << BLUE << "\n";
         currentRow++; // Move down 1
