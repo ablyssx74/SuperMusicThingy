@@ -10,6 +10,7 @@
 -    shuffle stations.
 -	 save/delete/play favorites.
 -	 optional notifications
+-	 Fade in/out on song change. 
 -	 config manger.
 -	 a CLI API backend for sending keyboard shortcuts like vol_up, shuffle, status. See SuperMusicThingy --help for details.
 -	 isolated volume control.
