@@ -1595,6 +1595,13 @@ int main(int argc, char* argv[]) {
         //End The Main Loop
 
         #endif
+
+        // Random preset every 30s
+        #ifdef USE_PROJECTM
+        update_visuals_logic();
+        #endif
+
+
         usleep(16000);     
     }
 
