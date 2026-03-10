@@ -695,6 +695,32 @@ std::string get_bitrate_text() {
     return "128k"; // Default for "high"
 }
 
+int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
+    if (text.empty() || text == "None") return 0;
+
+    std::stringstream words(text);
+    std::string word;
+    std::string currentLine = "";
+    int linesUsed = 1;
+    int maxLineWidth = termWidth - 15;
+
+    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+
+    while (words >> word) {
+        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            if (!currentLine.empty()) currentLine += " ";
+            currentLine += word;
+        } else {
+            ss << currentLine; // Print the line
+            linesUsed++;
+            currentLine = word;
+            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+        }
+    }
+    ss << currentLine; // Print final line
+    return linesUsed;
+}
+
 
 void draw_ui() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -710,37 +736,41 @@ void draw_ui() {
     buffer << get_ui_header(w.ws_row);
    //  buffer << "\033[H\033[2J\033[3J"; // Full Clear
 
+
+
     if (std::time(nullptr) < statusExpiry) {
-        buffer << "\033[" << (w.ws_row - 16) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
-
+        buffer << "\033[" << (w.ws_row - 17) << ";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
     }
 
-    if (!currentSong.empty() && currentSong != "None")
-        buffer << "\033[" << (w.ws_row - 15) << ";10H" << " * " << currentSong << "\n";
-
-    if (!currentDesc.empty() && currentDesc != "None" && currentDesc != "None") {
-        buffer << "\033[" << (w.ws_row - 14) << ";10H" << " * " << currentDesc;
+        int currentRow = w.ws_row - 16;
+    if (!currentSong.empty() && currentSong != "None") {
+        buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * " << currentSong << BLUE << "\n";
+        currentRow++; // Move down 1
     }
 
-    buffer << "\033[" << (w.ws_row - 13) << ";10H" << BLUE << " * "  << currentStation;
-    if (is_favorite()) buffer << BLUE << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << BLUE ;
+    int descHeight = draw_wrapped_description(buffer, currentDesc, w.ws_col, currentRow);
+    if (descHeight > 0) {
+        currentRow += descHeight; // Push the next items down by the height of the desc
+    }
 
-    if(!currentListeners.empty()) buffer << "\033[" << (w.ws_row - 12) << ";10H" <<  BLUE << " * Listeners: " << niceGreenColor << currentListeners;
 
-    buffer << "\033[" << (w.ws_row - 11) << ";10H"  <<  BLUE << " * Total Channels: " << niceGreenColor << (int)channels.size();
-
-    buffer << "\033[" << (w.ws_row - 10) << ";10H" <<  BLUE << " * Favorites: " << niceGreenColor << count_favorites() << "\n";
-
-    buffer << "\033[" << (w.ws_row - 9) << ";10H" <<  BLUE << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
-
-    buffer << "\033[" << (w.ws_row - 8) << ";10H" <<  BLUE << " * Vol: " << volBar << get_vol_bar() << "\n";
-
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * Station: " << niceGreenColor << currentStation;
+    if (is_favorite()) buffer << BLUE << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << BLUE;
+    currentRow++;
+    buffer << "\n" << "\033[" << currentRow << ";10H" <<  BLUE  << " * Listeners: " << niceGreenColor << currentListeners << "\n";
+    currentRow++;
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Total Channels: " << niceGreenColor << (int)channels.size() << "\n";
+    currentRow++;
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Favorites: " << niceGreenColor << count_favorites() << "\n";
+    currentRow++;
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
+    currentRow++;
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
+    currentRow++;
     #ifdef USE_PROJECTM
-    if (visualsRunning) {
-        buffer << "\033[" << (w.ws_row - 7) << ";10H" << BLUE << " * Milkdrop: " << niceGreenColor << currentPresetName << "\033[K\n";
-    }
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Milkdrop: " << niceGreenColor <<  currentPresetName << "\n";
+    currentRow++;
     #endif
-
 
     buffer << get_ui_footer(w.ws_row);
 
