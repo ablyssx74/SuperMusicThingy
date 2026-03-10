@@ -18,7 +18,7 @@
 - Haiku support is not 100% yet. The visuals don't jitter to the music and require [nvidia-haiku](https://github.com/X547/nvidia-haiku).
 ## Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.
-## [Download]([https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets](https://github.com/ablyssx74/SuperMusicThingy/releases )
+
 ## Build SuperMusicThingy
 
 
