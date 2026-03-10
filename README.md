@@ -24,8 +24,6 @@
 
 ```shell
 # To build without projectm, sds2 and GL, and only libcurl and libmpv.
-
-
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 ```
