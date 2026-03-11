@@ -183,7 +183,6 @@ struct Config {
     bool showVisuals = false;
     bool autoShuffle = false;
     bool autoShuffleVisuals = false;
-    bool startMuted = false;
     int defaultVolume = 100;
     std::string quality = "high";
 } cfg;
@@ -197,7 +196,6 @@ void save_config() {
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
     j["autoShuffleVisuals"] = cfg.autoShuffleVisuals;
-    j["startMuted"] = cfg.startMuted;
     j["showVisuals"] = cfg.showVisuals;
 
     std::ofstream outfile(configPath);
@@ -214,7 +212,6 @@ void load_config() {
             cfg.autoShuffle = j.value("autoShuffle", false);
             cfg.autoShuffleVisuals = j.value("autoShuffleVisuals", false);
             cfg.showVisuals = j.value("showVisuals", true);
-            cfg.startMuted = j.value("startMuted", false);
         } catch(...) {}
     }
 }
@@ -626,7 +623,6 @@ bool draw_config_menu() {
         {"Desktop Notifications", &cfg.showNotifications},
         {"Auto-Shuffle on Start", &cfg.autoShuffle},
         {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
-        {"Start Muted",           &cfg.startMuted},
         {"Show Visuals",          &cfg.showVisuals}
     };
 
@@ -666,6 +662,16 @@ bool draw_config_menu() {
 
     if (kbhit()) {
         char c = std::tolower(getchar());
+
+        // Global keys
+        if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
+        if (c == '+') {  set_volume('+'); return false; }
+        if (c == '-') {  set_volume('-'); return false; }
+        if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
+        if (c == 'l') { showMenu = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
+        if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+
+
         if (c == 'b' || c == 27) {
             currentMenu = NONE;
             return false;
@@ -761,17 +767,20 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "b" << BLUE << "] Back         : Return to Main Menu";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "c" << BLUE << "] Config       : Config Manager";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy";
     buffer << "\033[" << r++ << ";17H ";
-    if (cfg.showVisuals) {
+
 	#ifndef __HAIKU__
-    buffer << "\033[" << r++ << ";17H Use pavucontrol to switch recording to 'Monitor'.";
-    buffer << "\033[" << r++ << ";17H ";
-    #endif
-    buffer << "\033[" << r++ << ";17H Milkdrop preset folder:";
+    buffer << "\033[" << r++ << ";17H" << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
+    buffer << "\033[" << r++ << ";17H";
+    buffer << "\033[" << r++ << ";17H"  << ORANGE << "* " << BLUE << "Milkdrop presets:";
+    buffer << "\033[" << r++ << ";17H \n$HOME/.config/SuperMusicThingy/milk_presets/";
+    #else
+    buffer << "\033[" << r++ << ";17H"  << ORANGE << "*" << BLUE << " Milkdrop presets:";
     buffer << "\033[" << r++ << ";17H \n$HOME/config/settings/SuperMusicThingy/milk_presets/";
-	}
+    #endif
 	
     buffer << get_ui_footer(w.ws_row);
     buffer << RESET;
@@ -779,6 +788,13 @@ bool draw_help_menu() {
 	needsRedraw = false;
     if (kbhit()) {
         char c = getchar();
+        // Global Keus
+        if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
+        if (c == '+') {  set_volume('+'); return false; }
+        if (c == '-') {  set_volume('-'); return false; }
+        if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
+        if (c == 'l') { showMenu = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
+        if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
         if (c == 'b' || c == 27 || c == 'h') {
             currentMenu = NONE;
             return false; // Tell main loop to CLOSE the menu
@@ -847,6 +863,15 @@ bool draw_favorites_menu() {
     // 3. Handle Input
     if (kbhit()) {
         char c = getchar();
+        // Global Keys
+        // Global keys
+        if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
+        if (c == '+') {  set_volume('+'); return false; }
+        if (c == '-') {  set_volume('-'); return false; }
+        if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
+        if (c == 'l') { showMenu = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
+        if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+
         if (c == 'b' || c == 27) {
             currentMenu = NONE;
             return false; // Exit menu
