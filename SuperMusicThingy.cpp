@@ -38,10 +38,13 @@
 namespace fs = std::filesystem;
 // --- Global State ---
 
-uint32_t lastPresetChange = 0;
 const uint32_t PRESET_DURATION = 30000;
-void update_visuals_logic();
+uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
+void update_visuals_logic();
+
+
+
 #ifdef __HAIKU__
 #include <image.h>
 #include <OS.h>
@@ -71,16 +74,16 @@ void cleanup_capture_device() {
 void ensure_config_dir() {
     std::string path;
 
-    #ifdef __HAIKU__
+        #ifdef __HAIKU__
         path = "/boot/home/config/settings/SuperMusicThingy";
-    #else
+        #else
         const char* home = getenv("HOME");
         if (home) {
             path = std::string(home) + "/.config/SuperMusicThingy";
         } else {
             path = "./config"; 
         }
-    #endif
+        #endif
 
     try {
         if (!fs::exists(path)) {
@@ -303,12 +306,12 @@ void fetch_channels() {
 #ifdef USE_PROJECTM
 void load_random_preset(projectm_handle pm) {
     const char* home = getenv("HOME");
-    if (!home) return; 
-#ifdef __HAIKU__
+    if (!home) return;
+    #ifdef __HAIKU__
     std::string configPath = std::string(home) + "/config/settings/SuperMusicThingy/milk_presets/";
-#else
+    #else
     std::string configPath = std::string(home) + "/.config/SuperMusicThingy/milk_presets/";
-#endif
+    #endif
 
     std::vector<std::string> presets;
 
@@ -316,7 +319,7 @@ void load_random_preset(projectm_handle pm) {
 
         if (!std::filesystem::exists(configPath)) {
             std::filesystem::create_directories(configPath);
-            return; 
+            return;
         }
 
         // Change from directory_iterator to recursive_directory_iterator
@@ -338,8 +341,14 @@ void load_random_preset(projectm_handle pm) {
         std::string selected = presets[dist(rng)];
 
         projectm_load_preset_file(pm, selected.c_str(), true);
-        currentPresetName = std::filesystem::path(selected).filename().string();
+        std::string name = std::filesystem::path(selected).stem().string();
+        if (name.length() > 46) {
+            currentPresetName = name.substr(0, 43) + "...";
+        } else {
+            currentPresetName = name;
+        }
 
+        needsRedraw = true;
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "FS Error: " << e.what() << std::endl;
     }
@@ -349,18 +358,19 @@ void load_random_preset(projectm_handle pm) {
 
 #ifdef USE_PROJECTM
 void init_visuals() {
+    if (visualWin) return;
     // 1.
-#ifndef __HAIKU__
+    #ifndef __HAIKU__
     setenv("SDL_PULSEAUDIO_INCLUDE_MONITORS", "1", 1);
-    setenv("SDL_AUDIODRIVER", "pulseaudio", 1);       
-#endif
+    setenv("SDL_AUDIODRIVER", "pulseaudio", 1);
+    #endif
 
     // 2.
-#ifdef __HAIKU__
+    #ifdef __HAIKU__
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-#else
+    #else
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-#endif
+    #endif
         std::cerr << "SDL Error: " << SDL_GetError() << std::endl;
         return;
     }
@@ -379,23 +389,23 @@ void init_visuals() {
 
     glContext = SDL_GL_CreateContext(visualWin);
     SDL_GL_MakeCurrent(visualWin, glContext);
-    
+
     // Disable VSync for better responsiveness on Haiku
     SDL_GL_SetSwapInterval(0);
 
     // 5. THE "EARS" LOGIC
-#ifdef __HAIKU__
+    #ifdef __HAIKU__
     alcCaptureDevice = alcCaptureOpenDevice(NULL, 48000, AL_FORMAT_STEREO16, 8192);
     if (!alcCaptureDevice) {
         // HAIL MARY: Open the "null" backend just to get a node in Cortex
         alcCaptureDevice = alcCaptureOpenDevice("null", 48000, AL_FORMAT_STEREO16, 8192);
     }
-    
+
     if (alcCaptureDevice) {
         alcCaptureStart(alcCaptureDevice);
     }
 
-#else
+    #else
 
     // Linux PulseAudio logic (unchanged)
     SDL_Delay(100);
@@ -729,6 +739,21 @@ int draw_wrapped_description(std::stringstream& ss, const std::string& text, int
 }
 
 
+#ifdef USE_PROJECTM
+void update_visuals_logic() {
+    if (!visualsRunning || !pm) return;
+
+    uint32_t currentTime = SDL_GetTicks();
+
+    // Check if 30 seconds have passed
+    if (currentTime - lastPresetChange >= PRESET_DURATION) {
+        load_random_preset(pm); // The function we wrote earlier
+        lastPresetChange = currentTime;
+        needsRedraw = true;
+    }
+}
+#endif
+
 void draw_ui() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream buffer;
@@ -745,7 +770,7 @@ void draw_ui() {
 
 
 
-   int currentRow = w.ws_row - 11;
+   int currentRow = w.ws_row - 13;
     
    if (std::time(nullptr) < statusExpiry) {
         buffer << "\033[" << currentRow <<";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
@@ -787,6 +812,8 @@ void draw_ui() {
     buffer << RESET;
 
     std::cout << buffer.str() << std::flush;
+
+
 }
 
 void list_favorites() {
@@ -1079,7 +1106,7 @@ bool draw_config_menu() {
                 // 1. Toggle the boolean value
                 *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
                 
-#ifdef USE_PROJECTM
+            #ifdef USE_PROJECTM
                 // 2. NEW: Sync the Visualizer Window if "Show Visuals" was toggled
 			if (items[selectedConfig].label == "Show Visuals") {
     			if (cfg.showVisuals) {
@@ -1094,7 +1121,7 @@ bool draw_config_menu() {
     		   }
   			  }
 			}
-#endif
+            #endif
             } else {
                 // Cycle the Quality string...
                 if (cfg.quality == "highest") cfg.quality = "high";
@@ -1107,7 +1134,7 @@ bool draw_config_menu() {
             saveMessageTimer = std::time(nullptr) + 3; // Show for 3 seconds
             needsRedraw = true;                        // Trigger a UI refresh
             
-#ifdef USE_PROJECTM
+            #ifdef USE_PROJECTM
            // Handle window events if visuals are active
             if (visualsRunning && pm != nullptr) {
                 SDL_Event e;
@@ -1115,7 +1142,7 @@ bool draw_config_menu() {
                     if (e.type == SDL_QUIT) {
                         visualsRunning = false;
                     }
-                    // KEEP THIS: This updates projectM and OpenGL when you hit 'F' or drag the corner
+                    // KEEP THIS: This updates projectM and OpenGL when you hit 'k' or drag the corner
                     else if (e.type == SDL_WINDOWEVENT) {
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED || e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                             glViewport(0, 0, e.window.data1, e.window.data2);
@@ -1124,7 +1151,7 @@ bool draw_config_menu() {
                     }
                 }              
             }
-#endif 
+            #endif
             usleep(10000); // Keep the menu snappy
             return true;
 
@@ -1137,19 +1164,6 @@ bool draw_config_menu() {
 
 
 
-#ifdef USE_PROJECTM
-void update_visuals_logic() {
-    if (!visualsRunning || !pm) return;
-
-    uint32_t currentTime = SDL_GetTicks();
-
-    // Check if 30 seconds have passed
-    if (currentTime - lastPresetChange >= PRESET_DURATION) {
-        load_random_preset(pm); // The function we wrote earlier
-        lastPresetChange = currentTime;
-    }
-}
-#endif
 
 // --- Main Engine ---
 
@@ -1253,11 +1267,11 @@ int main(int argc, char* argv[]) {
 
 
 
-#ifdef USE_PROJECTM
+    #ifdef USE_PROJECTM
     if (cfg.showVisuals) {
         init_visuals(); // Open the eyes and ears
     }
-#endif
+    #endif
 
     // OS Signals & FIFO
     signal(SIGWINCH, handle_resize);
@@ -1277,8 +1291,6 @@ int main(int argc, char* argv[]) {
     // 5. THE MAIN LOOP
     while (true) {
         bool needsRedraw = false;
-
-        // --- Inside while(true) loop ---
 
         // ONLY fire the notification here when the fuse burns down
         if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
@@ -1416,6 +1428,7 @@ int main(int argc, char* argv[]) {
 
         // D. MPV EVENTS (Buffered + Delayed Notification Version)
         while (true) {
+
             mpv_event *event = mpv_wait_event(mpv, 0);
             if (event->event_id == MPV_EVENT_NONE) break;
 
@@ -1481,12 +1494,12 @@ int main(int argc, char* argv[]) {
                     break;
                 }
 
-			#ifdef USE_PROJECTM
+                #ifdef USE_PROJECTM
                 case 'v':
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
                         break;
-            #endif
+                #endif
                 case 'h': showHelp = true; break;
                 case 'n': play_random(); break; // Added your 'N' key!
                 case '+': case '-':
@@ -1494,11 +1507,11 @@ int main(int argc, char* argv[]) {
                     break;
                 case 'm': toggle_mute(); break;
 
-			#ifdef USE_PROJECTM
+                    #ifdef USE_PROJECTM
                		case 'k': {
                		// Don't crash if visual screen not open
                		if (!visualsRunning) break;
-               		
+
                     // 1. Get current window flags
                     uint32_t flags = SDL_GetWindowFlags(visualWin);
                     bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -1507,20 +1520,18 @@ int main(int argc, char* argv[]) {
                     SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
 
                     // 3. Immediately update projectM with new dimensions
-                
+
                     int w, h;
                     SDL_GetWindowSize(visualWin, &w, &h);
                     glViewport(0, 0, w, h);
                     projectm_set_window_size(pm, w, h);
                     break;
-               
+
+                    }
+                    #endif
                 }
-             #endif
-            }
             needsRedraw = true;
-        }
-
-
+            }
 
         if (needsRedraw || resized) {
             resized = 0;
@@ -1528,10 +1539,15 @@ int main(int argc, char* argv[]) {
         }
 
 
-
-#ifdef USE_PROJECTM
+        #ifdef USE_PROJECTM
         // F. --- VISUALS LOGIC ---
         if (visualsRunning && pm) {
+            // Random preset every 30s
+            #ifdef USE_PROJECTM
+            update_visuals_logic();
+            #endif
+
+
             #ifdef __HAIKU__
             if (alcCaptureDevice) {
                 ALCint samples = 0;
@@ -1574,11 +1590,28 @@ int main(int argc, char* argv[]) {
                 }
                 // --- NEW: for resizing ---
                 else if (e.type == SDL_WINDOWEVENT) {
+                    if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
+
+                        visualsRunning = false; // Stop the logic
+
+                        // --- KILL THE WINDOW NOW ---
+                        if (glContext) {
+                            SDL_GL_DeleteContext(glContext);
+                            glContext = nullptr;
+                        }
+                        if (visualWin) {
+                            SDL_DestroyWindow(visualWin);
+                            visualWin = nullptr;
+                        }
+
+                        needsRedraw = true; // Tell Terminal UI to update
+                    }
+
                     if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                         e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 
                         int newW = e.window.data1;
-                    int newH = e.window.data2;
+                        int newH = e.window.data2;
 
                     // 1. Tell OpenGL the new drawing area
                     glViewport(0, 0, newW, newH);
@@ -1587,22 +1620,90 @@ int main(int argc, char* argv[]) {
                     projectm_set_window_size(pm, newW, newH);
                         }
                     }
+
+                    // Random visual selection when 'v' is pressed in fullscreen
+                    else if (e.type == SDL_KEYDOWN) {
+                        // --- 1. Handle 'v' to change preset ---
+                        if (e.key.keysym.sym == SDLK_v) {
+                            load_random_preset(pm);
+                            lastPresetChange = SDL_GetTicks(); // Reset the 30s timer
+                            needsRedraw = true;                // Update the terminal too
+                        }
+
+                        // --- 2. Handle 'Escape' to exit fullscreen ---
+                        else if (e.key.keysym.sym == SDLK_ESCAPE) {
+                            uint32_t flags = SDL_GetWindowFlags(visualWin);
+                            if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+                                SDL_SetWindowFullscreen(visualWin, 0);
+
+                                // Re-sync dimensions
+                                int w, h;
+                                SDL_GetWindowSize(visualWin, &w, &h);
+                                glViewport(0, 0, w, h);
+                                projectm_set_window_size(pm, w, h);
+                            }
+                        }
+                    }
+
+
+
+                    // Esc key
+                    else if (e.type == SDL_KEYDOWN) {
+                        if (e.key.keysym.sym == SDLK_ESCAPE) {
+                            // 1. Get current window flags
+                            uint32_t flags = SDL_GetWindowFlags(visualWin);
+                            bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                            // 2. Toggle it off
+                            if (isFullscreen) {
+                                SDL_SetWindowFullscreen(visualWin, 0);
+
+                                // 3. Re-sync dimensions
+                                int w, h;
+                                SDL_GetWindowSize(visualWin, &w, &h);
+                                glViewport(0, 0, w, h);
+                                projectm_set_window_size(pm, w, h);
+                            }
+                        }
+                    }
+
+                    // --- Inside your Main Loop's Event Handler ---
+                    else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                        // Check if it's the Left Mouse Button and a Double Click (2)
+                        if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
+
+                            // 1. Get current window flags
+                            uint32_t flags = SDL_GetWindowFlags(visualWin);
+                            bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                            // 2. Toggle state: if fullscreen, go windowed (0); if windowed, go fullscreen
+                            SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                            // 3. Immediately update projectM/OpenGL with new dimensions
+                            int w, h;
+                            SDL_GetWindowSize(visualWin, &w, &h);
+                            glViewport(0, 0, w, h);
+                            projectm_set_window_size(pm, w, h);
+                        }
+                    }
+
+
                 }
+                if (needsRedraw) {
+                    draw_ui();        // This prints the new currentPresetName
+                    needsRedraw = false; // Reset so we don't flicker
+                }
+
             }
 
 
 
-        //End The Main Loop
+  //End The Main Loop
 
-        #endif
-
-        // Random preset every 30s
-        #ifdef USE_PROJECTM
-        update_visuals_logic();
-        #endif
+            #endif
 
 
-        usleep(16000);     
+      usleep(16000);
     }
 
 
