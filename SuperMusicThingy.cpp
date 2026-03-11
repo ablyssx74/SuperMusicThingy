@@ -124,25 +124,29 @@ const std::string BLACK  = "\033[2J\033[3J\033[H";
 const std::string niceGreenColor ="\033[92m";
 const std::string RESET  = "\033[0m";
 
+enum MenuState { NONE, FAVORITES, HELP, CONFIG };
+MenuState currentMenu = NONE;
 
 std::string get_ui_header(int rows) {
-//    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     std::stringstream header;
 // 1. Set background to TrueColor Black
 // 2. Set foreground to BLUE
     header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
 
-   // int headercurrentRow = w.ws_row - 23;
-   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "                    SuperMusicThingy\n";
-   // headercurrentRow++;
-   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-   // headercurrentRow++;
-   // header << "\033[" << headercurrentRow << ";10H" <<  BLUE << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
-   // headercurrentRow++;
 
-    header << "\033[1;10H" << "                     SuperMusicThingy\n";
-    header << "\033[2;10H" << "        [S]huffle | Vol [+/-] | [H]elp | [Q]uit\n";
-    header << "\033[3;10H" << "        [j/k] Scroll | [Enter] Update/Play | [B]ack\n";
+    header << "\033[1;32H" << "SuperMusicThingy\n";
+    if (currentMenu == NONE) {
+    header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | Vol [" << ORANGE << "+/-" << BLUE << "] | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
+    }
+    if (currentMenu == HELP) {
+    header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | Vol [" << ORANGE << "+/-" << BLUE << "] | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+    }
+    if (currentMenu == FAVORITES) {
+        header << "\033[2;22H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Play | [" << ORANGE << "B" << BLUE << "]ack\n";
+    }
+    if (currentMenu == CONFIG) {
+        header << "\033[2;21H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Update | [" << ORANGE << "B" << BLUE << "]ack\n";
+    }
     return header.str();
 }
 
@@ -608,6 +612,131 @@ std::string get_vol_bar() {
     return bar;
 }
 
+bool draw_config_menu() {
+    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    std::stringstream buffer;
+    buffer << get_ui_header(w.ws_row);
+
+    ensure_config_dir();
+
+
+    // Define the list of options to display
+    struct MenuItem { std::string label; bool* val; };
+    std::vector<MenuItem> items = {
+        {"Desktop Notifications", &cfg.showNotifications},
+        {"Auto-Shuffle on Start", &cfg.autoShuffle},
+        {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
+        {"Start Muted",           &cfg.startMuted},
+        {"Show Visuals",          &cfg.showVisuals}
+    };
+
+    int totalItems = items.size() + 1; // Toggles + 1 for Quality
+
+    // 1. Draw standard toggles
+    for (int i = 0; i < items.size(); ++i) {
+        buffer << "\033[" << (10 + i) << ";10H";
+        if (i == selectedConfig) buffer << ORANGE << " > " << BLUE;
+        else buffer << "   ";
+
+        buffer << items[i].label << ": ";
+
+        // COLOR LOGIC FOR ON/OFF
+        if (*(items[i].val)) {
+            buffer << GREEN << "[ON]" << BLUE;
+        } else {
+            buffer << RED << "[OFF]" << BLUE;
+        }
+    }
+
+    // 2. Draw the Quality
+    int qIdx = items.size();
+    buffer << "\033[" << (10 + qIdx) << ";10H";
+    if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
+    else buffer << "   ";
+
+    buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
+
+    if (std::time(nullptr) < saveMessageTimer) {
+        buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;
+    }
+
+    buffer << get_ui_footer(w.ws_row);
+    buffer << RESET;
+    std::cout << buffer.str() << std::flush;
+
+    if (kbhit()) {
+        char c = std::tolower(getchar());
+        if (c == 'b' || c == 27) {
+            currentMenu = NONE;
+            return false;
+
+        }
+        if (c == 'j' && selectedConfig > 0) selectedConfig--;
+        if (c == 'k' && selectedConfig < totalItems - 1) selectedConfig++;
+
+
+        // Handling the Enter Key to Toggle/Cycle
+        if (c == '\n' || c == '\r') {
+            if (selectedConfig < items.size()) {
+                // 1. Toggle the boolean value
+                *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
+
+                #ifdef USE_PROJECTM
+                // 2. NEW: Sync the Visualizer Window if "Show Visuals" was toggled
+                if (items[selectedConfig].label == "Show Visuals") {
+                    if (cfg.showVisuals) {
+                        if (!visualsRunning) init_visuals();
+                    } else {
+                        if (visualsRunning) {
+                            visualsRunning = false;
+                            if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+                            if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+                            // CLEAN WRAPPER CALLED HERE
+                            cleanup_capture_device();
+                        }
+                    }
+                }
+                #endif
+            } else {
+                // Cycle the Quality string...
+                if (cfg.quality == "highest") cfg.quality = "high";
+                else if (cfg.quality == "high") cfg.quality = "low";
+                else cfg.quality = "highest";
+            }
+            save_config(); // Save immediately to disk
+
+            // --- START THE TIMER HERE ---
+            saveMessageTimer = std::time(nullptr) + 3;
+            needsRedraw = true;
+
+            #ifdef USE_PROJECTM
+            // Handle window events if visuals are active
+            if (visualsRunning && pm != nullptr) {
+                SDL_Event e;
+                while (SDL_PollEvent(&e)) {
+                    if (e.type == SDL_QUIT) {
+                        visualsRunning = false;
+                    }
+                    // KEEP THIS: This updates projectM and OpenGL when you hit 'k' or drag the corner
+                    else if (e.type == SDL_WINDOWEVENT) {
+                        if (e.window.event == SDL_WINDOWEVENT_RESIZED || e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                            glViewport(0, 0, e.window.data1, e.window.data2);
+                            projectm_set_window_size(pm, e.window.data1, e.window.data2);
+                        }
+                    }
+                }
+            }
+            #endif
+            usleep(10000); // Keep the menu snappy
+            return true;
+
+            needsRedraw = true;
+        }
+
+    }
+    return true;
+}
+
 
 bool draw_help_menu() {
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -651,6 +780,7 @@ bool draw_help_menu() {
     if (kbhit()) {
         char c = getchar();
         if (c == 'b' || c == 27 || c == 'h') {
+            currentMenu = NONE;
             return false; // Tell main loop to CLOSE the menu
         }
     }
@@ -717,7 +847,10 @@ bool draw_favorites_menu() {
     // 3. Handle Input
     if (kbhit()) {
         char c = getchar();
-        if (c == 'b' || c == 27) return false; // Exit menu
+        if (c == 'b' || c == 27) {
+            currentMenu = NONE;
+            return false; // Exit menu
+        }
         if (c == 'j' && selectedFav > 0) selectedFav--;
         if (c == 'k' && selectedFav < (int)favUrls.size() - 1) selectedFav++;
 
@@ -733,6 +866,7 @@ bool draw_favorites_menu() {
                     break;
                 }
             }
+            currentMenu = NONE;
             return false; // Exit menu after playing
         }
     }
@@ -1060,125 +1194,7 @@ void send_notification(const std::string& station, const std::string& song) {
 }
 
 
-bool draw_config_menu() {
-    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    std::stringstream buffer;
-    buffer << get_ui_header(w.ws_row);
-	ensure_config_dir();
-	
-   
-    // Define the list of options to display
-    struct MenuItem { std::string label; bool* val; };
-    std::vector<MenuItem> items = {
-        {"Desktop Notifications", &cfg.showNotifications},
-        {"Auto-Shuffle on Start", &cfg.autoShuffle},
-        {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
-        {"Start Muted",           &cfg.startMuted},
-        {"Show Visuals",          &cfg.showVisuals}
-    };
 
-    int totalItems = items.size() + 1; // Toggles + 1 for Quality
-
-    // 1. Draw standard toggles
-    for (int i = 0; i < items.size(); ++i) {
-        buffer << "\033[" << (10 + i) << ";10H";
-        if (i == selectedConfig) buffer << WHITE << " > " << BLUE;
-        else buffer << "   ";
-
-        buffer << items[i].label << ": ";
-
-        // COLOR LOGIC FOR ON/OFF
-        if (*(items[i].val)) {
-            buffer << GREEN << "[ON]" << BLUE; 
-        } else {
-            buffer << RED << "[OFF]" << BLUE; 
-        }
-    }
-
-    // 2. Draw the Quality 
-    int qIdx = items.size();
-    buffer << "\033[" << (10 + qIdx) << ";10H";
-    if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
-    else buffer << "   ";
-
-    buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
-    
-    if (std::time(nullptr) < saveMessageTimer) {    		
-        buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;      
-    }
-    
-    buffer << get_ui_footer(w.ws_row);
-    buffer << RESET;
-    std::cout << buffer.str() << std::flush;
-
-    if (kbhit()) {
-        char c = std::tolower(getchar());
-        if (c == 'b' || c == 27) return false;
-        if (c == 'j' && selectedConfig > 0) selectedConfig--;
-        if (c == 'k' && selectedConfig < totalItems - 1) selectedConfig++;
-
-
-        // Handling the Enter Key to Toggle/Cycle
-        if (c == '\n' || c == '\r') {
-            if (selectedConfig < items.size()) {
-                // 1. Toggle the boolean value
-                *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
-                
-            #ifdef USE_PROJECTM
-                // 2. NEW: Sync the Visualizer Window if "Show Visuals" was toggled
-			if (items[selectedConfig].label == "Show Visuals") {
-    			if (cfg.showVisuals) {
-     			   if (!visualsRunning) init_visuals();
-   			 } else {
- 			       if (visualsRunning) {
-     			       visualsRunning = false;
-     		       if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-     		       if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }            
-     		       // CLEAN WRAPPER CALLED HERE
-      		      cleanup_capture_device(); 
-    		   }
-  			  }
-			}
-            #endif
-            } else {
-                // Cycle the Quality string...
-                if (cfg.quality == "highest") cfg.quality = "high";
-                else if (cfg.quality == "high") cfg.quality = "low";
-                else cfg.quality = "highest";
-            }
-            save_config(); // Save immediately to disk
-
-            // --- START THE TIMER HERE ---
-            saveMessageTimer = std::time(nullptr) + 3; 
-            needsRedraw = true;                        
-            
-            #ifdef USE_PROJECTM
-           // Handle window events if visuals are active
-            if (visualsRunning && pm != nullptr) {
-                SDL_Event e;
-                while (SDL_PollEvent(&e)) {
-                    if (e.type == SDL_QUIT) {
-                        visualsRunning = false;
-                    }
-                    // KEEP THIS: This updates projectM and OpenGL when you hit 'k' or drag the corner
-                    else if (e.type == SDL_WINDOWEVENT) {
-                        if (e.window.event == SDL_WINDOWEVENT_RESIZED || e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                            glViewport(0, 0, e.window.data1, e.window.data2);
-                            projectm_set_window_size(pm, e.window.data1, e.window.data2);
-                        }
-                    }
-                }              
-            }
-            #endif
-            usleep(10000); // Keep the menu snappy
-            return true;
-
-            needsRedraw = true;
-        }
-        
-    }
-    return true;
-}
 
 
 
@@ -1709,10 +1725,10 @@ int main(int argc, char* argv[]) {
             if (c == 'q') break; // 'Q' and 'q' both quit
 
             switch (c) {
-                case 'l': showMenu = true; selectedFav = 0; break;
+                case 'l': showMenu = true; selectedFav = 0; currentMenu = FAVORITES; break;
                 case 's': play_random(); currentSong = "Buffering..."; break;
                 case 'a': save_favorite(); break;
-                case 'c': showConfig = true; break;
+                case 'c': showConfig = true; currentMenu = CONFIG;  break;
                 case 'f': play_favorite(); break;
                 case 'd': delete_favorite(); break;
                 case 'x': {
@@ -1733,7 +1749,7 @@ int main(int argc, char* argv[]) {
                         lastPresetChange = SDL_GetTicks();
                         break;
                 #endif
-                case 'h': showHelp = true; break;
+                case 'h': showHelp = true; currentMenu = HELP; break;
                 case 'n': play_random(); break; // Added your 'N' key!
                 case '+': case '-':
                     set_volume(input); // Use 'input' here so '+' works correctly
