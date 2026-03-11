@@ -15,6 +15,7 @@
 #include <poll.h>
 #include <random>
 #include <unistd.h>
+#include <set>
 #include <sstream>
 #include <string>
 #include <sys/ioctl.h>
@@ -479,11 +480,35 @@ void fade_volume(mpv_handle *mpv, double target_vol, double duration_ms) {
     mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &target_vol);
 }
 
+
+// Define channels that explicitly support 256k or 320k MP3 tiers
+const std::set<std::string> CHANNELS_256K = {
+    "groovesalad", "dronezone", "deepspaceone", "defcon", 
+    "synphaera", "reggae", "dubstep", "darkzone", "indiepop",
+     "beatblender", "lush"
+};
+
+const std::set<std::string> CHANNELS_320K = {
+    "spacestation", "bootliquor", "leftcoast"
+};
+
 std::string get_quality_url(const std::string& id) {
-    if (cfg.quality == "highest") return BASE_URL + id + "256.pls"; // 256k MP3
-    if (cfg.quality == "low")     return BASE_URL + id + "64.pls";  // 64k AAC-HE
-    return BASE_URL + id + "130.pls"; // Default High (128k AAC)
+    if (cfg.quality == "highest") {
+        if (CHANNELS_320K.count(id)) return BASE_URL + id + "320.pls";
+        if (CHANNELS_256K.count(id)) return BASE_URL + id + "256.pls";
+        
+        // Universal fallback for highest quality
+        return BASE_URL + id + ".pls"; 
+    }
+    
+    if (cfg.quality == "low") {
+        return BASE_URL + id + "64.pls";  // Reliable 64k AAC-HE
+    }
+
+    // Default: 128k AAC (id + "130.pls")
+    return BASE_URL + id + "130.pls"; 
 }
+
 
 void play_random() {
     if (channels.empty()) return;
@@ -605,19 +630,28 @@ bool draw_help_menu() {
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
     buffer << "\033[" << r++ << ";17H [" << ORANGE << "c" << BLUE << "] Config       : Config Manager";
-    buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy"; 
-
+    buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy";
+    buffer << "\033[" << r++ << ";17H ";
+    if (cfg.showVisuals) {
+	#ifndef __HAIKU__
+    buffer << "\033[" << r++ << ";17H Use pavucontrol to switch recording to 'Monitor'.";
+    buffer << "\033[" << r++ << ";17H ";
+    #endif
+    buffer << "\033[" << r++ << ";17H Milkdrop preset folder:";
+    buffer << "\033[" << r++ << ";17H \n$HOME/config/settings/SuperMusicThingy/milk_presets/";
+	}
+	
     buffer << get_ui_footer(w.ws_row);
     buffer << RESET;
-
     std::cout << buffer.str() << std::flush;
-
+	needsRedraw = false;
     if (kbhit()) {
         char c = getchar();
         if (c == 'b' || c == 27 || c == 'h') {
             return false; // Tell main loop to CLOSE the menu
         }
     }
+    
     return true; // Keep the menu OPEN
 }
 
@@ -798,7 +832,7 @@ void draw_ui() {
     currentRow++;
     buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Favorites: " << niceGreenColor << count_favorites() << "\n";
     currentRow++;
-    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
+    buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Bitrate: " << niceGreenColor << cfg.quality << "\n";
     currentRow++;
     buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
     currentRow++;
@@ -1050,45 +1084,22 @@ bool draw_config_menu() {
 
         // COLOR LOGIC FOR ON/OFF
         if (*(items[i].val)) {
-            buffer << GREEN << "[ON]" << BLUE; // Green if true
+            buffer << GREEN << "[ON]" << BLUE; 
         } else {
-            buffer << RED << "[OFF]" << BLUE;  // Red if false
+            buffer << RED << "[OFF]" << BLUE; 
         }
     }
 
-    // 2. Draw the Quality Selector row (High is usually Green, others Yellow/Red)
+    // 2. Draw the Quality 
     int qIdx = items.size();
     buffer << "\033[" << (10 + qIdx) << ";10H";
     if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
     else buffer << "   ";
 
     buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
-
-    // 3. Add the "Note" if Highest is selected
-    if (cfg.quality == "highest") {
-       buffer << "\033[" << (1 + qIdx + 1) << ";10H"
-       << ORANGE << "! Note: 'Highest' may delay or stall notifications and title updates." << BLUE;
-    }
-    if (cfg.showVisuals) {
-        // 1. Start the buffer with the position
-        buffer << "\033[" << (2 + qIdx + 1) << ";10H";
-
-        #ifdef __HAIKU__
-        // 2. Handle Haiku output
-        buffer << ORANGE << "Add milkdrop presets to $HOME/config/settings/SuperMusicThingy/milk_presets/"  << BLUE << "\n";
-        #else
-        // 3. Handle Linux output with the row skip
-        buffer << "\033[93m" << "! Note:\n"
-        << "\033[" << (2 + qIdx + 1) << ";10H"
-        << "\033[93m" << ORANGE << "Use pavucontrol to switch recording to 'Monitor' for this to work.\n"
-        << "\033[" << (3 + qIdx + 1) << ";10H" // Added one more skip so the "Also" isn't at column 1
-        << ORANGE << "Add milkdrop presets to $HOME/.config/SuperMusicThingy/milk_presets/" << BLUE << "\n";
-        #endif
-    }
     
     if (std::time(nullptr) < saveMessageTimer) {    		
-        buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;
-       // buffer << "\033[6;10H" << ORANGE << configPath << RESET;
+        buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;      
     }
     
     buffer << get_ui_footer(w.ws_row);
@@ -1133,8 +1144,8 @@ bool draw_config_menu() {
             save_config(); // Save immediately to disk
 
             // --- START THE TIMER HERE ---
-            saveMessageTimer = std::time(nullptr) + 3; // Show for 3 seconds
-            needsRedraw = true;                        // Trigger a UI refresh
+            saveMessageTimer = std::time(nullptr) + 3; 
+            needsRedraw = true;                        
             
             #ifdef USE_PROJECTM
            // Handle window events if visuals are active
