@@ -803,8 +803,10 @@ void draw_ui() {
     buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
     currentRow++;
     #ifdef USE_PROJECTM
+    if (visualsRunning) {
     buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Milkdrop: " << niceGreenColor <<  currentPresetName << "\n";
     currentRow++;
+    }
     #endif
 
     buffer << get_ui_footer(w.ws_row);
