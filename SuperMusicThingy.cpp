@@ -178,6 +178,7 @@ struct Config {
     bool showNotifications = true;
     bool showVisuals = false;
     bool autoShuffle = false;
+    bool autoShuffleVisuals = false;
     bool startMuted = false;
     int defaultVolume = 100;
     std::string quality = "high";
@@ -191,6 +192,7 @@ void save_config() {
     j["quality"] = cfg.quality;
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
+    j["autoShuffleVisuals"] = cfg.autoShuffleVisuals;
     j["startMuted"] = cfg.startMuted;
     j["showVisuals"] = cfg.showVisuals;
 
@@ -206,6 +208,7 @@ void load_config() {
             cfg.quality = j.value("quality", "highest");
             cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
+            cfg.autoShuffleVisuals = j.value("autoShuffleVisuals", false);
             cfg.showVisuals = j.value("showVisuals", true);
             cfg.startMuted = j.value("startMuted", false);
         } catch(...) {}
@@ -715,8 +718,8 @@ bool draw_favorites_menu() {
     if (kbhit()) {
         char c = getchar();
         if (c == 'b' || c == 27) return false; // Exit menu
-        if (c == 'k' && selectedFav > 0) selectedFav--;
-        if (c == 'j' && selectedFav < (int)favUrls.size() - 1) selectedFav++;
+        if (c == 'j' && selectedFav > 0) selectedFav--;
+        if (c == 'k' && selectedFav < (int)favUrls.size() - 1) selectedFav++;
 
         if ((c == '\n' || c == '\r') && !favUrls.empty()) {
             const char *cmd[] = {"loadfile", favUrls[selectedFav].c_str(), NULL};
@@ -776,6 +779,7 @@ int draw_wrapped_description(std::stringstream& ss, const std::string& text, int
 #ifdef USE_PROJECTM
 void update_visuals_logic() {
     if (!visualsRunning || !pm) return;
+	if (!cfg.autoShuffleVisuals) return;
 
     uint32_t currentTime = SDL_GetTicks();
 
@@ -1068,6 +1072,7 @@ bool draw_config_menu() {
     std::vector<MenuItem> items = {
         {"Desktop Notifications", &cfg.showNotifications},
         {"Auto-Shuffle on Start", &cfg.autoShuffle},
+        {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
         {"Start Muted",           &cfg.startMuted},
         {"Show Visuals",          &cfg.showVisuals}
     };
@@ -1109,8 +1114,8 @@ bool draw_config_menu() {
     if (kbhit()) {
         char c = std::tolower(getchar());
         if (c == 'b' || c == 27) return false;
-        if (c == 'k' && selectedConfig > 0) selectedConfig--;
-        if (c == 'j' && selectedConfig < totalItems - 1) selectedConfig++;
+        if (c == 'j' && selectedConfig > 0) selectedConfig--;
+        if (c == 'k' && selectedConfig < totalItems - 1) selectedConfig++;
 
 
         // Handling the Enter Key to Toggle/Cycle
@@ -1297,6 +1302,8 @@ int main(int argc, char* argv[]) {
         play_random();
     }
 
+
+    
     // UI Start
     system("stty raw -echo");
     draw_ui();
@@ -1304,262 +1311,12 @@ int main(int argc, char* argv[]) {
     // 5. THE MAIN LOOP
     while (true) {
         bool needsRedraw = false;
-
-        // ONLY fire the notification here when the fuse burns down
-        if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
-            currentSong = pendingSong;
-
-            // IMPORTANT: This is the ONLY place send_notification should be called
-            if (cfg.showNotifications) {
-                send_notification(currentStation, currentSong);
-            }
-
-            notifyTimer = 0; // Reset the fuse
-            needsRedraw = true;
-        }
-
-
-        // A. FIFO LISTENER
-        char cmdBuf[64]; // Buffer for incoming commands
-        ssize_t bytes = read(fifoFd, cmdBuf, sizeof(cmdBuf) - 1);
-        if (bytes > 0) {
-            cmdBuf[bytes] = '\0';
-            std::string cmd(cmdBuf);
-
-            // --- Inside the FIFO Listener (Player side) ---
-            if (cmd == "status") {
-                int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
-                if (respFd != -1) {
-                    std::stringstream ss;
-                    ss << BLUE << "\n--- SuperMusicThingy Status ---" << BLUE  << "\n"
-                    << BLUE << "Song:      " << niceGreenColor << currentSong << RESET << "\n"
-                    << BLUE << "Desc:      " << niceGreenColor << currentDesc << RESET << "\n"
-                    << BLUE << "Station:   " << niceGreenColor << currentStation << RESET << "\n"
-                    << BLUE << "Listeners: " << niceGreenColor << currentListeners << RESET << "\n"
-                    << BLUE << "Total Ch:  " << niceGreenColor << channels.size() << RESET << "\n"
-                    << BLUE << "Favorites: " << niceGreenColor << count_favorites() << RESET << "\n"
-                    << BLUE << "Quality:   " << niceGreenColor << get_bitrate_text() << RESET << "\n"
-                    << BLUE << "Volume:    " << niceGreenColor << get_vol_bar() << RESET << "\n";
-                  //  #ifdef USE_PROJECTM
-                  //  if (visualsRunning) {
-                  //     ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
-                  //  }
-                  // #endif
-                    #ifdef USE_PROJECTM
-                    if (visualsRunning) {
-                        ss << std::string(BLUE) << "Visual:    " << std::string(niceGreenColor)
-                        << currentPresetName << std::string(RESET) << "\n";
-                    }
-                    #endif
-
-                   ss << BLUE << "---------------------------" << RESET ;
-
-                    std::string reply = ss.str();
-                    write(respFd, reply.c_str(), reply.length());
-                    close(respFd);
-                }
-            }
-
-            else if (cmd == "toggle") {
-                const char* cmd_pause[] = {"cycle", "pause", NULL};
-                mpv_command(mpv, cmd_pause);
-                needsRedraw = true;
-            }
-            else if (cmd == "stop") {
-                const char* cmd_stop[] = {"stop", NULL};
-                mpv_command(mpv, cmd_stop);
-            }
-            else if (cmd == "favorites") {
-                play_favorite(); // Reuse existing play_favorite() random logic
-                needsRedraw = true;
-            }
-            else if (cmd == "add_fav") {
-                save_favorite();
-            }
-            else if (cmd == "del_fav") {
-                delete_favorite();
-            }
-            else if (cmd == "quit") {
-                goto end; // Jumps to your cleanup and exit logic
-            }
-            else if (cmd == "shuffle") {
-                play_random();
-                needsRedraw = true;
-            }
-            else if (cmd == "vol_up") {
-                set_volume('+');
-                needsRedraw = true;
-            }
-            else if (cmd == "vol_down") {
-                set_volume('-');
-                needsRedraw = true;
-            }
-            else if (cmd == "mute") {
-                const char* cmd_mute[] = {"cycle", "mute", NULL};
-                mpv_command(mpv, cmd_mute);
-                needsRedraw = true;
-            }
-
-        }
-
-        // B. MENU SCREENS
-
-        if (showConfig) {
-            showConfig = draw_config_menu(); // Update state directly from the function
-            if (!showConfig) {
-                draw_ui();
-            }
-            usleep(10000);
-            continue;
-        }
-
-        if (showHelp) {
-            showHelp = draw_help_menu(); // Update state directly from the function
-            if (!showHelp) {
-                draw_ui();
-            }
-            usleep(10000);
-            continue;
-        }
-
-        if (showMenu) {
-            // Apply the same logic to your favorites menu
-            showMenu = draw_favorites_menu();
-            if (!showMenu) {
-                draw_ui();
-            }
-            usleep(10000);
-            continue;
-        }
-
-        // C. STATUS EXPIRY
-
-        // Auto-clear status message after timeout
-        if (!statusMsg.empty() && std::time(nullptr) >= statusExpiry) {
-            statusMsg = "";
-            needsRedraw = true;
-        }
-        // Check if terminal was resized
-        if (resized) {
-            resized = 0;
-            needsRedraw = true;
-        }
-
-        // D. MPV EVENTS (Buffered + Delayed Notification Version)
-        while (true) {
-
-            mpv_event *event = mpv_wait_event(mpv, 0);
-            if (event->event_id == MPV_EVENT_NONE) break;
-
-            if (event->event_id == MPV_EVENT_PROPERTY_CHANGE) {
-                mpv_event_property *prop = (mpv_event_property *)event->data;
-                if (prop && prop->data) {
-                    std::string propName = prop->name;
-
-                    // 1. Handle Title Changes
-                    if (propName == "media-title") {
-                        char* title_ptr = *(char **)prop->data;
-                        if (title_ptr) {
-                            std::string newTitle = title_ptr;
-                            if (newTitle.find("http") != 0 && newTitle != currentSong) {
-                                // RE-ENABLE THE FUSE:
-                                pendingSong = newTitle;
-                                notifyTimer = std::time(nullptr) + 2;
-                            }
-                        }
-                    }
-                    // 2. Handle Buffering Safety
-                    else if (propName == "paused-for-cache") {
-                        int is_buffering = *(int *)prop->data;
-                        if (!is_buffering) {
-                            char* t = mpv_get_property_string(mpv, "media-title");
-                            if (t && std::string(t).find("http") != 0 && std::string(t) != currentSong) {
-                                // RE-ENABLE THE FUSE HERE TOO:
-                                pendingSong = t;
-                                notifyTimer = std::time(nullptr) + 2;
-                            }
-                            if (t) mpv_free(t);
-                        }
-                    }
-                }
-            }
-            if (event->event_id == MPV_EVENT_SHUTDOWN) goto end;
-        }
-
-
-        // E. KEYBOARD INPUT
-        if (kbhit()) {
-            char input = getchar(); // Get the raw key once
-            char c = std::tolower(input); // Create a lowercase version for the switch
-
-            if (c == 'q') break; // 'Q' and 'q' both quit
-
-            switch (c) {
-                case 'l': showMenu = true; selectedFav = 0; break;
-                case 's': play_random(); currentSong = "Buffering..."; break;
-                case 'a': save_favorite(); break;
-                case 'c': showConfig = true; break;
-                case 'f': play_favorite(); break;
-                case 'd': delete_favorite(); break;
-                case 'x': {
-                    const char* cmd_stop[] = {"stop", NULL};
-                    mpv_command(mpv, cmd_stop);
-                    currentSong = "Stopped"; // Update UI text
-                    break;
-                }
-                case 'p': {
-                    const char* cmd_pause[] = {"cycle", "pause", NULL};
-                    mpv_command(mpv, cmd_pause);
-                    break;
-                }
-
-                #ifdef USE_PROJECTM
-                case 'v':
-                        load_random_preset(pm);
-                        lastPresetChange = SDL_GetTicks();
-                        break;
-                #endif
-                case 'h': showHelp = true; break;
-                case 'n': play_random(); break; // Added your 'N' key!
-                case '+': case '-':
-                    set_volume(input); // Use 'input' here so '+' works correctly
-                    break;
-                case 'm': toggle_mute(); break;
-
-                    #ifdef USE_PROJECTM
-               		case 'k': {
-               		// Don't crash if visual screen not open
-               		if (!visualsRunning) break;
-
-                    // 1. Get current window flags
-                    uint32_t flags = SDL_GetWindowFlags(visualWin);
-                    bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-                    // 2. Toggle state: if fullscreen, go windowed (0); if windowed, go fullscreen
-                    SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-                    // 3. Immediately update projectM with new dimensions
-
-                    int w, h;
-                    SDL_GetWindowSize(visualWin, &w, &h);
-                    glViewport(0, 0, w, h);
-                    projectm_set_window_size(pm, w, h);
-                    break;
-
-                    }
-                    #endif
-                }
-            needsRedraw = true;
-            }
-
-        if (needsRedraw || resized) {
-            resized = 0;
-            draw_ui();
-        }
-
-
-        #ifdef USE_PROJECTM
-        // F. --- VISUALS LOGIC ---
+    
+    
+    
+    
+   		// A. --- VISUALS LOGIC ---
+        #ifdef USE_PROJECTM        
         if (visualsRunning && pm) {
             // Random preset every 30s
             #ifdef USE_PROJECTM
@@ -1748,23 +1505,278 @@ int main(int argc, char* argv[]) {
                 }
 
                 if (needsRedraw) {
-                    load_random_preset(pm);
-            		lastPresetChange = SDL_GetTicks(); 
+                    //load_random_preset(pm);
+            		//lastPresetChange = SDL_GetTicks(); 
                     draw_ui();        // This prints the new currentPresetName
                     needsRedraw = false; // Reset so we don't flicker
-                }
+                }             
+    	    }
+            #endif 
+    
+  
+  
+ 
+        // B. Notifications 
+        if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
+            currentSong = pendingSong;
 
+            // IMPORTANT: This is the ONLY place send_notification should be called
+            if (cfg.showNotifications) {
+                send_notification(currentStation, currentSong);
             }
 
+            notifyTimer = 0; // Reset the fuse
+            needsRedraw = true;
+        }
 
 
-  //End The Main Loop
+        // C. FIFO LISTENER
+        char cmdBuf[64]; // Buffer for incoming commands
+        ssize_t bytes = read(fifoFd, cmdBuf, sizeof(cmdBuf) - 1);
+        if (bytes > 0) {
+            cmdBuf[bytes] = '\0';
+            std::string cmd(cmdBuf); 
+            if (cmd == "status") {
+                int respFd = open(respPath, O_WRONLY | O_NONBLOCK);
+                if (respFd != -1) {
+                    std::stringstream ss;
+                    ss << BLUE << "\n--- SuperMusicThingy Status ---" << BLUE  << "\n"
+                    << BLUE << "Song:      " << niceGreenColor << currentSong << RESET << "\n"
+                    << BLUE << "Desc:      " << niceGreenColor << currentDesc << RESET << "\n"
+                    << BLUE << "Station:   " << niceGreenColor << currentStation << RESET << "\n"
+                    << BLUE << "Listeners: " << niceGreenColor << currentListeners << RESET << "\n"
+                    << BLUE << "Total Ch:  " << niceGreenColor << channels.size() << RESET << "\n"
+                    << BLUE << "Favorites: " << niceGreenColor << count_favorites() << RESET << "\n"
+                    << BLUE << "Quality:   " << niceGreenColor << get_bitrate_text() << RESET << "\n"
+                    << BLUE << "Volume:    " << niceGreenColor << get_vol_bar() << RESET << "\n";
+                  //  #ifdef USE_PROJECTM
+                  //  if (visualsRunning) {
+                  //     ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
+                  //  }
+                  // #endif
+                    #ifdef USE_PROJECTM
+                    if (visualsRunning) {
+                        ss << std::string(BLUE) << "Visual:    " << std::string(niceGreenColor)
+                        << currentPresetName << std::string(RESET) << "\n";
+                    }
+                    #endif
 
-            #endif
+                   ss << BLUE << "---------------------------" << RESET ;
+
+                    std::string reply = ss.str();
+                    write(respFd, reply.c_str(), reply.length());
+                    close(respFd);
+                }
+            }
+
+            else if (cmd == "toggle") {
+                const char* cmd_pause[] = {"cycle", "pause", NULL};
+                mpv_command(mpv, cmd_pause);
+                needsRedraw = true;
+            }
+            else if (cmd == "stop") {
+                const char* cmd_stop[] = {"stop", NULL};
+                mpv_command(mpv, cmd_stop);
+            }
+            else if (cmd == "favorites") {
+                play_favorite(); // Reuse existing play_favorite() random logic
+                needsRedraw = true;
+            }
+            else if (cmd == "add_fav") {
+                save_favorite();
+            }
+            else if (cmd == "del_fav") {
+                delete_favorite();
+            }
+            else if (cmd == "quit") {
+                goto end; // Jumps to your cleanup and exit logic
+            }
+            else if (cmd == "shuffle") {
+                play_random();
+                needsRedraw = true;
+            }
+            else if (cmd == "vol_up") {
+                set_volume('+');
+                needsRedraw = true;
+            }
+            else if (cmd == "vol_down") {
+                set_volume('-');
+                needsRedraw = true;
+            }
+            else if (cmd == "mute") {
+                const char* cmd_mute[] = {"cycle", "mute", NULL};
+                mpv_command(mpv, cmd_mute);
+                needsRedraw = true;
+            }
+
+        }
+
+ 
+ 
+        // D. MENU SCREENS
+        if (showConfig) {
+            showConfig = draw_config_menu(); // Update state directly from the function
+            if (!showConfig) {
+                draw_ui();
+            }
+            usleep(10000);
+            continue;
+        }
+
+        if (showHelp) {
+            showHelp = draw_help_menu(); // Update state directly from the function
+            if (!showHelp) {
+                draw_ui();
+            }
+            usleep(10000);
+            continue;
+        }
+
+        if (showMenu) {
+            // Apply the same logic to your favorites menu
+            showMenu = draw_favorites_menu();
+            if (!showMenu) {
+                draw_ui();
+            }
+            usleep(10000);
+            continue;
+        }
+
+ 
+ 
+        // E. STATUS EXPIRY
+        // Auto-clear status message after timeout
+        if (!statusMsg.empty() && std::time(nullptr) >= statusExpiry) {
+            statusMsg = "";
+            needsRedraw = true;
+        }
+        // Check if terminal was resized
+        if (resized) {
+            resized = 0;
+            needsRedraw = true;
+        }
+
+ 
+ 
+ 
+        // F. MPV EVENTS (Buffered + Delayed Notification Version)
+        while (true) {
+            mpv_event *event = mpv_wait_event(mpv, 0);
+            if (event->event_id == MPV_EVENT_NONE) break;
+
+            if (event->event_id == MPV_EVENT_PROPERTY_CHANGE) {
+                mpv_event_property *prop = (mpv_event_property *)event->data;
+                if (prop && prop->data) {
+                    std::string propName = prop->name;
+
+                    // 1. Handle Title Changes
+                    if (propName == "media-title") {
+                        char* title_ptr = *(char **)prop->data;
+                        if (title_ptr) {
+                            std::string newTitle = title_ptr;
+                            if (newTitle.find("http") != 0 && newTitle != currentSong) {
+                                // RE-ENABLE THE FUSE:
+                                pendingSong = newTitle;
+                                notifyTimer = std::time(nullptr) + 2;
+                            }
+                        }
+                    }
+                    // 2. Handle Buffering Safety
+                    else if (propName == "paused-for-cache") {
+                        int is_buffering = *(int *)prop->data;
+                        if (!is_buffering) {
+                            char* t = mpv_get_property_string(mpv, "media-title");
+                            if (t && std::string(t).find("http") != 0 && std::string(t) != currentSong) {
+                                // RE-ENABLE THE FUSE HERE TOO:
+                                pendingSong = t;
+                                notifyTimer = std::time(nullptr) + 2;
+                            }
+                            if (t) mpv_free(t);
+                        }
+                    }
+                }
+            }
+            if (event->event_id == MPV_EVENT_SHUTDOWN) goto end;
+        }
 
 
+
+        // G. KEYBOARD INPUT
+        if (kbhit()) {
+            char input = getchar(); // Get the raw key once
+            char c = std::tolower(input); // Create a lowercase version for the switch
+
+            if (c == 'q') break; // 'Q' and 'q' both quit
+
+            switch (c) {
+                case 'l': showMenu = true; selectedFav = 0; break;
+                case 's': play_random(); currentSong = "Buffering..."; break;
+                case 'a': save_favorite(); break;
+                case 'c': showConfig = true; break;
+                case 'f': play_favorite(); break;
+                case 'd': delete_favorite(); break;
+                case 'x': {
+                    const char* cmd_stop[] = {"stop", NULL};
+                    mpv_command(mpv, cmd_stop);
+                    currentSong = "Stopped"; // Update UI text
+                    break;
+                }
+                case 'p': {
+                    const char* cmd_pause[] = {"cycle", "pause", NULL};
+                    mpv_command(mpv, cmd_pause);
+                    break;
+                }
+
+                #ifdef USE_PROJECTM
+                case 'v':
+                        load_random_preset(pm);
+                        lastPresetChange = SDL_GetTicks();
+                        break;
+                #endif
+                case 'h': showHelp = true; break;
+                case 'n': play_random(); break; // Added your 'N' key!
+                case '+': case '-':
+                    set_volume(input); // Use 'input' here so '+' works correctly
+                    break;
+                case 'm': toggle_mute(); break;
+
+                    #ifdef USE_PROJECTM
+               		case 'k': {
+               		// Don't crash if visual screen not open
+               		if (!visualsRunning) break;
+
+                    // 1. Get current window flags
+                    uint32_t flags = SDL_GetWindowFlags(visualWin);
+                    bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                    // 2. Toggle state: if fullscreen, go windowed (0); if windowed, go fullscreen
+                    SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                    // 3. Immediately update projectM with new dimensions
+
+                    int w, h;
+                    SDL_GetWindowSize(visualWin, &w, &h);
+                    glViewport(0, 0, w, h);
+                    projectm_set_window_size(pm, w, h);
+                    break;
+
+                    }
+                    #endif
+                }
+            needsRedraw = true;
+            }
+
+        if (needsRedraw || resized) {
+            resized = 0;
+            draw_ui();
+        }
+
+
+
+
+            
       usleep(16000);
-    }
+    } //End The Main Loop
 
 
 
