@@ -1183,7 +1183,7 @@ int main(int argc, char* argv[]) {
         }
         // --- NEW: HELP COMMAND (Doesn't need the FIFO running) ---
         if (cmd == "help" || cmd == "--help" || cmd == "-h") {
-            std::cout << "\n--- SuperMusicThingy CLI Help ---" << BLUE  << "\n"
+            std::cout << BLUE << "\n--- SuperMusicThingy CLI Help ---" << BLUE  << "\n"
             << "--------------------------\n" << BLUE
             << "Usage: SuperMusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
             << "Commands:\n"
@@ -1327,9 +1327,15 @@ int main(int argc, char* argv[]) {
                     << BLUE << "Favorites: " << niceGreenColor << count_favorites() << RESET << "\n"
                     << BLUE << "Quality:   " << niceGreenColor << get_bitrate_text() << RESET << "\n"
                     << BLUE << "Volume:    " << niceGreenColor << get_vol_bar() << RESET << "\n";
+                  //  #ifdef USE_PROJECTM
+                  //  if (visualsRunning) {
+                  //     ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
+                  //  }
+                  // #endif
                     #ifdef USE_PROJECTM
                     if (visualsRunning) {
-                        ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
+                        ss << std::string(BLUE) << "Visual:    " << std::string(niceGreenColor)
+                        << currentPresetName << std::string(RESET) << "\n";
                     }
                     #endif
 
