@@ -1588,6 +1588,7 @@ int main(int argc, char* argv[]) {
             // Render and Swap
             projectm_opengl_render_frame(pm);
             SDL_GL_SwapWindow(visualWin);
+          
 
             // Handle window events (closing the visualizer window)
             // Handle window events
@@ -1612,7 +1613,7 @@ int main(int argc, char* argv[]) {
                             visualWin = nullptr;
                         }
 
-                        needsRedraw = true; // Tell Terminal UI to update
+                        needsRedraw = true; 
                     }
 
                     if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
@@ -1620,57 +1621,95 @@ int main(int argc, char* argv[]) {
 
                         int newW = e.window.data1;
                         int newH = e.window.data2;
+						
+                    	// 1. Tell OpenGL the new drawing area
+                   		 glViewport(0, 0, newW, newH);
 
-                    // 1. Tell OpenGL the new drawing area
-                    glViewport(0, 0, newW, newH);
-
-                    // 2. Tell projectM the new internal resolution
-                    projectm_set_window_size(pm, newW, newH);
-                        }
+                    	// 2. Tell projectM the new internal resolution
+                   		 projectm_set_window_size(pm, newW, newH);
+                   		 
+                       	 }
                     }
-
-                    // Random visual selection when 'v' is pressed in fullscreen
+					// FULL SCREEN KEY EVENTS
+                    		// Shuffle visual effeets 
                     else if (e.type == SDL_KEYDOWN) {
-                        // --- 1. Handle 'v' to change preset ---
-                        if (e.key.keysym.sym == SDLK_v) {
+                    
+                          if (e.key.keysym.sym == SDLK_v) {
                             load_random_preset(pm);
-                            lastPresetChange = SDL_GetTicks(); // Reset the 30s timer
-                            needsRedraw = true;                // Update the terminal too
+                            lastPresetChange = SDL_GetTicks(); 
+                            needsRedraw = true;                
                         }
+                        
+                   			 // Shuffle
+     						else if (e.key.keysym.sym == SDLK_s) {
+                        		play_random();
+                        		currentSong = "Buffering...";
+                          		needsRedraw = true;   
+                        }     
+                            // Play favorite
+     						else if (e.key.keysym.sym == SDLK_f) {
+								play_favorite();
+                          		needsRedraw = true;  
+                        }  
+                        
+                           // Play mute
+     						else if (e.key.keysym.sym == SDLK_m) {
+                				const char* cmd_mute[] = {"cycle", "mute", NULL};
+               					mpv_command(mpv, cmd_mute);
+                          		needsRedraw = true;  
+                        }  
+                       
+                           // Stop
+     						else if (e.key.keysym.sym == SDLK_x) {
+               					const char* cmd_stop[] = {"stop", NULL};
+               					mpv_command(mpv, cmd_stop);
+                          		needsRedraw = true;  
+                        } 
 
-                        // --- 2. Handle 'Escape' to exit fullscreen ---
+                           // Toggle/pause
+     						else if (e.key.keysym.sym == SDLK_p) {
+                				const char* cmd_pause[] = {"cycle", "pause", NULL};
+                				mpv_command(mpv, cmd_pause);
+                          		needsRedraw = true;  
+                        } 
+                           // Vol up
+     						else if (e.key.keysym.sym == SDLK_EQUALS || e.key.keysym.sym == SDLK_KP_PLUS) {
+								set_volume('+');                         	    
+                          		needsRedraw = true;   
+                        } 
+                          // Vol down
+     						else if (e.key.keysym.sym == SDLK_MINUS || e.key.keysym.sym == SDLK_KP_MINUS) {
+                        		set_volume('-');
+                         	    needsRedraw = true;   
+                        } 
+
+                          // K key exists fullscreen
+     						else if (e.key.keysym.sym == SDLK_k) {
+                        		 
+                    				uint32_t flags = SDL_GetWindowFlags(visualWin);
+                    				bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+                    				SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+                   					int w, h;
+                    				SDL_GetWindowSize(visualWin, &w, &h);
+                    				glViewport(0, 0, w, h);
+                    				projectm_set_window_size(pm, w, h);                     		
+                           			needsRedraw = true;   
+                        } 
+
+                    		 // Esc key
                         else if (e.key.keysym.sym == SDLK_ESCAPE) {
-                            uint32_t flags = SDL_GetWindowFlags(visualWin);
-                            if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+                           	 uint32_t flags = SDL_GetWindowFlags(visualWin);
+                           	 bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                           	 // 2. Toggle it off
+                           	 if (isFullscreen) {
                                 SDL_SetWindowFullscreen(visualWin, 0);
-
-                                // Re-sync dimensions
-                                int w, h;
-                                SDL_GetWindowSize(visualWin, &w, &h);
-                                glViewport(0, 0, w, h);
-                                projectm_set_window_size(pm, w, h);
-                            }
-                        }
-                    }
-
-
-
-                    // Esc key
-                    else if (e.type == SDL_KEYDOWN) {
-                        if (e.key.keysym.sym == SDLK_ESCAPE) {
-                            // 1. Get current window flags
-                            uint32_t flags = SDL_GetWindowFlags(visualWin);
-                            bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-                            // 2. Toggle it off
-                            if (isFullscreen) {
-                                SDL_SetWindowFullscreen(visualWin, 0);
-
                                 // 3. Re-sync dimensions
                                 int w, h;
                                 SDL_GetWindowSize(visualWin, &w, &h);
                                 glViewport(0, 0, w, h);
                                 projectm_set_window_size(pm, w, h);
+                                needsRedraw = true;
                             }
                         }
                     }
@@ -1692,12 +1731,14 @@ int main(int argc, char* argv[]) {
                             SDL_GetWindowSize(visualWin, &w, &h);
                             glViewport(0, 0, w, h);
                             projectm_set_window_size(pm, w, h);
+                            needsRedraw = true; 
                         }
                     }
-
-
                 }
+
                 if (needsRedraw) {
+                    load_random_preset(pm);
+            		lastPresetChange = SDL_GetTicks(); 
                     draw_ui();        // This prints the new currentPresetName
                     needsRedraw = false; // Reset so we don't flicker
                 }
