@@ -733,7 +733,7 @@ bool draw_config_menu() {
                 }
             }
             #endif
-            usleep(10000); // Keep the menu snappy
+            usleep(33333); // Keep the menu snappy
             return true;
 
             needsRedraw = true;
@@ -1300,7 +1300,7 @@ int main(int argc, char* argv[]) {
                     close(respFd); unlink(respPath);
                     return 0;
                 }
-                usleep(10000);
+                usleep(33333);
             }
             close(respFd); unlink(respPath);
             return 1;
@@ -1686,7 +1686,7 @@ int main(int argc, char* argv[]) {
             if (!showConfig) {
                 draw_ui();
             }
-            usleep(10000);
+            usleep(33333);
             continue;
         }
 
@@ -1695,7 +1695,7 @@ int main(int argc, char* argv[]) {
             if (!showHelp) {
                 draw_ui();
             }
-            usleep(10000);
+            usleep(33333);
             continue;
         }
 
@@ -1705,7 +1705,7 @@ int main(int argc, char* argv[]) {
             if (!showMenu) {
                 draw_ui();
             }
-            usleep(10000);
+            usleep(33333);
             continue;
         }
 
@@ -1842,7 +1842,7 @@ int main(int argc, char* argv[]) {
 
 
             
-      usleep(16000);
+      usleep(33333);
     } //End The Main Loop
 
 
