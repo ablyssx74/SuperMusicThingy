@@ -1424,7 +1424,7 @@ void init_visuals() {
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 
-                            int newW = e.window.data1;
+                        int newW = e.window.data1;
                         int newH = e.window.data2;
 
                         // 1. Tell OpenGL the new drawing area
@@ -1494,6 +1494,7 @@ void init_visuals() {
                             uint32_t flags = SDL_GetWindowFlags(visualWin);
                             bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
                             SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+                            SDL_ShowCursor(isFullscreen ? SDL_ENABLE : SDL_DISABLE);
                             int w, h;
                             SDL_GetWindowSize(visualWin, &w, &h);
                             glViewport(0, 0, w, h);
@@ -1509,6 +1510,7 @@ void init_visuals() {
                             // 2. Toggle it off
                             if (isFullscreen) {
                                 SDL_SetWindowFullscreen(visualWin, 0);
+                                SDL_ShowCursor(SDL_ENABLE);
                                 // 3. Re-sync dimensions
                                 int w, h;
                                 SDL_GetWindowSize(visualWin, &w, &h);
@@ -1527,9 +1529,8 @@ void init_visuals() {
                             // 1. Get current window flags
                             uint32_t flags = SDL_GetWindowFlags(visualWin);
                             bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-                            // 2. Toggle state: if fullscreen, go windowed (0); if windowed, go fullscreen
                             SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+                            SDL_ShowCursor(isFullscreen ? SDL_ENABLE : SDL_DISABLE);
 
                             // 3. Immediately update projectM/OpenGL with new dimensions
                             int w, h;
