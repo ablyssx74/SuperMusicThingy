@@ -1780,9 +1780,12 @@ void init_visuals() {
 
                     #ifdef USE_PROJECTM
                     case 'v':
+                        if (!visualsRunning && cfg.showVisuals) { init_visuals(); }
+
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
                         break;
+
                         #endif
                     case 'h': showHelp = true; currentMenu = HELP; break;
                     case 'n': play_random(); break;
