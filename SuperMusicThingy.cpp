@@ -907,6 +907,32 @@ std::string get_bitrate_text() {
     if (cfg.quality == "low")     return "64k";
     return "128k"; // Default for "high"
 }
+// Wrapper functons
+int draw_wrapped_currentSong(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
+    if (text.empty() || text == "None") return 0;
+
+    std::stringstream words(text);
+    std::string word;
+    std::string currentLine = "";
+    int linesUsed = 1;
+    int maxLineWidth = termWidth - 15;
+
+    ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+
+    while (words >> word) {
+        if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            if (!currentLine.empty()) currentLine += " ";
+            currentLine += word;
+        } else {
+            ss << currentLine; // Print the line
+            linesUsed++;
+            currentLine = word;
+            ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+        }
+    }
+    ss << currentLine; // Print final line
+    return linesUsed;
+}
 
 int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
     if (text.empty() || text == "None") return 0;
@@ -975,9 +1001,9 @@ void draw_ui() {
     }
     
 
-    if (!currentSong.empty() && currentSong != "None") {
-        buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * " << currentSong << BLUE << "\n";
-        currentRow++; 
+    int currentSongHeight = draw_wrapped_currentSong(buffer, currentSong, w.ws_col, currentRow);
+    if (currentSongHeight > 0) {
+        currentRow += currentSongHeight; // Push the next items down by the height of the desc
     }
 
     int descHeight = draw_wrapped_description(buffer, currentDesc, w.ws_col, currentRow);
