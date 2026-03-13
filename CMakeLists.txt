@@ -56,12 +56,13 @@ if(ENABLE_SDL2)
 endif()
 
 if(ENABLE_PROJECTM)
-    # 1. Use pkg-config to get the correct include paths and library hints
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(PM4 projectM-4) # Note: Removed IMPORTED_TARGET for more control
+    list(APPEND PKG_CONFIG_PATH "/usr/local/lib/pkgconfig")
+    list(APPEND PKG_CONFIG_PATH "/boot/home/config/non-packaged/lib/pkgconfig")
+    set(ENV{PKG_CONFIG_PATH} "${PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
+    pkg_check_modules(PM4 projectM-4)
 
     if(PM4_FOUND)
-        # 2. Use the hints from pkg-config to find the actual library file
         find_library(PROJECTM_LIBRARY
             NAMES projectM-4 projectM libprojectM-4
             HINTS ${PM4_LIBRARY_DIRS}
