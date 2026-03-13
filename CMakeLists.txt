@@ -23,10 +23,12 @@ find_package(PkgConfig REQUIRED)
 if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
+    list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)
     target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include)
 endif()
 
 pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
+
 pkg_check_modules(CURL REQUIRED IMPORTED_TARGET libcurl)
 
 find_path(JSON_INCLUDE_DIR NAMES nlohmann/json.hpp
@@ -57,18 +59,37 @@ endif()
 
 if(ENABLE_PROJECTM)
     find_package(PkgConfig REQUIRED)
-    list(APPEND PKG_CONFIG_PATH "/usr/local/lib/pkgconfig")
-    list(APPEND PKG_CONFIG_PATH "/boot/home/config/non-packaged/lib/pkgconfig")
-    set(ENV{PKG_CONFIG_PATH} "${PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
+    set(MY_PKG_PATHS "/usr/local/lib/pkgconfig:/boot/home/config/non-packaged/lib/pkgconfig")
+    
+    if(HAIKU)
+        set(DUMMY_PC_PATH "${CMAKE_BINARY_DIR}/pkgconfig")
+        file(MAKE_DIRECTORY "${DUMMY_PC_PATH}")
+        file(WRITE "${DUMMY_PC_PATH}/opengl.pc" 
+"Name: opengl
+Description: Dummy OpenGL for Haiku
+Version: 1.0
+Libs: -L/boot/system/lib -lGL
+Cflags: -I/boot/system/develop/headers")
+        
+
+        set(MY_PKG_PATHS "${DUMMY_PC_PATH}:${MY_PKG_PATHS}")
+    endif()
+
+
+    set(ENV{PKG_CONFIG_PATH} "${MY_PKG_PATHS}:$ENV{PKG_CONFIG_PATH}")
+
+
     pkg_check_modules(PM4 projectM-4)
 
     if(PM4_FOUND)
+
         find_library(PROJECTM_LIBRARY
             NAMES projectM-4 projectM libprojectM-4
             HINTS ${PM4_LIBRARY_DIRS}
         )
 
         if(PROJECTM_LIBRARY)
+     
             target_link_libraries(SuperMusicThingy PRIVATE ${PROJECTM_LIBRARY})
             target_include_directories(SuperMusicThingy PRIVATE ${PM4_INCLUDE_DIRS})
             target_compile_definitions(SuperMusicThingy PRIVATE USE_PROJECTM)
@@ -79,7 +100,7 @@ if(ENABLE_PROJECTM)
     else()
         message(FATAL_ERROR "projectM-4.pc not found. Install libprojectm-dev.")
     endif()
-endif()
+endif() 
 
 
 if(ENABLE_GL)
