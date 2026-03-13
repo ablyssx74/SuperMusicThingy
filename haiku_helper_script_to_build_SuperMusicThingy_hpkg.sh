@@ -106,7 +106,7 @@ source-urls {
 fi
 
     
-pkgman install mpv_devel
+pkgman install mpv_devel curl_devel openssl3_devel nlohmann_json
 
 cd /tmp/SuperMusicThingy
 cmake -B build_${appname} ${buildspec}
@@ -132,7 +132,7 @@ if [[ ! "$skipprojectm" ]];then
 fi
 
 if [[ -d /tmp/SuperMusicThingy ]];then
-	read -p "Delete SuperMusicThing source? y/n: "
+	read -p "Delete SuperMusicThingy source? y/n: "
 fi
 
 if [[ $REPLY == y ]];then
