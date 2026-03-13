@@ -155,7 +155,7 @@ if [[ -d /tmp/SuperMusicThingy ]];then
 fi
 
 if [[ "$REPLY" == "y" ]];then
-	rm -fr "/tmp/SuperMusicThingy*"
+	rm -fr /tmp/SuperMusicThingy
 fi
 
 if [[ ! "$skipprojectm" ]];then 
