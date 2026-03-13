@@ -34,6 +34,7 @@ if [[ "$REPLY" == y ]];then
 	mkdir -p /tmp/SuperMusicThingy/hpkgs
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps
+	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps/deskbar/menu/Applications
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
 	touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
@@ -117,6 +118,7 @@ xres -o build_${appname}/SuperMusicThingy ${appname}.rsrc
 mv -f build_${appname}/SuperMusicThingy hpkgs/${appname}/apps/${appname}
 mimeset -f hpkgs/${appname}/apps/${appname}
 ln -s /boot/system/apps/${appname} hpkgs/${appname}/bin/${appname}
+ln -s /boot/system/apps/${appname} hpkgs/${appname}/apps/deskbar/menu/Applications/${appname}
 
 
 cd /tmp/SuperMusicThingy/hpkgs/
