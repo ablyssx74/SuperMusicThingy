@@ -1384,7 +1384,7 @@ void init_visuals() {
             struct Term { std::string name; std::string flag; };
             std::vector<Term> terms = {
                 {"x-terminal-emulator", "-e"},
-                {"konsole", "-e"},
+                {"konsole", "--title \"SuperMusicThingy\" -e"},
                 {"gnome-terminal", "--"}, // Modern GNOME requires '--' for command execution
                 {"xfce4-terminal", "-e"},
                 {"xterm", "-e"}
@@ -1402,6 +1402,8 @@ void init_visuals() {
             if (!cmd.empty()) { system(cmd.c_str()); return 0; }
             return 1;
             }
+            // Title set
+            std::cout << "\033]0;SuperMusicThingy\007" << std::flush;
 
         // 4. ACTUAL PLAYER INITIALIZATION (Runs only once)
         init_mpv();        // Start MPV engine
@@ -1907,7 +1909,10 @@ void init_visuals() {
                 draw_ui();
             }
 
+
+
                 usleep(33333);  // 30 FPS
+
 
         } //End The Main Loop
 
