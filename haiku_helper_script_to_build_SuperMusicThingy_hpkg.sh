@@ -28,7 +28,7 @@ fi
 if [[ "$REPLY" == y ]];then
 	[[ -e /tmp/SuperMusicThingy ]] && rm -fr /tmp/SuperMusicThingy
 	cd /tmp/
-	git clone git@github.com:ablyssx74/SuperMusicThingy.git
+	git clone https://github.com/ablyssx74/SuperMusicThingy.git
 	mkdir -p /tmp/SuperMusicThingy/	
 	mkdir -p /tmp/SuperMusicThingy/hpkgs
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}
