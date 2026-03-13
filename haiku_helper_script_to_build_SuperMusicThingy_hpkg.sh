@@ -7,7 +7,8 @@
 appname="SuperMusicThingy"
 depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 read -p "
-Option 1: Build ${appname} with projectm visuals? Requires Haiku nightly and a supported nvidia card with nebula (nvidia driver).
+Option 1: Build ${appname} with projectm visuals. 
+Requires Haiku nightly and a supported nvidia card with nebula (nvidia driver).
 This script will automatically download the driver and install if not already installed. 
 
 Option 2: Build SuperMusicThingy without projectm, and for normal Haiku beta5 release.  (select 1 or 2): "
