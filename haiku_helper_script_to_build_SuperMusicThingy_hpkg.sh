@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+#
 # Automated build script
 # Downloads git repo, builds, then builds Haiku hpkg file on Desktop
 
