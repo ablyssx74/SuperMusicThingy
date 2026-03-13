@@ -764,7 +764,7 @@ void init_visuals() {
         buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
 
         int r = 7;
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "s" << BLUE << "] Shuffle      : Play a random station";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to list";
@@ -773,8 +773,10 @@ void init_visuals() {
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "enter" << BLUE << "] Play     : Play or Update selection";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
+        #ifdef USE_PROJECTM
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
+        #endif
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
@@ -1332,7 +1334,9 @@ void init_visuals() {
                 << "Commands:\n"
                 << niceGreenColor << "  status        " << BLUE << "  - Show current song, volume, and visualizer preset\n" << BLUE
                 << niceGreenColor << "  shuffle       " << BLUE << "  - Skip to the next song in the queue\n" << BLUE
+                #ifdef USE_PROJECTM  
                 << niceGreenColor << "  visual        " << BLUE << "  - Shuffle to a new random Milkdrop preset\n" << BLUE
+                #endif
                 << niceGreenColor << "  vol_up        " << BLUE << "  - Increase volume\n" << BLUE
                 << niceGreenColor << "  vol_down      " << BLUE << "  - Decrease volume\n" << BLUE
                 << niceGreenColor << "  mute          " << BLUE << "  - Toggle audio\n" << BLUE
@@ -1708,6 +1712,14 @@ void init_visuals() {
                 else if (cmd == "add_fav") {
                     save_favorite();
                 }
+                else if (cmd == "visual") {
+                	    #ifdef USE_PROJECTM    
+                        if (visualsRunning && !is_native_tty()) { 
+                        load_random_preset(pm);
+                        lastPresetChange = SDL_GetTicks();
+                        }
+                        #endif
+                }
                 else if (cmd == "del_fav") {
                     delete_favorite();
                 }
@@ -1863,7 +1875,7 @@ void init_visuals() {
                         break;
                     }
 
-                    #ifdef USE_PROJECTM
+                   	#ifdef USE_PROJECTM
                     case 'v':
                         if (!visualsRunning && cfg.showVisuals && !is_native_tty()) { init_visuals(); }
 
@@ -1871,7 +1883,7 @@ void init_visuals() {
                         lastPresetChange = SDL_GetTicks();
                         break;
 
-                        #endif
+                    #endif
                     case 'h': showHelp = true; currentMenu = HELP; break;
                     case 'n': play_random(); break;
                     case '+': case '-':
