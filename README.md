@@ -2,7 +2,7 @@
 
 # <p align="center"> SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
-## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/dd55a447-ff23-4cc4-a8ab-5f65c94a40ba" /></p>
+## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/c1a46e06-ed56-4505-aff0-e4ef507f4801" /></p>
 ## Includes
 
 
@@ -18,6 +18,7 @@
 - Haiku support is not 100% yet. The visuals don't jitter to the music ( maybe my soundcard! ) and require [nvidia-haiku](https://github.com/X547/nvidia-haiku).
 ## Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.
+
 
 ## Build SuperMusicThingy
 
