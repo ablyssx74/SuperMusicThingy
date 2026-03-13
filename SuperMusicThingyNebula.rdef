@@ -1,4 +1,4 @@
-resource app_signature "application/x-vnd.SuperMusicThingy";
+resource app_signature "application/x-vnd.SuperMusicThingyNebula";
 
 resource app_version {
     major  = 0,
