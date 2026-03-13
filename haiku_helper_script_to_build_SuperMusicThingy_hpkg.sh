@@ -3,28 +3,31 @@
 # Automated build script
 # Downloads git repo, builds, then builds Haiku hpkg file on Desktop
 
-#cmd:make
-#cmd:ld 
+
 appname="SuperMusicThingy"
 depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 read -p "
-Build ${appname} with projectm visuals? Requires Haiku nightly, building projectm from source and nebula (nvidia driver).
+Option 1: Build ${appname} with projectm visuals? Requires Haiku nightly and a supported nvidia card with nebula (nvidia driver).
+This script will automatically download the driver and install if not already installed. 
 
-Selecting no will build SuperMusicThingy without projectm, and for normal Haiku beta5 release. y/n: "
+Option 2: Build SuperMusicThingy without projectm, and for normal Haiku beta5 release.  (select 1 or 2): "
 
-if [[ "$REPLY" == y ]];then
+if [[ "$REPLY" == "1" ]];then
 	
 	pkgman ${depends} grep
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59451-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
-else
+elif [[ "$REPLY" == "2" ]];then
 	
 	pkgman ${depends}
 	appname="SuperMusicThingy"
 	requires=("haiku")
 	buildspec="-DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF"
 	skipprojectm="true"
+
+	else
+		exit 1
 fi
 
 
@@ -36,7 +39,7 @@ else
 	read -p "/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: "
 fi
 
-if [[ "$REPLY" == y ]];then
+if [[ "$REPLY" == "y" ]];then
 	[[ -e /tmp/SuperMusicThingy ]] && rm -fr /tmp/SuperMusicThingy
 	cd /tmp/
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
@@ -51,16 +54,17 @@ if [[ "$REPLY" == y ]];then
 fi
 
 if [[ ! "$skipprojectm" ]];then 
+
 	if [[ ! -d "$projectm_source_directory" ]];then
 		read -p "Required libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
 		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " chorice2
 	fi
-	if [[ $choice2 == y ]];then
+	if [[ "$choice2" == "y" ]];then
 		rm -fr $projectm_source_directory
 	fi
 
-	if [[ $choice1 == y ]];then
+	if [[ "$choice1" == "y" ]];then
 		pkgman install cmake libsdl2_devel libx11_devel
 		cd /tmp
 		git clone https://github.com/projectM-visualizer/projectm.git
@@ -148,7 +152,7 @@ if [[ -d /tmp/SuperMusicThingy ]];then
 	read -p "Delete SuperMusicThingy source? y/n: "
 fi
 
-if [[ $REPLY == y ]];then
+if [[ "$REPLY" == "y" ]];then
 	rm -fr "/tmp/SuperMusicThingy*"
 fi
 
@@ -158,7 +162,7 @@ if [[ ! "$skipprojectm" ]];then
 		else
     		read -p "libglvnd not found. Download and install? y/n: " glvnd
 	fi
-	if [[ "$glvnd" == y ]];then
+	if [[ "$glvnd" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
 		echo "Downloading libglvnd..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
@@ -182,7 +186,7 @@ if [[ ! "$skipprojectm" ]];then
 		else
    		 read -p "nebula not found. Download and install? y/n: " nebula
 	fi
-	if [[ "$nebula" == y ]];then
+	if [[ "$nebula" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
 		echo "Downloading nebula driver..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
