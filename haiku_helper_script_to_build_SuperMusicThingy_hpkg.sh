@@ -5,7 +5,7 @@
 pkgman install cmake gcc cmd:ld cmd:make mpv_devel curl_devel openssl3_devel nlohmann_json git grep
 
 appname="SuperMusicThingy"
-read -p "Build ${appname} with projectm visuals? Requires building projectm from source and nebula (nvidia driver). y/n: "
+read -p "Build ${appname} with projectm visuals? Requires Haiku nightly, building projectm from source and nebula (nvidia driver).  Selecting no will build SuperMusicThingy without projectm, and for beta5 release. y/n: "
 if [[ "$REPLY" == y ]];then
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59451-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
