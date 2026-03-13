@@ -6,13 +6,14 @@
 
 appname="SuperMusicThingy"
 depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
-read -p "
+read -p $'\e[32m
+
 Option 1: Build ${appname} with projectm visuals. 
 Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
 This script will automatically download libprojectm and nebula if not installed.
 
 
-Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): "
+Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): \e[0m'
 
 if [[ "$REPLY" == "1" ]];then
 	
@@ -36,9 +37,9 @@ fi
 projectm_source_directory="/tmp/projectm"
 
 if [[ ! -d "/tmp/SuperMusicThingy" ]];then
-	read -p "SuperMusicThingy source not found. Download and install in /tmp/SuperMusicThingy y/n: "
+	read -p $'\e[32mSuperMusicThingy source not found. Download and install in /tmp/SuperMusicThingy y/n: \e[0m'
 else
-	read -p "/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: "
+	read -p $'\e[32m/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: \e[0m'
 fi
 
 if [[ "$REPLY" == "y" ]];then
@@ -58,9 +59,9 @@ fi
 if [[ ! "$skipprojectm" ]];then 
 
 	if [[ ! -d "$projectm_source_directory" ]];then
-		read -p "Required libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
+		read -p $'\e[32mRequired libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: \e[0m' choice1
 	else
-		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " chorice2
+		read -p $'\e[32m/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: \e[0m' chorice2
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr $projectm_source_directory
@@ -122,10 +123,7 @@ source-urls {
 " > /tmp/SuperMusicThingy/hpkgs/${appname}/.PackageInfo
 	 
 fi
-
-    
-
-
+ 
 cd /tmp/SuperMusicThingy
 cmake -B build_${appname} ${buildspec}
 cmake --build build_${appname}    
@@ -143,15 +141,15 @@ mv /tmp/SuperMusicThingy/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ ! "$skipprojectm" ]];then 
 	if [[ -d "$projectm_source_directory" ]];then
-		read -p "Delete projectm source? y/n: "
+		read -p $'\e[32mDelete projectm source? y/n: \e[0m'
 	fi
 	if [[ $REPLY == y ]];then
-		rm -fr "${projectm_source_directory}*"
+		rm -fr "${projectm_source_directory}"
 	fi
 fi
 
 if [[ -d /tmp/SuperMusicThingy ]];then
-	read -p "Delete SuperMusicThingy source? y/n: "
+	read -p $'\e[32mDelete SuperMusicThingy source? y/n: \e[0m'
 fi
 
 if [[ "$REPLY" == "y" ]];then
@@ -160,17 +158,16 @@ fi
 
 if [[ ! "$skipprojectm" ]];then 
 	if pkgman search libglvnd | grep -q "libglvnd"; then
-    	echo "libglvnd found."
+    	echo $'\e[32mlibglvnd found.\e[0m'
 		else
-    		read -p "libglvnd not found. Download and install? y/n: " glvnd
+    		read -p $'\e[32mlibglvnd not found. Download and install? y/n: \e[0m' glvnd
 	fi
 	if [[ "$glvnd" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
-		echo "Downloading libglvnd..."
+		echo $'\e[32mDownloading libglvnd... \e[0m'
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		echo "Successfully downloaded to: $TMP_PKG"
-    		read -p "Would you like to install this package now? (y/n): "
+    		read -p $'\e[32mDownload complete. Install package now? (y/n):  \e[0m'
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        		rm "$TMP_PKG"
@@ -184,23 +181,22 @@ if [[ ! "$skipprojectm" ]];then
 
 
 	if pkgman search nebula | grep -q "nebula"; then
-   		 echo "nebula found."
+   		 echo  $'\e[32mnebula found.\e[0m'
 		else
-   		 read -p "nebula not found. Download and install? y/n: " nebula
+   		 read -p $'\e[32mnebula not found. Download and install? y/n: \e[0m' nebula
 	fi
 	if [[ "$nebula" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
-		echo "Downloading nebula driver..."
+		echo $'\e[32mDownloading nebula driver...\e[0m'
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		echo "Successfully downloaded to: $TMP_PKG"
-    		read -p "Would you like to install this package now? (y/n): " 
+    		read -p $'\e[32mDownload complete. Install package now? (y/n):  \e[0m'
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        			rm "$TMP_PKG"
     		fi
 			else
-    			echo "Download failed!"
+    			echo $'\e[32mDownload failed!\e[0m'
     			rm "$TMP_PKG"
 		fi
 	fi
