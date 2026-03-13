@@ -169,8 +169,7 @@ if [[ ! "$skipprojectm" ]];then
 		echo "Downloading libglvnd..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		echo "Successfully downloaded to: $TMP_PKG"
-    		read -p "Would you like to install this package now? (y/n): "
+    		read -p "Download complete. Would you like to install this package now? (y/n): " 
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        		rm "$TMP_PKG"
@@ -193,8 +192,7 @@ if [[ ! "$skipprojectm" ]];then
 		echo "Downloading nebula driver..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		echo "Successfully downloaded to: $TMP_PKG"
-    		read -p "Would you like to install this package now? (y/n): " 
+    		read -p "Download complete. Would you like to install this package now? (y/n): " 
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        			rm "$TMP_PKG"
