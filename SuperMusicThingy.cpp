@@ -1858,7 +1858,7 @@ void init_visuals() {
 
                     #ifdef USE_PROJECTM
                     case 'v':
-                        if (!visualsRunning && cfg.showVisuals) { init_visuals(); }
+                        if (!visualsRunning && cfg.showVisuals && !is_native_tty()) { init_visuals(); }
 
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
@@ -1875,7 +1875,7 @@ void init_visuals() {
                     #ifdef USE_PROJECTM
                     case 'k': {
                         // Don't crash if visual screen not open
-                        if (!visualsRunning) break;
+                        if (!visualsRunning and !is_native_tty()) break;
 
                         // 1. Get current window flags
                         uint32_t flags = SDL_GetWindowFlags(visualWin);
