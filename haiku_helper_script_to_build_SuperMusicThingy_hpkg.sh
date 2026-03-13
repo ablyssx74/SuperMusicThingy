@@ -2,6 +2,7 @@
 #
 # Automated build script
 # Downloads git repo, builds, then builds Haiku hpkg file on Desktop
+pkgman install mpv_devel curl_devel openssl3_devel nlohmann_json git grep
 
 appname="SuperMusicThingy"
 read -p "Build ${appname} with projectm visuals? Requires building projectm from source and nebula (nvidia driver). y/n: "
@@ -106,7 +107,7 @@ source-urls {
 fi
 
     
-pkgman install mpv_devel curl_devel openssl3_devel nlohmann_json
+
 
 cd /tmp/SuperMusicThingy
 cmake -B build_${appname} ${buildspec}
