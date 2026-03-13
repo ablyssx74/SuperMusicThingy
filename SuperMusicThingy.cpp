@@ -118,14 +118,17 @@ SDL_GLContext glContext = nullptr;
 float audioBuffer[2048];
 
 // --- Global UI Colors ---
+const std::string SCLR = "\033[H\033[J";
+const std::string CLEARALL = "\033[2J\033[3J\033[H";
+const std::string BGTRUEBLK = "\033[48;2;0;0;0m";
 const std::string BLUE   = "\033[94m";
 const std::string RED    = "\033[91m";
 const std::string ORANGE = "\033[93m";
 const std::string WHITE  = "\033[97m";
 const std::string YELLOW = "\033[33m";
-const std::string GREEN  = "\033[38;5;46m";
+const std::string GREEN  = "\033[92m";
 const std::string BLACK  = "\033[2J\033[3J\033[H";
-const std::string niceGreenColor ="\033[92m";
+const std::string niceGreenColor = "\033[92m";
 const std::string RESET  = "\033[0m";
 
 enum MenuState { NONE, FAVORITES, HELP, CONFIG };
@@ -139,14 +142,14 @@ bool is_native_tty() {
 std::string get_ui_header(int rows) {
 
     std::stringstream header;
-    // 1. Set background to TrueColor Black
-    // 2. Set foreground to BLUE
+
+
     if (is_native_tty()) {
         // Safe mode for TTY2 (Ctrl+Alt+F2)
-            header << "\033[H\033[J";
+            header << SCLR;
     } else {
         // High-end mode for xterm/desktop
-        header << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
+        header << BGTRUEBLK << BLUE << CLEARALL;
     }
 
     header << "\033[1;32H" << BLUE << "SuperMusicThingy\n";
@@ -607,12 +610,12 @@ void init_visuals() {
         double vol;
         mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
         int filled = (int)(vol / 10);
-        std::string bar = "[";
+        std::string bar = BLUE + "[";
         for (int i = 0; i < 10; ++i) {
-            if (i < filled) bar += "|";
+            if (i < filled) bar += GREEN + "|";
             else bar += ".";
         }
-        bar += "]";
+        bar += BLUE + "]";
         return bar;
     }
 
@@ -698,7 +701,7 @@ void init_visuals() {
                     // 2. NEW: Sync the Visualizer Window if "Show Visuals" was toggled
                     if (items[selectedConfig].label == "Show Visuals") {
                         if (cfg.showVisuals) {
-                            if (!visualsRunning) init_visuals();
+                            if (!visualsRunning and !is_native_tty()) init_visuals();
                         } else {
                             if (visualsRunning) {
                                 visualsRunning = false;
@@ -921,6 +924,8 @@ void init_visuals() {
         if (cfg.quality == "low")     return "32k";
         return "64k"; // Default for "high"
     }
+
+
     // Wrapper functons
     int draw_wrapped_currentSong(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
         if (text.empty() || text == "None") return 0;
@@ -929,24 +934,40 @@ void init_visuals() {
         std::string word;
         std::string currentLine = "";
         int linesUsed = 1;
-        int maxLineWidth = termWidth - 15;
 
-        ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+        // Label length (" * Description: ") is 16 chars.
+        // If we start at col 10, the first line's text starts at col 26.
+        // To keep things uniform, let's make the max width relative to col 13.
+        int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
 
+        // 1. Position and print the BLUE label and GREEN start
+        ss << "\033[" << startRow << ";10H" << BLUE << " * Title: " << GREEN;
+
+        bool firstLine = true;
         while (words >> word) {
-            if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            // Calculate available space on the CURRENT line
+            int availableSpace = firstLine ? (maxLineWidth - 13) : maxLineWidth;
+
+            if (currentLine.length() + word.length() + 1 <= (size_t)availableSpace) {
                 if (!currentLine.empty()) currentLine += " ";
                 currentLine += word;
             } else {
-                ss << currentLine; // Print the line
+                // Print what we have
+                ss << currentLine;
                 linesUsed++;
                 currentLine = word;
-                ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+                firstLine = false;
+
+                // Move to next row, column 13, and re-trigger GREEN
+                ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
             }
         }
-        ss << currentLine; // Print final line
+
+        // Print the final chunk and reset terminal colors
+        ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
+
 
     int draw_wrapped_description(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
         if (text.empty() || text == "None") return 0;
@@ -955,25 +976,80 @@ void init_visuals() {
         std::string word;
         std::string currentLine = "";
         int linesUsed = 1;
-        int maxLineWidth = termWidth - 15;
 
-        ss << "\033[" << startRow << ";10H" << " * "; // Start first line with bullet
+        // Label length (" * Description: ") is 16 chars.
+        // If we start at col 10, the first line's text starts at col 26.
+        // To keep things uniform, let's make the max width relative to col 13.
+        int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
 
+        // 1. Position and print the BLUE label and GREEN start
+        ss << "\033[" << startRow << ";10H" << BLUE << " * Description: " << GREEN;
+
+        bool firstLine = true;
         while (words >> word) {
-            if (currentLine.length() + word.length() + 1 <= (size_t)maxLineWidth) {
+            // Calculate available space on the CURRENT line
+            int availableSpace = firstLine ? (maxLineWidth - 13) : maxLineWidth;
+
+            if (currentLine.length() + word.length() + 1 <= (size_t)availableSpace) {
                 if (!currentLine.empty()) currentLine += " ";
                 currentLine += word;
             } else {
-                ss << currentLine; // Print the line
+                // Print what we have
+                ss << currentLine;
                 linesUsed++;
                 currentLine = word;
-                ss << "\033[" << (startRow + linesUsed - 1) << ";13H"; // Move to next row, indent 10
+                firstLine = false;
+
+                // Move to next row, column 13, and re-trigger GREEN
+                ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
             }
         }
-        ss << currentLine; // Print final line
+
+        // Print the final chunk and reset terminal colors
+        ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
 
+    int draw_wrapped_currentPresetName(std::stringstream& ss, const std::string& text, int termWidth, int startRow) {
+        if (text.empty() || text == "None") return 0;
+
+        std::stringstream words(text);
+        std::string word;
+        std::string currentLine = "";
+        int linesUsed = 1;
+
+        // Label length (" * Description: ") is 16 chars.
+        // If we start at col 10, the first line's text starts at col 26.
+        // To keep things uniform, let's make the max width relative to col 13.
+        int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
+
+        // 1. Position and print the BLUE label and GREEN start
+        ss << "\033[" << startRow << ";10H" << BLUE << " * Description: " << GREEN;
+
+        bool firstLine = true;
+        while (words >> word) {
+            // Calculate available space on the CURRENT line
+            int availableSpace = firstLine ? (maxLineWidth - 13) : maxLineWidth;
+
+            if (currentLine.length() + word.length() + 1 <= (size_t)availableSpace) {
+                if (!currentLine.empty()) currentLine += " ";
+                currentLine += word;
+            } else {
+                // Print what we have
+                ss << currentLine;
+                linesUsed++;
+                currentLine = word;
+                firstLine = false;
+
+                // Move to next row, column 13, and re-trigger GREEN
+                ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
+            }
+        }
+
+        // Print the final chunk and reset terminal colors
+        ss << currentLine << BGTRUEBLK;
+        return linesUsed;
+    }
 
     #ifdef USE_PROJECTM
     void update_visuals_logic() {
@@ -1040,12 +1116,19 @@ void init_visuals() {
         buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
         currentRow++;
         #ifdef USE_PROJECTM
+        int currentPresetNameHeight = draw_wrapped_currentPresetName(buffer, currentPresetName, w.ws_col, currentRow);
+        if (currentPresetNameHeight > 0) {
+            currentRow += currentPresetNameHeight; // Push the next items down by the height of the desc
+        }
+        #endif
+        /*
+        #ifdef USE_PROJECTM
         if (visualsRunning) {
             buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Milkdrop: " << niceGreenColor <<  currentPresetName << "\n";
             currentRow++;
         }
         #endif
-
+        */
         buffer << get_ui_footer(w.ws_row);
 
         buffer << RESET;
@@ -1314,7 +1397,7 @@ void init_visuals() {
 
             if (!cmd.empty()) { system(cmd.c_str()); return 0; }
             return 1;
-        }
+            }
 
         // 4. ACTUAL PLAYER INITIALIZATION (Runs only once)
         init_mpv();        // Start MPV engine
@@ -1323,8 +1406,8 @@ void init_visuals() {
 
 
         #ifdef USE_PROJECTM
-        if (cfg.showVisuals) {
-            init_visuals(); // Open the eyes and ears
+       if (cfg.showVisuals and !is_native_tty()) {
+          init_visuals(); // Open the eyes and ears
         }
         #endif
 
@@ -1339,8 +1422,6 @@ void init_visuals() {
             play_random();
         }
 
-
-
         // UI Start
         system("stty raw -echo");
         draw_ui();
@@ -1348,9 +1429,6 @@ void init_visuals() {
         // 5. THE MAIN LOOP
         while (true) {
             bool needsRedraw = false;
-
-
-
 
             // A. --- VISUALS LOGIC ---
             #ifdef USE_PROJECTM
