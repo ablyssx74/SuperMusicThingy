@@ -12,7 +12,7 @@ Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvi
 This script will automatically download libprojectm and nebula if not installed.
 
 
-Option 2: Build SuperMusicThingy without projectm, and for normal Haiku beta5 release.  (select 1 or 2): "
+Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): "
 
 if [[ "$REPLY" == "1" ]];then
 	
