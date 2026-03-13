@@ -1024,7 +1024,7 @@ void init_visuals() {
         int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
 
         // 1. Position and print the BLUE label and GREEN start
-        ss << "\033[" << startRow << ";10H" << BLUE << " * Description: " << GREEN;
+        ss << "\033[" << startRow << ";10H" << BLUE << " * Milkdrop: " << GREEN;
 
         bool firstLine = true;
         while (words >> word) {
