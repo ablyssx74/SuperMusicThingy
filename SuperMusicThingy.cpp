@@ -657,7 +657,7 @@ void init_visuals() {
         // 2. Draw the Quality
         int qIdx = items.size();
         buffer << "\033[" << (10 + qIdx) << ";10H";
-        if (selectedConfig == qIdx) buffer << WHITE << " > " << BLUE;
+        if (selectedConfig == qIdx) buffer << ORANGE << " > " << BLUE;
         else buffer << "   ";
 
         buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
@@ -675,8 +675,8 @@ void init_visuals() {
 
             // Global keys
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
-            if (c == '+') {  set_volume('+'); return false; }
-            if (c == '-') {  set_volume('-'); return false; }
+            if (c == '+') { set_volume('+'); return false; }
+            if (c == '-') { set_volume('-'); return false; }
             if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
             if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
             if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
@@ -864,7 +864,7 @@ void init_visuals() {
             for (int i = 0; i < maxVisible && (i + scrollOffset) < (int)favUrls.size(); ++i) {
                 int idx = i + scrollOffset;
                 buffer << "\033[" << (7 + i) << ";19H";
-                if (idx == selectedFav) buffer << BLUE << " > " <<  ORANGE << favUrls[idx] << BLUE;
+                if (idx == selectedFav) buffer << ORANGE << " > " <<  ORANGE << favUrls[idx] << BLUE;
                 else buffer << "   " << favUrls[idx];
             }
         }
@@ -881,9 +881,10 @@ void init_visuals() {
             char c = getchar();
             // Global Keys
             // Global keys
+
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
-            if (c == '+') {  set_volume('+'); return false; }
-            if (c == '-') {  set_volume('-'); return false; }
+            if (c == '+') { set_volume('+'); return false; }
+            if (c == '-') { set_volume('-'); return false; }
             if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
             if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
             if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
