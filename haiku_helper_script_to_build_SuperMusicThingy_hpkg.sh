@@ -3,20 +3,23 @@
 # Automated build script
 # Downloads git repo, builds, then builds Haiku hpkg file on Desktop
 
-
+#cmd:make
+#cmd:ld 
 appname="SuperMusicThingy"
-depends="install haiku_devel pkgconfig cmake gcc cmd:ld cmd:make mpv_devel curl_devel openssl3_devel nlohmann_json git grep"
+depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 read -p "
 Build ${appname} with projectm visuals? Requires Haiku nightly, building projectm from source and nebula (nvidia driver).
 
 Selecting no will build SuperMusicThingy without projectm, and for normal Haiku beta5 release. y/n: "
 
 if [[ "$REPLY" == y ]];then
-	pkgman ${depends}
+	
+	pkgman ${depends} grep
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59451-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
 else
+	
 	pkgman ${depends}
 	appname="SuperMusicThingy"
 	requires=("haiku")
