@@ -1233,10 +1233,14 @@ void init_visuals() {
                 }
             }
         }
+        double original_vol;
+        mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
+        fade_volume(mpv, 0, 300);
 
         currentSong = "Loading Favorite...";
         const char *cmd[] = {"loadfile", url.c_str(), NULL};
         mpv_command(mpv, cmd);
+        fade_volume(mpv, original_vol, 500);
     }
 
 
