@@ -95,7 +95,7 @@ if [[ ! "$skipprojectm" ]];then
 		mkdir build
 		cd build
 		[[ "$non-packaged" == true ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		[[ "$non-packaged" == false ]] &&&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		[[ "$non-packaged" == false ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
