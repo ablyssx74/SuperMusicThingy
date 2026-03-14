@@ -55,7 +55,7 @@ if [[ "$choice1" == "y" ]];then
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
 	cd ${supermusicthingyDir}
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
-	mkdir -p ${supermusicthingyDir}hpkgs/${appname}/bin
+	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
