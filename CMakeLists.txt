@@ -23,12 +23,7 @@ find_package(PkgConfig REQUIRED)
 if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
-    list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/lib)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/lib/pkgconfig)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/include)
-
-      
+    list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)      
     target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include)
 endif()
 
@@ -64,7 +59,7 @@ endif()
 
 if(ENABLE_PROJECTM)
     find_package(PkgConfig REQUIRED)
-    set(MY_PKG_PATHS "/usr/local/lib/pkgconfig:/boot/home/config/non-packaged/lib/pkgconfig")
+    set(MY_PKG_PATHS "/usr/lib/pkgconfig:/usr/local/lib/pkgconfig:/boot/home/config/non-packaged/lib/pkgconfig:/tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/lib/pkgconfig")
     
     if(HAIKU)
         set(DUMMY_PC_PATH "${CMAKE_BINARY_DIR}/pkgconfig")
