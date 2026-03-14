@@ -88,10 +88,10 @@ if [[ ! "$skipprojectm" ]];then
         #-DCMAKE_INSTALL_INCLUDEDIR=my_custom_include_path
 		#-DCMAKE_INSTALL_LIBDIR=my_custom_lib_path
 		#cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname}/data/projectm ..
-		mkdir -p /data/projectm
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/data/projectm ..
+
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/system/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
-		mv /data/projectm ${supermusicthingyDir}/hpkgs/${appname}/
+
  fi
 fi
 
