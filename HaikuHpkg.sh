@@ -58,7 +58,7 @@ if [[ "$choice1" == "y" ]];then
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
-	[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
+	#[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
 	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
 fi
@@ -87,10 +87,11 @@ if [[ ! "$skipprojectm" ]];then
         #-DCMAKE_INSTALL_PREFIX=/usr/local \
         #-DCMAKE_INSTALL_INCLUDEDIR=my_custom_include_path
 		#-DCMAKE_INSTALL_LIBDIR=my_custom_lib_path
-		
-
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname}/data/projectm ..
+		#cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname}/data/projectm ..
+		mkdir -p /data/projectm
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/data/projectm ..
 		cmake --build . -- -j && cmake --build . --target install 
+		mv /data/projectm ${supermusicthingyDir}/hpkgs/${appname}/
  fi
 fi
 
