@@ -52,8 +52,8 @@ fi
 	fi
 
 if [[ "$choice1" == "y" ]];then	
-	cd /tmp/
-	git clone https://github.com/ablyssx74/SuperMusicThingy.git
+	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
+	cd ${supermusicthingyDir}
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
 	mkdir -p ${supermusicthingyDir}hpkgs/${appname}/bin
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
@@ -65,21 +65,20 @@ fi
 
 if [[ ! "$skipprojectm" ]];then 
 
-	if [[ ! -d /tmp/projectm ]];then
-		read -p "Required libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
+	if [[ ! -d ${projectDir} ]];then
+		read -p "Required ${projectDir}  source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
-		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+		read -p "${projectDir}  found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
-		rm -fr /tmp/projectm
+		rm -fr ${projectDir} 
 		choice1=y
 	fi
 
 	if [[ "$choice1" == "y" ]];then
 		pkgman install cmake libsdl2_devel libx11_devel
-		cd /tmp
-		git clone https://github.com/projectM-visualizer/projectm.git
-		cd projectm
+				git clone https://github.com/projectM-visualizer/projectm.git ${projectDir} 
+		cd ${projectDir} 
 		git fetch --all --tags
 		git submodule init
 		git submodule update
@@ -156,16 +155,16 @@ package create -C ${appname} ${appname}.hpkg
 mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ ! "$skipprojectm" ]];then 
-	if [[ -d /tmp/projectm ]];then
-		read -p "Delete projectm source? y/n: "
+	if [[ -d ${projectDir}  ]];then
+		read -p "Delete ${projectDir}  source? y/n: "
 	fi
 	if [[ $REPLY == y ]];then
-		rm -fr /tmp/project
+		rm -fr ${projectDir} 
 	fi
 fi
 
 if [[ -d ${supermusicthingyDir} ]];then
-	read -p "Delete SuperMusicThingy source? y/n: "
+	read -p "Delete ${supermusicthingyDir}  source? y/n: "
 fi
 
 if [[ "$REPLY" == "y" ]];then
