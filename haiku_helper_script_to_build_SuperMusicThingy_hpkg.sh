@@ -53,7 +53,6 @@ if [[ "$choice1" == "y" ]];then
 	mkdir -p /tmp/SuperMusicThingy/	
 	mkdir -p /tmp/SuperMusicThingy/hpkgs
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/non-packaged
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
@@ -83,7 +82,7 @@ if [[ ! "$skipprojectm" ]];then
 		git submodule update
 		mkdir build
 		cd build
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/${appname}/non-packaged ..
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
