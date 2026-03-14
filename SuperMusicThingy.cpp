@@ -1877,7 +1877,9 @@ void init_visuals() {
 
                    	#ifdef USE_PROJECTM
                     case 'v':
-                        if (!visualsRunning && cfg.showVisuals && !is_native_tty()) { init_visuals(); }
+                   			if (cfg.showVisuals) {
+                            if (!visualsRunning && !is_native_tty()) { init_visuals(); }
+                            }
 
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
