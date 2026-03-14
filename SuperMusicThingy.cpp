@@ -49,19 +49,6 @@
 #include <projectM-4/projectM.h>
 #endif
 
-#ifdef __HAIKU__
-#include <image.h>
-#include <OS.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <Application.h>
-#if defined(USE_PROJECTM)
-    BApplication app("application/x-vnd.SuperMusicThingyNebula");
-#else
-    BApplication app("application/x-vnd.SuperMusicThingy");
-#endif
-#endif
-
 namespace fs = std::filesystem;
 // --- Global State ---
 
@@ -70,9 +57,26 @@ uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
 void update_visuals_logic();
 
+#ifdef __HAIKU__
+#include <image.h>
+#include <OS.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <Application.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 ALCdevice *alcCaptureDevice = nullptr;
 #elif defined(USE_SDL2)
 SDL_AudioDeviceID captureDevice = 0;
+#endif
+
+
+#ifdef __HAIKU__
+#if defined(USE_PROJECTM)
+    BApplication app("application/x-vnd.SuperMusicThingyNebula");
+#else
+    BApplication app("application/x-vnd.SuperMusicThingy");
+#endif
 #endif
 
 
