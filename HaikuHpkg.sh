@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-#
-# Automated build script
-# Downloads git repo, builds, then builds Haiku hpkg file on Desktop
+
+# HaikuHpkg
+# Automated build script with user input required.
+# Downloads git repos, builds, then builds Haiku hpkg file on Desktop.
+# Copyright 2026 ablyss
+# See the The MIT License included in this folder
 
 
 appname="SuperMusicThingy"

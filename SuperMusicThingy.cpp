@@ -1,3 +1,16 @@
+/* SuperMusicThingy
+ *
+ * Copyright (c) 2026 ablyss
+ * See the The MIT License included in this folder
+ *
+ * Some AI was used to help make this possibe.
+ * Original inspiration started with a bash script
+ *
+ */
+
+
+
+
 #include <algorithm>
 #include <curl/curl.h>
 #include <csignal>
@@ -23,8 +36,6 @@
 #include <sys/types.h>
 #include <vector>
 
-
-
 #ifdef USE_SDL2
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -45,9 +56,6 @@ const uint32_t PRESET_DURATION = 30000;
 uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
 void update_visuals_logic();
-
-
-
 
 
 #ifdef __HAIKU__
@@ -1096,12 +1104,12 @@ void init_visuals() {
 
         int currentSongHeight = draw_wrapped_currentSong(buffer, currentSong, w.ws_col, currentRow);
         if (currentSongHeight > 0) {
-            currentRow += currentSongHeight; // Push the next items down by the height of the desc
+            currentRow += currentSongHeight;
         }
 
         int descHeight = draw_wrapped_description(buffer, currentDesc, w.ws_col, currentRow);
         if (descHeight > 0) {
-            currentRow += descHeight; // Push the next items down by the height of the desc
+            currentRow += descHeight;
         }
 
 
@@ -1119,19 +1127,12 @@ void init_visuals() {
         buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
         currentRow++;
         #ifdef USE_PROJECTM
+        if (cfg.showVisuals) {
         int currentPresetNameHeight = draw_wrapped_currentPresetName(buffer, currentPresetName, w.ws_col, currentRow);
         if (currentPresetNameHeight > 0) {
-            currentRow += currentPresetNameHeight; // Push the next items down by the height of the desc
+            currentRow += currentPresetNameHeight; }
         }
         #endif
-        /*
-        #ifdef USE_PROJECTM
-        if (visualsRunning) {
-            buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Milkdrop: " << niceGreenColor <<  currentPresetName << "\n";
-            currentRow++;
-        }
-        #endif
-        */
         buffer << get_ui_footer(w.ws_row);
 
         buffer << RESET;
