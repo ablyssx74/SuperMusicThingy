@@ -139,8 +139,8 @@ rc -o ${appname}.rsrc ${appname}.rdef
 xres -o build_${appname}/SuperMusicThingy ${appname}.rsrc     
 mv -f build_${appname}/SuperMusicThingy hpkgs/${appname}/apps/${appname}
 mimeset -f hpkgs/${appname}/apps/${appname}
-ln -s /boot/system/apps/${appname} hpkgs/${appname}/bin/${appname}
-ln -s /boot/system/apps/${appname} hpkgs/${appname}/data/deskbar/menu/Applications/${appname}
+ln -sf /boot/system/apps/${appname} hpkgs/${appname}/bin/${appname}
+ln -sf /boot/system/apps/${appname} hpkgs/${appname}/data/deskbar/menu/Applications/${appname}
 
 
 cd /tmp/SuperMusicThingy/hpkgs/
