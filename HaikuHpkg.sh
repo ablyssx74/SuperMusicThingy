@@ -54,6 +54,7 @@ if [[ "$choice1" == "y" ]];then
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
+	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/projectm
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/deskbar/menu/Applications
 	[[ "$skipprojectm" ]] && touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
@@ -87,7 +88,7 @@ if [[ ! "$skipprojectm" ]];then
 		#-DCMAKE_INSTALL_LIBDIR=my_custom_lib_path
 		
 
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/${appname} ..
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/data/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
