@@ -82,6 +82,11 @@ if [[ ! "$skipprojectm" ]];then
 		git submodule update
 		mkdir build
 		cd build
+        #-DCMAKE_INSTALL_PREFIX=/usr/local \
+        #-DCMAKE_INSTALL_INCLUDEDIR=my_custom_include_path
+		#-DCMAKE_INSTALL_LIBDIR=my_custom_lib_path
+		
+
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
