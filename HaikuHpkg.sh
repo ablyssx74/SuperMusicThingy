@@ -52,9 +52,6 @@ fi
 if [[ "$choice1" == "y" ]];then	
 	cd /tmp/
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
-	mkdir -p /tmp/SuperMusicThingy/	
-	mkdir -p /tmp/SuperMusicThingy/hpkgs
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
