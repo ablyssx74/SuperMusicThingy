@@ -61,7 +61,7 @@ if [[ ! "$skipprojectm" ]];then
 	if [[ ! -d /tmp/projectm ]];then
 		read -p "Required libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
-		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " chorice2
+		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr /tmp/projectm
