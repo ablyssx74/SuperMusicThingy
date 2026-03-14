@@ -21,8 +21,6 @@ add_executable(SuperMusicThingy SuperMusicThingy.cpp)
 find_package(PkgConfig REQUIRED)
 
 if(HAIKU)
-    find_library(BE_LIBRARY be)
-    target_link_libraries(SuperMusicThingy PRIVATE ${BE_LIBRARY})
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)      
