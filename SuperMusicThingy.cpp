@@ -57,6 +57,15 @@ uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
 void update_visuals_logic();
 
+#if defined(USE_PROJECTM) && defined(__HAIKU__)
+BApplication app("application/x-vnd.SuperMusicThingyNebula");i
+#endif
+#ifndef USE_PROJECTM
+    #ifdef __HAIKU__
+        BApplication app("application/x-vnd.SuperMusicThingy");i
+    #endif
+#endif
+
 
 #ifdef __HAIKU__
 #include <image.h>
