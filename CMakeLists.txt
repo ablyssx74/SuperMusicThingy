@@ -24,9 +24,9 @@ if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingy/lib)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingy/lib/pkgconfig)
-    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingy/include)
+    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/lib)
+    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/lib/pkgconfig)
+    list(APPEND CMAKE_INCLUDE_PATH /tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/include)
 
       
     target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include)
