@@ -86,7 +86,7 @@ if [[ ! "$skipprojectm" ]];then
 		cd build
         #cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 	
-	    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
+	    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
