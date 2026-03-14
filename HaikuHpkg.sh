@@ -39,11 +39,11 @@ fi
 
 if [[ ! $skipprojectm ]];then
 read -p "
-Install projectm in /boot/home/config/non-packaged/ for rebulding and testing other projectm uses and support.  - select 1
-Or install projectm inside the hpkg package only just for this app. - select 2: "  select
+Install projectm in /boot/home/config/non-packaged/ for rebulding, testing and other projectm uses and support.  - select 1
+Else, projectm will be installed inside the hpkg package only for this app. - select 2: "  select
 fi
-[[ "$select" == 1 ]] && projectDir="/boot/home/config/non-packaged" && non-packaged=true
-[[ "$select" == 2 ]] && projectDir="/tmp/projectm"
+[[ "$select" == 1 ]] && non-packaged=true
+
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
 	read -p "${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
