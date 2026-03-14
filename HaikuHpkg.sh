@@ -27,7 +27,6 @@ if [[ "$REPLY" == "1" ]];then
 elif [[ "$REPLY" == "2" ]];then
 	
 	pkgman install ${depends}
-	appname="SuperMusicThingy"
 	requires=("haiku")
 	buildspec="-DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF"
 	skipprojectm="true"
