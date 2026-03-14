@@ -56,7 +56,8 @@ if [[ "$choice1" == "y" ]];then
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
 	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/deskbar/menu/Applications
-	touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
+	[[ "$skipprojectm" ]] && touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
+	[[ ! "$skipprojectm" ]] && touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
 fi
 
 if [[ ! "$skipprojectm" ]];then 
