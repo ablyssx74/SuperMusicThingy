@@ -24,7 +24,7 @@ if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)      
-    target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include:/boot/system/data/projectm/include)
+    target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include:/boot/system/data/projectm/include:/tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/include)
 endif()
 
 pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
@@ -59,7 +59,7 @@ endif()
 
 if(ENABLE_PROJECTM)
     find_package(PkgConfig REQUIRED)
-    set(MY_PKG_PATHS "/usr/lib/pkgconfig:/usr/local/lib/pkgconfig:/boot/home/config/non-packaged/lib/pkgconfig:/boot/system/data/projectm/lib/pkgconfig")
+    set(MY_PKG_PATHS "/usr/lib/pkgconfig:/usr/local/lib/pkgconfig:/boot/home/config/non-packaged/lib/pkgconfig:/boot/system/data/projectm/lib/pkgconfig:/tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebua/lib/pkgconfig")
     
     if(HAIKU)
         set(DUMMY_PC_PATH "${CMAKE_BINARY_DIR}/pkgconfig")
