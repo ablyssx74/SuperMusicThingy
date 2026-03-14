@@ -8,7 +8,7 @@
 
 
 appname="SuperMusicThingy"
-depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
+depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 
 read -p "
 Option 1: Build ${appname} with projectm visuals. 
@@ -20,13 +20,13 @@ Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 rel
 
 if [[ "$REPLY" == "1" ]];then
 	
-	pkgman ${depends} grep
+	pkgman install ${depends} grep
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59451-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
 elif [[ "$REPLY" == "2" ]];then
 	
-	pkgman ${depends}
+	pkgman install ${depends}
 	appname="SuperMusicThingy"
 	requires=("haiku")
 	buildspec="-DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF"
