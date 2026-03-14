@@ -58,7 +58,7 @@ fi
 
 if [[ ! "$skipprojectm" ]];then 
 
-	if [[ ! -d "$projectm_source_directory" ]];then
+	if [[ ! -d /tmp/projectm ]];then
 		read -p "Required libprojectM-4 source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
 		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " chorice2
@@ -143,7 +143,7 @@ package create -C ${appname} ${appname}.hpkg
 mv /tmp/SuperMusicThingy/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ ! "$skipprojectm" ]];then 
-	if [[ -d "$projectm_source_directory" ]];then
+	if [[ -d /tmp/projectm ]];then
 		read -p "Delete projectm source? y/n: "
 	fi
 	if [[ $REPLY == y ]];then
