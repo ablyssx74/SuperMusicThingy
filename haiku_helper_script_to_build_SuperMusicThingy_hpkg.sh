@@ -37,13 +37,17 @@ fi
 
 
 if [[ ! -d "/tmp/SuperMusicThingy" ]];then
-	read -p "SuperMusicThingy source not found. Download and install in /tmp/SuperMusicThingy y/n: "
+	read -p "SuperMusicThingy source not found. Download and install in /tmp/SuperMusicThingy y/n: " choice1
 else
-	read -p "/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: "
+	read -p "/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 fi
 
-if [[ "$REPLY" == "y" ]];then
-	[[ -e /tmp/SuperMusicThingy ]] && rm -fr /tmp/SuperMusicThingy
+	if [[ "$choice2" == "y" ]];then
+		rm -fr /tmp/SuperMusicThingy
+		choice1=y
+	fi
+
+if [[ "$choice1" == "y" ]];then	
 	cd /tmp/
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
 	mkdir -p /tmp/SuperMusicThingy/	
@@ -65,6 +69,7 @@ if [[ ! "$skipprojectm" ]];then
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr /tmp/projectm
+		choice1=y
 	fi
 
 	if [[ "$choice1" == "y" ]];then
