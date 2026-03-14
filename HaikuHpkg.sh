@@ -14,7 +14,7 @@ supermusicthingyDir="/tmp/SuperMusicThingy"
 
 read -p ">>Option 1: Build ${appname} with projectm visuals. 
 Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
-This script will automatically download libprojectm and nebula if not installed.
+This script will try to automatically download libprojectm and nebula if not already installed.
 
 >>Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): "
 
@@ -36,8 +36,9 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ for rebulding, testing and other projectm uses and support. 
->>Option 2: projectm will be installed inside the hpkg package only for this app.  (select 1 or 2):  "  keepProjectm
+read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ for rebuilding, testing and other projectm uses and support. 
+>>Option 2: projectm will be installed inside the hpkg package only for this app.  
+>>Option 3: Don't install projectm because it is already installed in /boot/home/config/non-packaged/  (select 1, 2, 3):  "  thisProjectm
 fi
 
 
@@ -65,7 +66,7 @@ if [[ "$choice1" == "y" ]];then
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
 fi
 
-if [[ ! "$skipprojectm" ]];then 
+if [[ ! "$skipprojectm" && "$thisProjectm" != "3" ]];then 
 
 	if [[ ! -d ${projectDir} ]];then
 		read -p ">>Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
@@ -87,8 +88,8 @@ if [[ ! "$skipprojectm" ]];then
 		mkdir build
 		cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
-		[[ "$keepProjectm" == "1" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		[[ "$keepProjectm" == "2" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		[[ "$thisProjectm" == "1" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
+		[[ "$thisProjectm" == "2" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
