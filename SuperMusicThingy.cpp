@@ -71,15 +71,6 @@ SDL_AudioDeviceID captureDevice = 0;
 #endif
 
 
-#ifdef __HAIKU__
-#if defined(USE_PROJECTM)
-    BApplication app("application/x-vnd.SuperMusicThingyNebula");
-#else
-    BApplication app("application/x-vnd.SuperMusicThingy");
-#endif
-#endif
-
-
 void cleanup_capture_device() {
     #ifdef __HAIKU__
     if (alcCaptureDevice) {
