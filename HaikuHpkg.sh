@@ -37,8 +37,12 @@ elif [[ "$REPLY" == "2" ]];then
 		exit 1
 fi
 
-
-
+if [[ ! $skipprojectm ]];then
+read -p "Install projectm in /boot/home/config/non-packaged/ for rebulding and testing other projectm uses and support.  - select 1
+Or install projectm inside the hpkg package only just for this app. - select 2: "  select
+fi
+[[ "$select" == 1 ]] && projectDir="/boot/home/config/non-packaged" && non-packaged=true
+[[ "$select" == 2 ]] && projectDir="/tmp/projectm"
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
 	read -p "${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
@@ -84,9 +88,8 @@ if [[ ! "$skipprojectm" ]];then
 		git submodule update
 		mkdir build
 		cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-	
-	   # cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		[[ "$non-packaged" == true ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
+		[[ ! "$non-packaged"  ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
