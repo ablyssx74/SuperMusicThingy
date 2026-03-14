@@ -43,6 +43,7 @@ Install projectm in /boot/home/config/non-packaged/ for rebulding, testing and o
 Else, projectm will be installed inside the hpkg package only for this app. - select 2: "  select
 fi
 [[ "$select" == 1 ]] && non-packaged=true
+[[ "$select" == 2 ]] && non-packaged=false
 
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
@@ -90,7 +91,7 @@ if [[ ! "$skipprojectm" ]];then
 		mkdir build
 		cd build
 		[[ "$non-packaged" == true ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		[[ ! "$non-packaged"  ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		[[ "$non-packaged" == false ]] &&&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
