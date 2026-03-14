@@ -24,7 +24,7 @@ if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/lib/pkgconfig)      
-    target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include:/tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/include)
+    target_include_directories(SuperMusicThingy PRIVATE /boot/home/config/non-packaged/include:/tmp/SuperMusicThingy/hpkgs/SuperMusicThingyNebula/data/projectm/include)
 endif()
 
 pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
