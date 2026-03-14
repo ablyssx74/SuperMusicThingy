@@ -38,7 +38,8 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p "Install projectm in /boot/home/config/non-packaged/ for rebulding and testing other projectm uses and support.  - select 1
+read -p "
+Install projectm in /boot/home/config/non-packaged/ for rebulding and testing other projectm uses and support.  - select 1
 Or install projectm inside the hpkg package only just for this app. - select 2: "  select
 fi
 [[ "$select" == 1 ]] && projectDir="/boot/home/config/non-packaged" && non-packaged=true
@@ -70,9 +71,9 @@ fi
 if [[ ! "$skipprojectm" ]];then 
 
 	if [[ ! -d ${projectDir} ]];then
-		read -p "Required ${projectDir}  source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
+		read -p "Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
-		read -p "${projectDir}  found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+		read -p "${projectDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr ${projectDir} 
