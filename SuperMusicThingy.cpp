@@ -57,6 +57,12 @@ uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
 void update_visuals_logic();
 
+#ifdef __HAIKU__
+#include <image.h>
+#include <OS.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+
 #if defined(USE_PROJECTM) && defined(__HAIKU__)
 BApplication app("application/x-vnd.SuperMusicThingyNebula");i
 #endif
@@ -66,12 +72,6 @@ BApplication app("application/x-vnd.SuperMusicThingyNebula");i
     #endif
 #endif
 
-
-#ifdef __HAIKU__
-#include <image.h>
-#include <OS.h>
-#include <AL/al.h>
-#include <AL/alc.h>
 ALCdevice *alcCaptureDevice = nullptr;
 #elif defined(USE_SDL2)
 SDL_AudioDeviceID captureDevice = 0;
