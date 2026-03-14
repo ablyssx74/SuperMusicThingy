@@ -6,8 +6,7 @@
 
 appname="SuperMusicThingy"
 depends="install haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
-projectm_source_directory=/tmp/projectm
-SuperMusicThingy_directory=/tmp/SuperMusicThingy
+
 read -p "
 Option 1: Build ${appname} with projectm visuals. 
 Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
@@ -44,7 +43,7 @@ else
 fi
 
 if [[ "$REPLY" == "y" ]];then
-	[[ -e /tmp/SuperMusicThingy ]] && rm -fr ${SuperMusicThingy_directory}
+	[[ -e /tmp/SuperMusicThingy ]] && rm -fr /tmp/SuperMusicThingy
 	cd /tmp/
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
 	mkdir -p /tmp/SuperMusicThingy/	
@@ -65,7 +64,7 @@ if [[ ! "$skipprojectm" ]];then
 		read -p "/tmp/libprojectm found. Deleteing this might help build problems. Delete and reinstall? y/n: " chorice2
 	fi
 	if [[ "$choice2" == "y" ]];then
-		rm -fr $projectm_source_directory
+		rm -fr /tmp/projectm
 	fi
 
 	if [[ "$choice1" == "y" ]];then
@@ -148,7 +147,7 @@ if [[ ! "$skipprojectm" ]];then
 		read -p "Delete projectm source? y/n: "
 	fi
 	if [[ $REPLY == y ]];then
-		rm -fr ${projectm_source_directory}
+		rm -fr /tmp/project
 	fi
 fi
 
@@ -157,7 +156,7 @@ if [[ -d /tmp/SuperMusicThingy ]];then
 fi
 
 if [[ "$REPLY" == "y" ]];then
-	rm -fr ${SuperMusicThingy_directory}
+	rm -fr /tmp/SuperMusicThingy
 fi
 
 if [[ ! "$skipprojectm" ]];then 
