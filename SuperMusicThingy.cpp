@@ -1300,7 +1300,13 @@ void init_visuals() {
 
         std::string cmd;
         #ifdef __HAIKU__
-        cmd = "notify --title \"SuperMusicThingy\" \"" + station + ": " + song + "\" &";
+        	#ifdef USE_PROJECTM
+        	cmd = "notify --icon \"/boot/system/data/SuperMusicThingyNebula/icon/icon_24px.png\" --title \"SuperMusicThingyNebula\" \"" + station + ": " + song + "\" &";
+        	#endif
+        	#ifndef USE_PROJECTM
+        	cmd = "notify --icon \"/boot/system/data/SuperMusicThingy/icon/icon_24px.png\" --title \"SuperMusicThingy\" \"" + station + ": " + song + "\" &";
+        	#endif
+        	
         #else
         cmd = "notify-send \"SuperMusicThingy\" \"" + station + "\n" + song + "\" &";
         #endif
