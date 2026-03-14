@@ -9,6 +9,8 @@
 
 appname="SuperMusicThingy"
 depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
+projectDir="/tmp/projectm"
+supermusicthingyDir="/tmp/SuperMusicThingy"
 
 read -p "
 Option 1: Build ${appname} with projectm visuals. 
@@ -38,27 +40,27 @@ fi
 
 
 
-if [[ ! -d "/tmp/SuperMusicThingy" ]];then
-	read -p "SuperMusicThingy source not found. Download and install in /tmp/SuperMusicThingy y/n: " choice1
+if [[ ! -d "${supermusicthingyDir}" ]];then
+	read -p "${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
 else
-	read -p "/tmp/SuperMusicThingy found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+	read -p "${supermusicthingyDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 fi
 
 	if [[ "$choice2" == "y" ]];then
-		rm -fr /tmp/SuperMusicThingy
+		rm -fr ${supermusicthingyDir}
 		choice1=y
 	fi
 
 if [[ "$choice1" == "y" ]];then	
 	cd /tmp/
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/apps
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/bin
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/projectm
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application
-	mkdir -p /tmp/SuperMusicThingy/hpkgs/${appname}/data/deskbar/menu/Applications
-	[[ "$skipprojectm" ]] && touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
-	[[ ! "$skipprojectm" ]] && touch /tmp/SuperMusicThingy/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
+	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
+	mkdir -p ${supermusicthingyDir}hpkgs/${appname}/bin
+	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
+	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
+	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
+	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
+	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
 fi
 
 if [[ ! "$skipprojectm" ]];then 
@@ -88,12 +90,12 @@ if [[ ! "$skipprojectm" ]];then
 		#-DCMAKE_INSTALL_LIBDIR=my_custom_lib_path
 		
 
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/SuperMusicThingy/hpkgs/${appname}/data ..
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname}/data ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
 
-if [[ ! -e /tmp/SuperMusicThingy/hpkgs/${appname}/.PackageInfo ]];then
+if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
 echo -n "name		${appname}
 version			1.0.0-1
 architecture	x86_64
@@ -131,14 +133,14 @@ source-urls {
 # Download
 	\"https://github.com/ablyssx74/SuperMusicThingy/archive/refs/tags/v1.0.0.tar.gz\"
 }
-" > /tmp/SuperMusicThingy/hpkgs/${appname}/.PackageInfo
+" > ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo
 	 
 fi
 
     
 
 
-cd /tmp/SuperMusicThingy
+cd ${supermusicthingyDir}
 cmake -B build_${appname} ${buildspec}
 cmake --build build_${appname}    
 rc -o ${appname}.rsrc ${appname}.rdef 
@@ -149,9 +151,9 @@ ln -sf /boot/system/apps/${appname} hpkgs/${appname}/bin/${appname}
 ln -sf /boot/system/apps/${appname} hpkgs/${appname}/data/deskbar/menu/Applications/${appname}
 
 
-cd /tmp/SuperMusicThingy/hpkgs/
+cd ${supermusicthingyDir}/hpkgs/
 package create -C ${appname} ${appname}.hpkg
-mv /tmp/SuperMusicThingy/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
+mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ ! "$skipprojectm" ]];then 
 	if [[ -d /tmp/projectm ]];then
@@ -162,12 +164,12 @@ if [[ ! "$skipprojectm" ]];then
 	fi
 fi
 
-if [[ -d /tmp/SuperMusicThingy ]];then
+if [[ -d ${supermusicthingyDir} ]];then
 	read -p "Delete SuperMusicThingy source? y/n: "
 fi
 
 if [[ "$REPLY" == "y" ]];then
-	rm -fr /tmp/SuperMusicThingy
+	rm -fr ${supermusicthingyDir}
 fi
 
 if [[ ! "$skipprojectm" ]];then 
