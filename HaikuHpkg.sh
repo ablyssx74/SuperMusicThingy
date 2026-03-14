@@ -12,11 +12,9 @@ depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlo
 projectDir="/tmp/projectm"
 supermusicthingyDir="/tmp/SuperMusicThingy"
 
-read -p "
-Option 1: Build ${appname} with projectm visuals. 
+read -p ">>Option 1: Build ${appname} with projectm visuals. 
 Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
 This script will automatically download libprojectm and nebula if not installed.
-
 
 Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): "
 
@@ -38,20 +36,16 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p "
-Option 1: Install projectm in /boot/home/config/non-packaged/ for rebulding, testing and other projectm uses and support. 
-Option 2: projectm will be installed inside the hpkg package only for this app.  (select 1 or 2):  "  select
+read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ for rebulding, testing and other projectm uses and support. 
+Option 2: projectm will be installed inside the hpkg package only for this app.  (select 1 or 2):  "  keepProjectm
 fi
-[[ "$select" == 1 ]] && non-packaged=true
-[[ "$select" == 2 ]] && non-packaged=false
+
 
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
-	read -p "
-	${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
+	read -p ">>${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
 else
-	read -p "
-	${supermusicthingyDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+	read -p ">>${supermusicthingyDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 fi
 
 	if [[ "$choice2" == "y" ]];then
@@ -74,11 +68,9 @@ fi
 if [[ ! "$skipprojectm" ]];then 
 
 	if [[ ! -d ${projectDir} ]];then
-		read -p "
-		Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
+		read -p ">>Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
 	else
-		read -p "
-		${projectDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+		read -p ">>${projectDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr ${projectDir} 
@@ -95,8 +87,8 @@ if [[ ! "$skipprojectm" ]];then
 		mkdir build
 		cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
-		#[[ "$non-packaged" == true ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		#[[ "$non-packaged" == false ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		[[ "$keepProjectm" == "1" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
+		[[ "$keepProjectm" == "2" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
@@ -159,8 +151,7 @@ mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ ! "$skipprojectm" ]];then 
 	if [[ -d ${projectDir}  ]];then
-		read -p "
-		Delete ${projectDir}  source? y/n: "
+		read -p ">>Delete ${projectDir}  source? y/n: "
 	fi
 	if [[ $REPLY == y ]];then
 		rm -fr ${projectDir} 
@@ -168,8 +159,7 @@ if [[ ! "$skipprojectm" ]];then
 fi
 
 if [[ -d ${supermusicthingyDir} ]];then
-	read -p "
-	Delete ${supermusicthingyDir}  source? y/n: "
+	read -p ">>Delete ${supermusicthingyDir}  source? y/n: "
 fi
 
 if [[ "$REPLY" == "y" ]];then
@@ -178,27 +168,22 @@ fi
 
 if [[ ! "$skipprojectm" ]];then 
 	if pkgman search libglvnd | grep -q "libglvnd"; then
-    	echo "
-		libglvnd found."
+    	echo ">>libglvnd found."
 		else
-    		read -p "
-			libglvnd not found. Download and install? y/n: " glvnd
+    		read -p ">>libglvnd not found. Download and install? y/n: " glvnd
 	fi
 	if [[ "$glvnd" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
-		echo "
-		Downloading libglvnd..."
+		echo ">>Downloading libglvnd..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		read -p "
-			Download complete. Would you like to install this package now? (y/n): " 
+    		read -p ">>Download complete. Would you like to install this package now? (y/n): " 
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        		rm "$TMP_PKG"
     		fi
 			else
-    			echo "
-				Download failed!"
+    			echo ">>Download failed!"
    		 		rm "$TMP_PKG"
 		fi
 	fi
@@ -206,27 +191,22 @@ if [[ ! "$skipprojectm" ]];then
 
 
 	if pkgman search nebula | grep -q "nebula"; then
-   		 echo "
-		 nebula found."
+   		 echo ">>nebula found."
 		else
-   		 read -p "
-		 nebula not found. Download and install? y/n: " nebula
+   		 read -p ">>nebula not found. Download and install? y/n: " nebula
 	fi
 	if [[ "$nebula" == "y" ]];then
 		TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
-		echo "
-		Downloading nebula driver..."
+		echo ">>Downloading nebula driver..."
 		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
 		if [ -s "$TMP_PKG" ]; then
-    		read -p "
-			Download complete. Would you like to install this package now? (y/n): " 
+    		read -p ">>Download complete. Would you like to install this package now? (y/n): " 
     		if [ "$REPLY" == "y" ]; then
        			pkgman install "$TMP_PKG"
        			rm "$TMP_PKG"
     		fi
 			else
-    			echo "
-				Download failed!"
+    			echo ">>Download failed!"
     			rm "$TMP_PKG"
 		fi
 	fi
