@@ -87,7 +87,6 @@ if [[ ! "$skipprojectm" && "$thisProjectm" != "3" ]];then
 		git submodule update
 		mkdir build
 		cd build
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
