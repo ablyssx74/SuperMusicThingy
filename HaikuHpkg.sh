@@ -29,7 +29,8 @@ ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_B
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
 
 if [[ "$REPLY" == "1" ]];then
-	
+	# Info if nebula
+	ifNebula="\nAdd milk drop presets in settings\/SuperMusicThingy\/milk_presets\/"
 	pkgman install ${depends} grep libsdl2_devel
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
@@ -112,9 +113,8 @@ if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
 echo -n "name	${appname}
 version			1.0.0-1
 architecture	x86_64
-summary			\"Portable streaming media client\"
-description		\"SuperMusicThingy is a free streaming media client. Fast, light, and fun!\n
-Add milk drop presets in settings/SuperMusicThingy/milk_presets/\"
+summary			\"Portable streaming terminal media client\"
+description		\"SuperMusicThingy is a free streaming terminal media client. Fast, light, and fun!${ifNebula}\"
 
 packager		\"ablyss <jb@epluribusunix.net>\"
 vendor			\"Haiku Project\"
@@ -184,6 +184,33 @@ fi
 
 if [[ "$thisProjectm" ]];then 
 
+		# Find libglvnd
+		if pkgman search libglvnd | grep -q "libglvnd"; then
+			echo -e "${LIGHT_BLUE}>>>libglvnd found."
+		else
+			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Download/Install? y/n: ")" glvnd
+	fi
+	
+	if [[ "$glvnd" == "y" ]];then
+			if [[ -e "$pathlibGlvnd" ]];then
+				echo -e "${LIGHT_BLUE}"
+				pkgman install "$pathlibGlvnd"				
+			else
+				TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
+				echo -e "${LIGHT_BLUE}>>Installing libglvnd..."
+				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
+				if [ -s "$TMP_PKG" ]; then
+					echo -e "${LIGHT_BLUE}"
+       				pkgman install "$TMP_PKG" -y
+       				rm "$TMP_PKG"    		
+					else
+    					echo -e "${LIGHT_BLUE}Download failed!"
+   		 				rm "$TMP_PKG"
+				fi
+			fi	
+	fi	
+	
+	# Find nebula
 	if pkgman search nebula | grep -q "nebula"; then
    		 echo -e "${LIGHT_BLUE}>>nebula found."
 		else
@@ -209,29 +236,6 @@ if [[ "$thisProjectm" ]];then
 		fi		
 	fi
 	
-		if pkgman search libglvnd | grep -q "libglvnd"; then
-			echo -e "${LIGHT_BLUE}>>>libglvnd found."
-		else
-			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Download/Install? y/n: ")" glvnd
-	fi
 	
-	if [[ "$glvnd" == "y" ]];then
-			if [[ -e "$pathlibGlvnd" ]];then
-				echo -e "${LIGHT_BLUE}"
-				pkgman install "$pathlibGlvnd"				
-			else
-				TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
-				echo -e "${LIGHT_BLUE}>>Installing libglvnd..."
-				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
-				if [ -s "$TMP_PKG" ]; then
-					echo -e "${LIGHT_BLUE}"
-       				pkgman install "$TMP_PKG" -y
-       				rm "$TMP_PKG"    		
-					else
-    					echo -e "${LIGHT_BLUE}Download failed!"
-   		 				rm "$TMP_PKG"
-				fi
-			fi	
-	fi	
 fi
 echo -e "${LIGHT_BLUE}>>>Finshed.${NC}"
