@@ -22,7 +22,7 @@ if [[ "$REPLY" == "1" ]];then
 	
 	pkgman install ${depends} grep
 	appname="SuperMusicThingyNebula"
-	requires=("haiku >= r1~beta5_hrev59366-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
+	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
 elif [[ "$REPLY" == "2" ]];then
 	
@@ -36,11 +36,10 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ for rebuilding, testing and other projectm uses and support. 
->>Option 2: projectm will be installed inside the hpkg package only for this app.  
->>Option 3: Don't install projectm because it is already installed in /boot/home/config/non-packaged/  (select 1, 2, 3):  "  thisProjectm
+read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/. 
+>>Option 2: Don't install projectm because it is already installed in /boot/home/config/non-packaged/  (select 1, 2):  "  thisProjectm
 fi
-
+[[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
 
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
@@ -89,8 +88,7 @@ if [[ ! "$skipprojectm" && "$thisProjectm" != "3" ]];then
 		mkdir build
 		cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
-		[[ "$thisProjectm" == "1" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		[[ "$thisProjectm" == "2" ]] &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${supermusicthingyDir}/hpkgs/${appname} ..
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
  fi
 fi
