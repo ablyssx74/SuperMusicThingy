@@ -66,7 +66,7 @@ if [[ "$choice1" == "y" ]];then
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
 fi
 
-if [[ ! "$skipprojectm" && "$thisProjectm" != "3" ]];then 
+if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
 
 	if [[ ! -d ${projectDir} ]];then
 		read -p ">>Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
@@ -149,7 +149,7 @@ cd ${supermusicthingyDir}/hpkgs/
 package create -C ${appname} ${appname}.hpkg
 mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
-if [[ ! "$skipprojectm" ]];then 
+if [[ "$thisProjectm" == "1" ]];then 
 	if [[ -d ${projectDir}  ]];then
 		read -p ">>Delete ${projectDir}  source? y/n: "
 	fi
@@ -166,7 +166,7 @@ if [[ "$REPLY" == "y" ]];then
 	rm -fr ${supermusicthingyDir}
 fi
 
-if [[ ! "$skipprojectm" ]];then 
+if [[ "$thisProjectm" ]];then 
 	if pkgman search libglvnd | grep -q "libglvnd"; then
     	echo ">>libglvnd found."
 		else
