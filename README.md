@@ -20,7 +20,7 @@
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.
 
 
-## Build latest SuperMusicThingy
+## Build Latest SuperMusicThingy
 ```shell
 #Download the source
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
