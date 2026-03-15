@@ -253,16 +253,16 @@ void load_config() {
 
 
 #ifdef __HAIKU__
-	#ifdef USE_PROJECTM
-	// --- For reading arguments from keyboard shortcuts ---
-	const char* fifoPath = "/tmp/SuperMusicThingyNebula_fifo";
-	const char* respPath = "/tmp/SuperMusicThingyNebula_resp";
-	int fifoFd = -1;
-		#else
-			const char* fifoPath = "/tmp/SuperMusicThingy_fifo";
-			const char* respPath = "/tmp/SuperMusicThingy_resp";
-			int fifoFd = -1;
-	#endif
+  #ifdef USE_PROJECTM
+  // --- For reading arguments from keyboard shortcuts ---
+  const char* fifoPath = "/tmp/SuperMusicThingyNebula_fifo";
+  const char* respPath = "/tmp/SuperMusicThingyNebula_resp";
+  int fifoFd = -1;
+  #endif
+#else
+    const char* fifoPath = "/tmp/SuperMusicThingy_fifo";
+    const char* respPath = "/tmp/SuperMusicThingy_resp";
+    int fifoFd = -1;
 #endif
 
 
