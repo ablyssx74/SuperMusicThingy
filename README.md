@@ -15,7 +15,7 @@
 -	 a CLI API backend for sending keyboard shortcuts like vol_up, shuffle, status. See SuperMusicThingy --help for details.
 -	 isolated volume control.
 ## Tested on CachyOS and Haiku OS
-- Haiku with projectm visuals requires Haiku Nightly, a supported nvidia card, and [nvidia-haiku](https://github.com/X547/nvidia-haiku).
+- Haiku with projectm visuals requires Haiku Nightly, a supported nvidia card, [libglvnd-1.7.0.04-haiku]([https://github.com/X547/nvidia-haiku](https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg)) and [nvidia-haiku](https://github.com/X547/nvidia-haiku).
 ## Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.
 
