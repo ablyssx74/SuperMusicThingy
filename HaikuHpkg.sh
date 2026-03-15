@@ -22,7 +22,7 @@ if [[ "$REPLY" == "1" ]];then
 	
 	pkgman install ${depends} grep
 	appname="SuperMusicThingyNebula"
-	requires=("haiku >= r1~beta5_hrev59451-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
+	requires=("haiku >= r1~beta5_hrev59366-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
 elif [[ "$REPLY" == "2" ]];then
 	
