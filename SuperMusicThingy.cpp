@@ -29,7 +29,9 @@
 #include <random>
 #include <unistd.h>
 #include <set>
+#include <signal.h>
 #include <sstream>
+#include <stdlib.h>
 #include <string>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -267,6 +269,12 @@ void load_config() {
 void cleanup_fifo() {
     unlink(fifoPath);
     unlink(respPath);
+}
+
+// Signal handler wrapper
+void handle_exit_signal(int sig) {
+    cleanup_fifo();
+    _exit(0); // Exit immediately after cleanup
 }
 
 // --- OS Path Helper ---
@@ -1332,10 +1340,22 @@ void init_visuals() {
 
     int main(int argc, char* argv[]) {
         // 1. FUNDAMENTAL LOAD (Always first)
-        load_config();
-        srand(time(0));
+        	load_config();
+        	srand(time(0));
 
-        // 2. CLI SENDER LOGIC (Checks if we are just sending a command to a running instance)
+       // 2. Signal handler structure
+   		   struct sigaction sa;
+		   sa.sa_handler = handle_exit_signal;
+ 		   sigemptyset(&sa.sa_mask);
+ 		   sa.sa_flags = 0;
+
+       // Register signals that trigger on window close or Ctrl+C
+ 		   sigaction(SIGHUP, &sa, NULL);  // Triggered when Terminal window is closed
+ 		   sigaction(SIGINT, &sa, NULL);  // Triggered by Ctrl+C
+   		   sigaction(SIGTERM, &sa, NULL); // General termination request	
+
+
+        // 3. CLI SENDER LOGIC (Checks if we are just sending a command to a running instance)
         if (argc > 1) {
             std::string cmd = argv[1]; // Get the command (e.g., "shuffle")
             int fd = open(fifoPath, O_WRONLY | O_NONBLOCK);
@@ -1392,7 +1412,7 @@ void init_visuals() {
             return 0; // EXIT SENDER IMMEDIATELY
         }
 
-        // 3. TERMINAL WRAPPER (Ensures we are in a visible window)
+        // 4. TERMINAL WRAPPER (Ensures we are in a visible window)
         if (!isatty(STDIN_FILENO)) {
             std::string path = get_self_path();
             if (path.empty()) return 1;
@@ -1428,7 +1448,7 @@ void init_visuals() {
             // Title set
             std::cout << "\033]0;SuperMusicThingy\007" << std::flush;
 
-        // 4. ACTUAL PLAYER INITIALIZATION (Runs only once)
+        // 5. ACTUAL PLAYER INITIALIZATION (Runs only once)
         init_mpv();        // Start MPV engine
         fetch_channels();  // Load SomaFM list
 
@@ -1455,7 +1475,7 @@ void init_visuals() {
         system("stty raw -echo");
         draw_ui();
 
-        // 5. THE MAIN LOOP
+        // 6. THE MAIN LOOP
         while (true) {
             bool needsRedraw = false;
 
