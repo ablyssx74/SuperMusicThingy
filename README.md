@@ -1,6 +1,6 @@
 [![CMake on multiple platforms](https://github.com/ablyssx74/music_thingy/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/ablyssx74/music_thingy/actions/workflows/cmake-multi-platform.yml)
 
-# <p align="center"> <img width="24" height="24" align="left" alt="Screenshot" src="https://github.com/ablyssx74/SuperMusicThingy/blob/main/icon_24px.png" />SuperMusicThingy </p>
+# <p align="center"> <img width="24" height="24" align="center" alt="Screenshot" src="https://github.com/ablyssx74/SuperMusicThingy/blob/main/icon_24px.png" />SuperMusicThingy </p>
 ## <p align="center"> c++ terminal app to play random music from [SomaFM](https://somafm.com/)</p>
 ## <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/c1a46e06-ed56-4505-aff0-e4ef507f4801" /></p>
 ## Includes
