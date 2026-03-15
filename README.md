@@ -21,7 +21,11 @@
 
 
 ## Build SuperMusicThingy
-
+```shell
+#Download the source
+git clone https://github.com/ablyssx74/SuperMusicThingy.git
+cd SuperMusicThingy
+```
 
 ```shell
 # To build without projectm, sds2 and GL, and only libcurl and libmpv.
