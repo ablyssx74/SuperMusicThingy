@@ -20,6 +20,13 @@ add_executable(SuperMusicThingy SuperMusicThingy.cpp)
 
 find_package(PkgConfig REQUIRED)
 
+if(LINUX)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(NOTIFY REQUIRED IMPORTED_TARGET libnotify gdk-pixbuf-2.0)
+target_link_libraries(SuperMusicThingy PRIVATE PkgConfig::NOTIFY)
+target_compile_definitions(SuperMusicThingy PRIVATE USE_LIBNOTIFY)
+endif()
+
 if(HAIKU)
     list(APPEND CMAKE_LIBRARY_PATH /boot/home/config/non-packaged/lib)
     list(APPEND CMAKE_INCLUDE_PATH /boot/home/config/non-packaged/include)
