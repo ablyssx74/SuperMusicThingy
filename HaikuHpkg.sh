@@ -7,12 +7,16 @@
 # See the The MIT License included in this folder
 
 
+# Define some vars for the script
+
 appname="SuperMusicThingy"
+description="SuperMusicThingy is a free streaming terminal media client for SomaFM. Fast, light, and fun!"
+
 depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 projectDir="/tmp/projectm"
 supermusicthingyDir="/tmp/SuperMusicThingy"
 
-# Define the light blue color code
+# Define color codes
 LIGHT_BLUE='\033[1;34m'
 LIGHT_PURPLE='\033[1;35m'
 NC='\033[0m' # No Color (Reset)
@@ -20,6 +24,8 @@ NC='\033[0m' # No Color (Reset)
 # Try here first else download
 pathNebula="$HOME/Downloads/nebula-0.0.2-1.x86_64.hpkg"
 pathlibGlvnd="$HOME/Downloads/libglvnd-1.7.0-4-x86_64.hpkg"
+
+# Start
 
 read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}Nebula${LIGHT_BLUE} with projectm visuals. 
 ${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
@@ -54,22 +60,10 @@ fi
 [[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
 
 
-#if [[ ! -d "${supermusicthingyDir}" ]];then
-#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${appname}${LIGHT_BLUE} source not found. Download and install in ${supermusicthingyDir} y/n: ")" choice1
-#else
-#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${supermusicthingyDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
-#fi
-
-#	if [[ "$choice2" == "y" ]];then
-#		rm -fr ${supermusicthingyDir}
-#		choice1=y
-#	fi
-
-	
 [[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
 
+
 if [[ ! -d "${supermusicthingyDir}" ]];then
-#if [[ "$choice1" == "y" ]];then
 	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
 	cd ${supermusicthingyDir}
@@ -113,8 +107,8 @@ if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
 echo -n "name	${appname}
 version			1.0.0-1
 architecture	x86_64
-summary			\"Portable streaming terminal media client\"
-description		\"SuperMusicThingy is a free streaming terminal media client. Fast, light, and fun!${ifNebula}\"
+summary			\"Portable streaming terminal media client for SomaFM\"
+description		\"${description} ${ifNebula}\"
 
 packager		\"ablyss <jb@epluribusunix.net>\"
 vendor			\"Haiku Project\"
