@@ -54,7 +54,9 @@
 namespace fs = std::filesystem;
 // --- Global State ---
 
-const uint32_t PRESET_DURATION = 30000;
+
+// Preset Shuffle
+const uint32_t PRESET_DURATION = 30000;  // 30 Sec
 uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
 void update_visuals_logic();
@@ -1080,7 +1082,7 @@ void init_visuals() {
         ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
-
+/*
     #ifdef USE_PROJECTM
     void update_visuals_logic() {
         if (!visualsRunning || !pm) return;
@@ -1089,14 +1091,15 @@ void init_visuals() {
         uint32_t currentTime = SDL_GetTicks();
 
         // Check if 30 seconds have passed
+        
         if (currentTime - lastPresetChange >= PRESET_DURATION) {
-            load_random_preset(pm); // The function we wrote earlier
+            load_random_preset(pm);
             lastPresetChange = currentTime;
-            needsRedraw = false;
+           	needsRedraw = true;
         }
     }
     #endif
-
+*/
     void draw_ui() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
         std::stringstream buffer;
@@ -1479,13 +1482,21 @@ void init_visuals() {
         while (true) {
             bool needsRedraw = false;
 
-            // A. --- VISUALS LOGIC ---
+          // A. --- VISUALS LOGIC ---
             #ifdef USE_PROJECTM
+            
             if (visualsRunning && pm) {
                 // Random preset every 30s
-                #ifdef USE_PROJECTM
-                update_visuals_logic();
-                #endif
+       			if (cfg.autoShuffleVisuals) { 
+       				 uint32_t currentTime = SDL_GetTicks();
+        				// Check if 30 seconds have passed
+        			if (currentTime - lastPresetChange >= PRESET_DURATION) {
+           				load_random_preset(pm);
+            			lastPresetChange = currentTime;
+           				needsRedraw = true;
+        			}
+      			  }
+            
 
 
                 #ifdef __HAIKU__
@@ -1669,11 +1680,9 @@ void init_visuals() {
                     }
                 }
 
-                if (needsRedraw) {
-                    //load_random_preset(pm);
-                    //lastPresetChange = SDL_GetTicks();
-                    draw_ui();        // This prints the new currentPresetName
-                    needsRedraw = false; // Reset so we don't flicker
+                if (needsRedraw) {                    
+                    draw_ui();       
+                    needsRedraw = false; 
                 }
             }
             #endif
