@@ -20,7 +20,7 @@ This script will try to automatically download libprojectm and nebula if not alr
 
 if [[ "$REPLY" == "1" ]];then
 	
-	pkgman install ${depends} grep
+	pkgman install ${depends} grep libsdl2_devel
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
