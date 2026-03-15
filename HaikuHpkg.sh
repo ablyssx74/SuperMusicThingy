@@ -12,11 +12,21 @@ depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlo
 projectDir="/tmp/projectm"
 supermusicthingyDir="/tmp/SuperMusicThingy"
 
-read -p ">>Option 1: Build ${appname} with projectm visuals. 
-Requires libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
-This script will try to automatically download libprojectm and nebula if not already installed.
+# Define the light blue color code
+LIGHT_BLUE='\033[1;34m'
+LIGHT_PURPLE='\033[1;35m'
+NC='\033[0m' # No Color (Reset)
 
->>Option 2: Build SuperMusicThingy without projectm and for normal Haiku beta5 release.  (select 1 or 2): "
+# Try here first else download
+pathNebula="$HOME/Downloads/nebula-0.0.2-1.x86_64.hpkg"
+pathlibGlvnd="$HOME/Downloads/libglvnd-1.7.0-4-x86_64.hpkg"
+
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}Nebula${LIGHT_BLUE} with projectm visuals. 
+${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
+>>This script will try to automatically download libprojectm and nebula if not already installed.
+
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} without projectm and for normal Haiku beta5 release.
+${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
 
 if [[ "$REPLY" == "1" ]];then
 	
@@ -36,24 +46,30 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ 
->>Option 2: Don't install projectm because it is already installed in /boot/home/config/non-packaged/  (select 1, 2):  "  thisProjectm
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install projectm in /boot/home/config/non-packaged/ 
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
+${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 fi
 [[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
 
 
+#if [[ ! -d "${supermusicthingyDir}" ]];then
+#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${appname}${LIGHT_BLUE} source not found. Download and install in ${supermusicthingyDir} y/n: ")" choice1
+#else
+#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${supermusicthingyDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
+#fi
+
+#	if [[ "$choice2" == "y" ]];then
+#		rm -fr ${supermusicthingyDir}
+#		choice1=y
+#	fi
+
+	
+[[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
+
 if [[ ! -d "${supermusicthingyDir}" ]];then
-	read -p ">>${appname} source not found. Download and install in ${supermusicthingyDir} y/n: " choice1
-else
-	read -p ">>${supermusicthingyDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
-fi
-
-	if [[ "$choice2" == "y" ]];then
-		rm -fr ${supermusicthingyDir}
-		choice1=y
-	fi
-
-if [[ "$choice1" == "y" ]];then	
+#if [[ "$choice1" == "y" ]];then
+	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
 	cd ${supermusicthingyDir}
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
@@ -69,9 +85,9 @@ fi
 if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
 
 	if [[ ! -d ${projectDir} ]];then
-		read -p ">>Required ${projectDir} source not found. Download, build add link to SuperMusicThingy? y/n: " choice1
+		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>>Required ${projectDir}${LIGHT_BLUE} source not found. Download, build add link to SuperMusicThingy? y/n: ")" choice1
 	else
-		read -p ">>${projectDir} found. Deleteing this might help build problems. Delete and reinstall? y/n: " choice2
+		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${projectDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
 		rm -fr ${projectDir} 
@@ -93,7 +109,7 @@ if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 fi
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
-echo -n "name		${appname}
+echo -n "name	${appname}
 version			1.0.0-1
 architecture	x86_64
 summary			\"Portable streaming media client\"
@@ -151,63 +167,71 @@ mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ "$thisProjectm" == "1" ]];then 
 	if [[ -d ${projectDir}  ]];then
-		read -p ">>Delete ${projectDir}  source? y/n: "
+		read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${projectDir}${LIGHT_BLUE} source? y/n: ")"
 	fi
 	if [[ $REPLY == y ]];then
 		rm -fr ${projectDir} 
 	fi
 fi
 
-if [[ -d ${supermusicthingyDir} ]];then
-	read -p ">>Delete ${supermusicthingyDir}  source? y/n: "
-fi
-
-if [[ "$REPLY" == "y" ]];then
-	rm -fr ${supermusicthingyDir}
-fi
+#if [[ -d ${supermusicthingyDir} ]];then
+#	read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${supermusicthingyDir}${LIGHT_BLUE} source? y/n: ")"
+#fi
+[[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
+#if [[ "$REPLY" == "y" ]];then
+#	rm -fr ${supermusicthingyDir}
+#fi
 
 if [[ "$thisProjectm" ]];then 
-	if pkgman search libglvnd | grep -q "libglvnd"; then
-    	echo ">>libglvnd found."
-		else
-    		read -p ">>libglvnd not found. Download and install? y/n: " glvnd
-	fi
-	if [[ "$glvnd" == "y" ]];then
-		TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
-		echo ">>Downloading libglvnd..."
-		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
-		if [ -s "$TMP_PKG" ]; then
-    		read -p ">>Download complete. Would you like to install this package now? (y/n): " 
-    		if [ "$REPLY" == "y" ]; then
-       			pkgman install "$TMP_PKG"
-       		rm "$TMP_PKG"
-    		fi
-			else
-    			echo ">>Download failed!"
-   		 		rm "$TMP_PKG"
-		fi
-	fi
-
-
 
 	if pkgman search nebula | grep -q "nebula"; then
-   		 echo ">>nebula found."
+   		 echo -e "${LIGHT_BLUE}>>nebula found."
 		else
-   		 read -p ">>nebula not found. Download and install? y/n: " nebula
+			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Download/Install? y/n: ")" nebula
 	fi
 	if [[ "$nebula" == "y" ]];then
-		TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
-		echo ">>Downloading nebula driver..."
-		curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
-		if [ -s "$TMP_PKG" ]; then
-    		read -p ">>Download complete. Would you like to install this package now? (y/n): " 
-    		if [ "$REPLY" == "y" ]; then
-       			pkgman install "$TMP_PKG"
-       			rm "$TMP_PKG"
-    		fi
+		if [[ -e "$pathNebula" ]];then
+				echo -e "${LIGHT_BLUE}"
+				pkgman install "$pathNebula"				
 			else
-    			echo ">>Download failed!"
-    			rm "$TMP_PKG"
-		fi
+				TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
+		
+				echo -e "${LIGHT_BLUE}>>Installing nebula driver..."
+				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
+				if [ -s "$TMP_PKG" ]; then
+					echo -e "${LIGHT_BLUE}"
+       				pkgman install "$TMP_PKG"
+       				rm "$TMP_PKG"    		
+					else
+    					echo -e "${LIGHT_BLUE}Download failed!"
+    					rm "$TMP_PKG"
+				fi
+		fi		
 	fi
+	
+		if pkgman search libglvnd | grep -q "libglvnd"; then
+			echo -e "${LIGHT_BLUE}>>>libglvnd found."
+		else
+			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Download/Install? y/n: ")" glvnd
+	fi
+	
+	if [[ "$glvnd" == "y" ]];then
+			if [[ -e "$pathlibGlvnd" ]];then
+				echo -e "${LIGHT_BLUE}"
+				pkgman install "$pathlibGlvnd"				
+			else
+				TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
+				echo -e "${LIGHT_BLUE}>>Installing libglvnd..."
+				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
+				if [ -s "$TMP_PKG" ]; then
+					echo -e "${LIGHT_BLUE}"
+       				pkgman install "$TMP_PKG" -y
+       				rm "$TMP_PKG"    		
+					else
+    					echo -e "${LIGHT_BLUE}Download failed!"
+   		 				rm "$TMP_PKG"
+				fi
+			fi	
+	fi	
 fi
+echo -e "${LIGHT_BLUE}>>>Finshed.${NC}"
