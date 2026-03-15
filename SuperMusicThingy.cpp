@@ -215,7 +215,7 @@ struct Config {
     bool autoShuffle = false;
     bool autoShuffleVisuals = false;
     int defaultVolume = 100;
-    std::string quality = "high";
+    std::string quality = "highest";
 } cfg;
 
 int selectedConfig = 0;
