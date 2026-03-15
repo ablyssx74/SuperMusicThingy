@@ -634,19 +634,21 @@ void init_visuals() {
         }
         return false;
     }
-
+    
+    // Volume bar
     std::string get_vol_bar() {
-        double vol;
-        mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
-        int filled = (int)(vol / 10);
-        std::string bar = BLUE + "[";
-        for (int i = 0; i < 10; ++i) {
-            if (i < filled) bar += GREEN + "|";
-            else bar += ".";
-        }
-        bar += BLUE + "]";
-        return bar;
+    double vol;
+    mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
+    int filled = (int)(vol / 10);
+    std::string bar = "[";
+    for (int i = 0; i < 10; ++i) {
+        if (i < filled) bar += "|";
+        else bar += ".";
     }
+    bar += "]";
+    return bar;
+}
+       
 
     bool draw_config_menu() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -1106,7 +1108,7 @@ void init_visuals() {
 
         int mute;
         mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
-        std::string volBar = mute ? "\033[91m" : "\033[92m";
+        std::string ismuteColor = mute ? "\033[91m" : "\033[92m";
 
         // Build the frame in memory
 
@@ -1146,7 +1148,7 @@ void init_visuals() {
         currentRow++;
         buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Bitrate: " << niceGreenColor << get_bitrate_text() << "\n";
         currentRow++;
-        buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << get_vol_bar() << "\n";
+        buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << ismuteColor << get_vol_bar() << "\n";
         currentRow++;
         #ifdef USE_PROJECTM
         if (cfg.showVisuals) {
@@ -1764,6 +1766,7 @@ void init_visuals() {
                         if (visualsRunning && !is_native_tty()) { 
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
+                        needsRedraw = true;
                         }
                         #endif
                 }
