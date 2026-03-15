@@ -36,7 +36,7 @@ elif [[ "$REPLY" == "2" ]];then
 fi
 
 if [[ ! $skipprojectm ]];then
-read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/. 
+read -p ">>Option 1: Install projectm in /boot/home/config/non-packaged/ 
 >>Option 2: Don't install projectm because it is already installed in /boot/home/config/non-packaged/  (select 1, 2):  "  thisProjectm
 fi
 [[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
