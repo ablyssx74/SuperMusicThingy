@@ -173,7 +173,7 @@ resource vector_icon {
         $\"0A0201011240AAAA00000000000040AAAA42AAAA42AAAA01178422040A020202\"
         $\"030240AAAA00000000000040AAAA42AAAA42AAAA\"
 };
-" > $HOME/Desktop/test
+" > ${supermusicthingyDir}/${appname}.rdef 
 fi
 
 
