@@ -13,7 +13,7 @@ appname="SuperMusicThingy"
 description="SuperMusicThingy is a free streaming terminal media client for SomaFM. Fast, light, and fun!"
 
 depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
-projectDir="/tmp/projectm"
+projectmDir="/tmp/projectm"
 supermusicthingyDir="/tmp/SuperMusicThingy"
 
 # Define color codes
@@ -79,20 +79,20 @@ fi
 
 if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
 
-	if [[ ! -d ${projectDir} ]];then
-		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>>Required ${projectDir}${LIGHT_BLUE} source not found. Download, build add link to SuperMusicThingy? y/n: ")" choice1
+	if [[ ! -d ${projectmDir} ]];then
+		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>>Required ${projectmDir}${LIGHT_BLUE} source not found. Download, build add link to SuperMusicThingy? y/n: ")" choice1
 	else
-		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${projectDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
+		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${projectmDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
 	fi
 	if [[ "$choice2" == "y" ]];then
-		rm -fr ${projectDir} 
+		rm -fr ${projectmDir}
 		choice1=y
 	fi
 
 	if [[ "$choice1" == "y" ]];then
 		pkgman install cmake libsdl2_devel libx11_devel
-		git clone https://github.com/projectM-visualizer/projectm.git ${projectDir} 
-		cd ${projectDir} 
+		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
+		cd ${projectmDir}
 		git fetch --all --tags
 		git submodule init
 		git submodule update
@@ -191,11 +191,11 @@ package create -C ${appname} ${appname}.hpkg
 mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 if [[ "$thisProjectm" == "1" ]];then 
-	if [[ -d ${projectDir}  ]];then
-		read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${projectDir}${LIGHT_BLUE} source? y/n: ")"
+	if [[ -d ${projectmDir}  ]];then
+		read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${projectmDir}${LIGHT_BLUE} source? y/n: ")"
 	fi
 	if [[ $REPLY == y ]];then
-		rm -fr ${projectDir} 
+		rm -fr ${projectmDir}
 	fi
 fi
 
