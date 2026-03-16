@@ -17,6 +17,7 @@ if(ENABLE_PROJECTM)
 endif()
 
 add_executable(SuperMusicThingy SuperMusicThingy.cpp)
+install(TARGETS SuperMusicThingy DESTINATION bin)
 
 find_package(PkgConfig REQUIRED)
 
@@ -115,3 +116,4 @@ if(ENABLE_GL)
     target_link_libraries(SuperMusicThingy PRIVATE OpenGL::GL)
     target_compile_definitions(SuperMusicThingy PRIVATE USE_GL)
 endif()
+
