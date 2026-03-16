@@ -21,7 +21,7 @@
   
 
 
-## Build Latest SuperMusicThingy Linux x86_64
+## Build Latest SuperMusicThingy
 ```shell
 #Download the source
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
@@ -43,7 +43,8 @@ cmake -B build
 cmake --build build
 sudo cmake --install build
 ```
-## Build Latest SuperMusicThingy Haiku x86_64
+## Preferred Method For Haiku
+This will create SuperMusicThingy.hpkg package on Desktop
 Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) 
 ```shell
 bash ./HaikuHpkg.sh
