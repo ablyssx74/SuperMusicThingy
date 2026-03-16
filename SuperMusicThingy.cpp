@@ -131,8 +131,6 @@ static const unsigned char icon_24px_png[] = {
 
 
 namespace fs = std::filesystem;
-// --- Global State ---
-
 
 // Preset Shuffle
 const uint32_t PRESET_DURATION = 30000;  // 30 Sec
@@ -147,8 +145,6 @@ void update_visuals_logic();
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <Application.h>
-#include <AL/al.h>
-#include <AL/alc.h>
 ALCdevice *alcCaptureDevice = nullptr;
 #elif defined(USE_SDL2)
 SDL_AudioDeviceID captureDevice = 0;
@@ -165,32 +161,19 @@ bool is_already_running_linux() {
     memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_UNIX;
 
-    // The '\0' at the start makes it an "Abstract Socket" (memory only)
     const char* socket_name = "SuperMusicThingyLock";
     addr.sun_path[0] = '\0';
     memcpy(&addr.sun_path[1], socket_name, strlen(socket_name));
-
-    // Calculate the exact size for the abstract namespace
     socklen_t addr_len = sizeof(addr.sun_family) + 1 + strlen(socket_name);
 
-    // If bind fails, someone else is already running
     if (bind(fd, (struct sockaddr*)&addr, addr_len) < 0) {
         close(fd);
         return true;
     }
-
-    // Keep the fd open so the lock stays active
     global_socket_fd = fd;
     return false;
 }
 #endif
-
-
-
-
-
-
-
 
 
 void cleanup_capture_device() {
@@ -236,9 +219,11 @@ void ensure_config_dir() {
 
 
 std::time_t saveMessageTimer = 0;
+
 #ifdef USE_PROJECTM
 projectm_handle pm = nullptr;
 #endif
+
 bool needsRedraw = true;
 bool visualsRunning = false;
 
@@ -302,13 +287,10 @@ std::string get_ui_header(int rows) {
 
 
 std::string get_ui_footer(int rows) {
-
     std::stringstream footer;
     struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     footer << "\033[" << w.ws_row << ";0H" << RED << "SuperMusicThingy~ $: ";
-
     return footer.str();
-
 }
 
 
@@ -659,11 +641,11 @@ void init_visuals() {
         }
 
         if (cfg.quality == "high") {
-            return BASE_URL + id + "64.pls";  // Reliable 64k AAC-HE
+            return BASE_URL + id + "64.pls";  
         }
 
         if (cfg.quality == "low") {
-            return BASE_URL + id + "32.pls";  // Reliable 64k AAC-HE
+            return BASE_URL + id + "32.pls";  
         }
 
         // Default: 128k AAC (id + "130.pls")
@@ -782,7 +764,7 @@ void init_visuals() {
             {"Desktop Notifications", &cfg.showNotifications},
             {"Auto-Shuffle on Start", &cfg.autoShuffle},
             {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
-            {"Show Visuals",          &cfg.showVisuals}
+            {"Show Visuals", &cfg.showVisuals}
         };
 
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
@@ -892,7 +874,7 @@ void init_visuals() {
                     }
                 }
                 #endif
-                usleep(33333); // Keep the menu snappy
+                usleep(33333); 
                 return true;
 
                 needsRedraw = true;
@@ -916,8 +898,8 @@ void init_visuals() {
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to list";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from list";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to favorites list";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
@@ -969,7 +951,6 @@ void init_visuals() {
     }
 
 
-
     void update_metadata_from_url(const std::string& url) {
         for (const auto& ch : channels) {
             // Match the channel ID within the URL string
@@ -979,10 +960,10 @@ void init_visuals() {
                 currentListeners = ch.listeners;
                 currentSong = "Loading Favorite...";
                 break;
-
             }
         }
     }
+
 
     bool draw_favorites_menu() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -1087,12 +1068,9 @@ void init_visuals() {
         std::string currentLine = "";
         int linesUsed = 1;
 
-        // Label length (" * Description: ") is 16 chars.
-        // If we start at col 10, the first line's text starts at col 26.
-        // To keep things uniform, let's make the max width relative to col 13.
         int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
 
-        // 1. Position and print the BLUE label and GREEN start
+        // 1.
         ss << "\033[" << startRow << ";10H" << BLUE << " * Title: " << GREEN;
 
         bool firstLine = true;
@@ -1108,14 +1086,11 @@ void init_visuals() {
                 ss << currentLine;
                 linesUsed++;
                 currentLine = word;
-                firstLine = false;
-
-                // Move to next row, column 13, and re-trigger GREEN
+                firstLine = false;               
                 ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
             }
         }
-
-        // Print the final chunk and reset terminal colors
+     
         ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
@@ -1129,35 +1104,29 @@ void init_visuals() {
         std::string currentLine = "";
         int linesUsed = 1;
 
-        // Label length (" * Description: ") is 16 chars.
-        // If we start at col 10, the first line's text starts at col 26.
-        // To keep things uniform, let's make the max width relative to col 13.
-        int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
+        int maxLineWidth = termWidth - 13 - 2; 
 
-        // 1. Position and print the BLUE label and GREEN start
         ss << "\033[" << startRow << ";10H" << BLUE << " * Description: " << GREEN;
 
         bool firstLine = true;
         while (words >> word) {
-            // Calculate available space on the CURRENT line
+   
             int availableSpace = firstLine ? (maxLineWidth - 13) : maxLineWidth;
 
             if (currentLine.length() + word.length() + 1 <= (size_t)availableSpace) {
                 if (!currentLine.empty()) currentLine += " ";
                 currentLine += word;
             } else {
-                // Print what we have
+  
                 ss << currentLine;
                 linesUsed++;
                 currentLine = word;
                 firstLine = false;
 
-                // Move to next row, column 13, and re-trigger GREEN
                 ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
             }
         }
 
-        // Print the final chunk and reset terminal colors
         ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
@@ -1170,35 +1139,27 @@ void init_visuals() {
         std::string currentLine = "";
         int linesUsed = 1;
 
-        // Label length (" * Description: ") is 16 chars.
-        // If we start at col 10, the first line's text starts at col 26.
-        // To keep things uniform, let's make the max width relative to col 13.
-        int maxLineWidth = termWidth - 13 - 2; // -2 for a small right-side margin
+        int maxLineWidth = termWidth - 13 - 2; 
 
-        // 1. Position and print the BLUE label and GREEN start
         ss << "\033[" << startRow << ";10H" << BLUE << " * Milkdrop: " << GREEN;
 
         bool firstLine = true;
         while (words >> word) {
-            // Calculate available space on the CURRENT line
             int availableSpace = firstLine ? (maxLineWidth - 13) : maxLineWidth;
 
             if (currentLine.length() + word.length() + 1 <= (size_t)availableSpace) {
                 if (!currentLine.empty()) currentLine += " ";
                 currentLine += word;
             } else {
-                // Print what we have
                 ss << currentLine;
                 linesUsed++;
                 currentLine = word;
                 firstLine = false;
 
-                // Move to next row, column 13, and re-trigger GREEN
                 ss << "\033[" << (startRow + linesUsed - 1) << ";13H" << GREEN;
             }
         }
 
-        // Print the final chunk and reset terminal colors
         ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
@@ -1228,13 +1189,7 @@ void init_visuals() {
         mpv_get_property(mpv, "mute", MPV_FORMAT_FLAG, &mute);
         std::string ismuteColor = mute ? "\033[91m" : "\033[92m";
 
-        // Build the frame in memory
-
-
         buffer << get_ui_header(w.ws_row);
-        //  buffer << "\033[H\033[2J\033[3J"; // Full Clear
-
-
 
         int currentRow = w.ws_row - 13;
 
@@ -1242,7 +1197,6 @@ void init_visuals() {
             buffer << "\033[" << currentRow <<";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
             currentRow++;
         }
-
 
         int currentSongHeight = draw_wrapped_currentSong(buffer, currentSong, w.ws_col, currentRow);
         if (currentSongHeight > 0) {
@@ -1253,7 +1207,6 @@ void init_visuals() {
         if (descHeight > 0) {
             currentRow += descHeight;
         }
-
 
         buffer << "\033[" << currentRow << ";10H" <<  BLUE << " * Station: " << niceGreenColor << currentStation;
         if (is_favorite()) buffer << BLUE << " " << "[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]" << BLUE;
@@ -1280,10 +1233,6 @@ void init_visuals() {
         buffer << RESET;
 
         std::cout << buffer.str() << std::flush;
-
-
-
-
     }
 
 
@@ -1398,7 +1347,6 @@ void init_visuals() {
         std::string path = home + "/.config/SuperMusicThingy/favorites.txt";
         #endif
 
-
         std::string currentUrl = "";
         for(const auto& ch : channels) {
             if(ch.title == currentStation) {
@@ -1409,7 +1357,6 @@ void init_visuals() {
 
 
         if (currentUrl.empty()) return;
-
         std::ifstream infile(path);
         std::vector<std::string> remaining;
         std::string line;
@@ -1455,7 +1402,6 @@ void init_visuals() {
 
                     std::string body = station + "\n" + song;
                     GError* error = nullptr;
-
                     GdkPixbufLoader* loader = gdk_pixbuf_loader_new();
                     gdk_pixbuf_loader_write(loader, icon_24px_png, sizeof(icon_24px_png), nullptr);
                     gdk_pixbuf_loader_close(loader, nullptr);
@@ -1478,36 +1424,27 @@ void init_visuals() {
         system(cmd.c_str());
     }
 
-
-    #include <thread>
-
+/*
+   
     #if defined(__linux__)
+    #include <thread>
     void listen_for_focus_requests() {
-        // We need the socket file descriptor.
-        // Pro-tip: Move the 'fd' from is_already_running_linux to a global or pass it here.
-        // For this example, let's assume you made 'int global_socket_fd' available.
-
         while (true) {
             int client_fd = accept(global_socket_fd, nullptr, nullptr);
             if (client_fd >= 0) {
                 char buffer[16] = {0};
                 read(client_fd, buffer, sizeof(buffer) - 1);
+              //  if (std::string(buffer) == "FOCUS") {
+              //      system("wmctrl -a 'SuperMusicThingy'");
 
-                if (std::string(buffer) == "FOCUS") {
-                    // Trigger the window focus
-                    // If using wmctrl:
-                    system("wmctrl -a 'SuperMusicThingy'");
-
-                    // Or if using a GUI framework like GTK/Qt,
-                    // call your "present window" function here.
-                }
+              //  }
                 close(client_fd);
             }
         }
     }
     #endif
 
-
+*/
 
 
 
@@ -1530,16 +1467,15 @@ void init_visuals() {
    		   sigaction(SIGTERM, &sa, NULL); // General termination request	
 
 
-        // 3. CLI SENDER LOGIC (Checks if we are just sending a command to a running instance)
+        // 3. CLI SENDER LOGIC 
         if (argc > 1) {
-            std::string cmd = argv[1]; // Get the command (e.g., "shuffle")
+            std::string cmd = argv[1]; 
             int fd = open(fifoPath, O_WRONLY | O_NONBLOCK);
 
             if (fd == -1) {
                 std::cerr << "SuperMusicThingy is not running." << std::endl;
                 return 1;
             }
-            // --- NEW: HELP COMMAND (Doesn't need the FIFO running) ---
             if (cmd == "help" || cmd == "--help" || cmd == "-h") {
                 std::cout << BLUE << "\n--- SuperMusicThingy CLI Help ---" << BLUE  << "\n"
                 << "--------------------------\n" << BLUE
@@ -1557,7 +1493,7 @@ void init_visuals() {
                 << niceGreenColor << "  stop          " << BLUE << "  - Stop the music\n" << BLUE
                 << niceGreenColor << "  quit          " << BLUE << "  - Close the running SuperMusicThingy instance\n" << BLUE
                 << "--------------------------\n" << std::endl;
-                return 0; // Exit help immediately
+                return 0; 
             }
 
 
@@ -1584,7 +1520,7 @@ void init_visuals() {
             // For all other commands (shuffle, quit, etc.)
             write(fd, cmd.c_str(), cmd.length());
             close(fd);
-            return 0; // EXIT SENDER IMMEDIATELY
+            return 0; 
         }
 
         // 4. TERMINAL WRAPPER (Ensures we are in a visible window)
@@ -1627,15 +1563,14 @@ void init_visuals() {
        #if defined(__linux__)
        if (is_already_running_linux()) {
        std::cout << "Another instance is already running. " << std::endl;
-       return 0; // Exit the second instance
+       return 0; 
         }
         #endif
 
 
-        // 5. ACTUAL PLAYER INITIALIZATION (Runs only once)
-        init_mpv();        // Start MPV engine
-        fetch_channels();  // Load SomaFM list
-
+        // 5. ACTUAL PLAYER INITIALIZATION
+        init_mpv();        
+        fetch_channels(); 
 
 
         #ifdef USE_PROJECTM
@@ -1679,8 +1614,7 @@ void init_visuals() {
             			lastPresetChange = currentTime;
            				needsRedraw = true;
         			}
-      			  }
-            
+      			  }            
 
 
                 #ifdef __HAIKU__
@@ -1843,7 +1777,7 @@ void init_visuals() {
                         }
                     }
 
-                    // --- Inside your Main Loop's Event Handler ---
+                    //
                     else if (e.type == SDL_MOUSEBUTTONDOWN) {
                         // Check if it's the Left Mouse Button and a Double Click (2)
                         if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
@@ -1877,8 +1811,7 @@ void init_visuals() {
             // B. Notifications
             if (notifyTimer > 0 && std::time(nullptr) >= notifyTimer) {
                 currentSong = pendingSong;
-
-                // IMPORTANT: This is the ONLY place send_notification should be called
+               
                 if (cfg.showNotifications) {
                     send_notification(currentStation, currentSong);
                 }
@@ -1907,11 +1840,6 @@ void init_visuals() {
                         << BLUE << "Favorites: " << niceGreenColor << count_favorites() << RESET << "\n"
                         << BLUE << "Quality:   " << niceGreenColor << get_bitrate_text() << RESET << "\n"
                         << BLUE << "Volume:    " << niceGreenColor << get_vol_bar() << RESET << "\n";
-                        //  #ifdef USE_PROJECTM
-                        //  if (visualsRunning) {
-                        //     ss << BLUE  << "Visual:    " << niceGreenColor << currentPresetName << RESET << "\n";
-                        //  }
-                        // #endif
                         #ifdef USE_PROJECTM
                         if (visualsRunning) {
                             ss << std::string(BLUE) << "Visual:    " << std::string(niceGreenColor)
@@ -1937,7 +1865,7 @@ void init_visuals() {
                     mpv_command(mpv, cmd_stop);
                 }
                 else if (cmd == "favorites") {
-                    play_favorite(); // Reuse existing play_favorite() random logic
+                    play_favorite(); 
                     needsRedraw = true;
                 }
                 else if (cmd == "add_fav") {
@@ -1956,8 +1884,7 @@ void init_visuals() {
                     delete_favorite();
                 }
                 else if (cmd == "quit") {
-                    goto end; // Jumps to your cleanup and exit logic
-                }
+                    goto end;                 }
                 else if (cmd == "shuffle") {
                     play_random();
                     needsRedraw = true;
@@ -1977,7 +1904,6 @@ void init_visuals() {
                 }
 
             }
-
 
 
             // D. MENU SCREENS
@@ -2036,7 +1962,6 @@ void init_visuals() {
             }
 
 
-
             // F. MPV EVENTS (Buffered + Delayed Notification Version)
             while (true) {
                 mpv_event *event = mpv_wait_event(mpv, 0);
@@ -2084,8 +2009,7 @@ void init_visuals() {
                 char input = getchar(); // Get the raw key once
                 char c = std::tolower(input); // Create a lowercase version for the switch
 
-                if (c == 'q') break; // 'Q' and 'q' both quit
-
+                if (c == 'q') break; 
                 switch (c) {
                     case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
                     case 's': play_random(); break;
@@ -2096,7 +2020,7 @@ void init_visuals() {
                     case 'x': {
                         const char* cmd_stop[] = {"stop", NULL};
                         mpv_command(mpv, cmd_stop);
-                        currentSong = "Stopped"; // Update UI text
+                        currentSong = "Stopped"; 
                         break;
                     }
                     case 'p': {
@@ -2136,7 +2060,6 @@ void init_visuals() {
                         SDL_SetWindowFullscreen(visualWin, isFullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
 
                         // 3. Immediately update projectM with new dimensions
-
                         int w, h;
                         SDL_GetWindowSize(visualWin, &w, &h);
                         glViewport(0, 0, w, h);
