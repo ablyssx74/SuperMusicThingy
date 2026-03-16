@@ -21,7 +21,7 @@ install(TARGETS SuperMusicThingy DESTINATION bin)
 
 find_package(PkgConfig REQUIRED)
 
-if(LINUX)
+if(UNIX AND NOT APPLE AND NOT HAIKU)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NOTIFY REQUIRED IMPORTED_TARGET libnotify gdk-pixbuf-2.0)
 target_link_libraries(SuperMusicThingy PRIVATE PkgConfig::NOTIFY)
