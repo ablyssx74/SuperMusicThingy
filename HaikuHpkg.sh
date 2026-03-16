@@ -37,7 +37,7 @@ ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
 if [[ "$REPLY" == "1" ]];then
 	# Info if nebula
 	ifNebula="\nAdd milk drop presets in settings\/SuperMusicThingy\/milk_presets\/"
-	pkgman install ${depends} grep libsdl2_devel
+	pkgman install ${depends} grep libsdl2_devel libx11_devel
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
