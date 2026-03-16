@@ -44,5 +44,8 @@ cmake --build build
 sudo cmake --install build
 ```
 ## Build Latest SuperMusicThingy Haiku x86_64
-### Download [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) amd run bash ./HaikuHpkg.sh
+Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) 
+```shell
+bash ./HaikuHpkg.sh
+```
 
