@@ -145,8 +145,8 @@ source-urls {
 fi  
 
 
+cd ${supermusicthingyDir}
 
-if [[ ! -e $HOME/Desktop/test ]];then
 echo -n "resource app_flags B_SINGLE_LAUNCH;
 resource app_signature \"application/x-vnd.${appname}\";
 
@@ -173,11 +173,11 @@ resource vector_icon {
         $\"0A0201011240AAAA00000000000040AAAA42AAAA42AAAA01178422040A020202\"
         $\"030240AAAA00000000000040AAAA42AAAA42AAAA\"
 };
-" > ${supermusicthingyDir}/${appname}.rdef 
-fi
+" > ${appname}.rdef 
 
 
-cd ${supermusicthingyDir}
+
+
 cmake -B build_${appname} ${buildspec}
 cmake --build build_${appname}    
 rc -o ${appname}.rsrc ${appname}.rdef 
