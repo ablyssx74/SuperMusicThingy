@@ -176,8 +176,6 @@ resource vector_icon {
 " > ${appname}.rdef 
 
 
-
-
 cmake -B build_${appname} ${buildspec}
 cmake --build build_${appname}    
 rc -o ${appname}.rsrc ${appname}.rdef 
