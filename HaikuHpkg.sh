@@ -37,7 +37,7 @@ ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
 if [[ "$REPLY" == "1" ]];then
 	# Info if nebula
 	ifNebula="\nAdd milk drop presets in settings\/SuperMusicThingy\/milk_presets\/"
-	pkgman install ${depends} grep libsdl2_devel libx11_devel
+	pkgman install ${depends} grep libsdl2_devel libx11_devel 
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
@@ -73,8 +73,8 @@ if [[ ! -d "${supermusicthingyDir}" ]];then
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
 	#[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
-	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingy
-	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.supermusicthingynebula
+	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname}
+	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname}
 fi
 
 if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
@@ -90,7 +90,6 @@ if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 	fi
 
 	if [[ "$choice1" == "y" ]];then
-		pkgman install cmake libsdl2_devel libx11_devel
 		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
 		cd ${projectmDir}
 		git fetch --all --tags
