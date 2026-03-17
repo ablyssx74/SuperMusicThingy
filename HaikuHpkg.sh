@@ -73,8 +73,8 @@ if [[ ! -d "${supermusicthingyDir}" ]];then
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
 	#[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
-	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname}
-	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname}
+	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 fi
 
 if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
@@ -147,7 +147,7 @@ fi
 cd ${supermusicthingyDir}
 
 echo -n "resource app_flags B_SINGLE_LAUNCH;
-resource app_signature \"application/x-vnd.${appname}\";
+resource app_signature \"application/x-vnd.${appname,,}\";
 
 resource app_version {
     major  = 0,
