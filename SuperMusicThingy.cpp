@@ -1243,7 +1243,7 @@ void init_visuals() {
         std::cout << buffer.str() << std::flush;
     }
 
-
+	// Save Station to favorites list while listening
     void save_favorite() {
         std::string home = getenv("HOME") ? getenv("HOME") : ".";
         #ifdef __HAIKU__
@@ -1346,7 +1346,7 @@ void init_visuals() {
         fade_volume(mpv, original_vol, 500);
     }
 
-
+	// Delete Station from favorites list while listening
     void delete_favorite() {
         std::string home = getenv("HOME") ? getenv("HOME") : ".";
         #ifdef __HAIKU__
@@ -1362,7 +1362,6 @@ void init_visuals() {
                 break;
             }
         }
-
 
         if (currentUrl.empty()) return;
         std::ifstream infile(path);
@@ -1385,17 +1384,12 @@ void init_visuals() {
         }
         statusExpiry = std::time(nullptr) + 2;
     }
-		/*
-    void send_notification(const std::string& station, const std::string& song) {
-        // Filter out common URL patterns to prevent "URL notifications"
-        if (song.empty() || song.find("http://") == 0 || song.find("https://") == 0 || song.find(".aac") != std::string::npos  || song.find(".mp3") != std::string::npos || song.find("Generic Station ID") != std::string::npos || song.find("-aac") != std::string::npos || song.find("-mp3") != std::string::npos) {
-            return;
-        }
-        */
+    
         
-	 // Filter out common URL patterns to prevent "URL notifications"
+	 // Notify 
 		void send_notification(const std::string& station, const std::string& song) {
     	if (song.empty()) return;
+    	// Filter out common URL patterns to prevent "URL notifications"
     		static const std::vector<std::string> skip_patterns = {
       		 "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID"
    		 };
@@ -1404,10 +1398,6 @@ void init_visuals() {
             return; 
       	 		 }
  	  		 }
-		
-
-
-
         std::string cmd;
         #ifdef __HAIKU__
         	#ifdef USE_PROJECTM
@@ -1447,29 +1437,6 @@ void init_visuals() {
         #endif
         system(cmd.c_str());
     }
-
-/*
-   
-    #if defined(__linux__)
-    #include <thread>
-    void listen_for_focus_requests() {
-        while (true) {
-            int client_fd = accept(global_socket_fd, nullptr, nullptr);
-            if (client_fd >= 0) {
-                char buffer[16] = {0};
-                read(client_fd, buffer, sizeof(buffer) - 1);
-              //  if (std::string(buffer) == "FOCUS") {
-              //      system("wmctrl -a 'SuperMusicThingy'");
-
-              //  }
-                close(client_fd);
-            }
-        }
-    }
-    #endif
-
-*/
-
 
 
     // --- Main Engine ---
