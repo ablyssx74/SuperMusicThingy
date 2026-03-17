@@ -363,14 +363,17 @@ void load_config() {
   
 #ifdef __HAIKU__
   #ifndef USE_PROJECTM
-  // --- For reading arguments from keyboard shortcuts ---
   const char* fifoPath = "/tmp/SuperMusicThingy_fifo";
   const char* respPath = "/tmp/SuperMusicThingy_resp";
   int fifoFd = -1;
   #endif
 #endif
 
-
+#ifdef __LINUX__
+  const char* fifoPath = "/tmp/SuperMusicThingy_fifo";
+  const char* respPath = "/tmp/SuperMusicThingy_resp";
+  int fifoFd = -1;
+#endif
 
 // Delete fifo on exit
 void cleanup_fifo() {
