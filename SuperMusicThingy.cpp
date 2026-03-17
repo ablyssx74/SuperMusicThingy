@@ -1385,12 +1385,28 @@ void init_visuals() {
         }
         statusExpiry = std::time(nullptr) + 2;
     }
-
+		/*
     void send_notification(const std::string& station, const std::string& song) {
         // Filter out common URL patterns to prevent "URL notifications"
-        if (song.empty() || song.find("http://") == 0 || song.find("https://") == 0 || song.find("-aac") != std::string::npos || song.find("-mp3") != std::string::npos) {
+        if (song.empty() || song.find("http://") == 0 || song.find("https://") == 0 || song.find(".aac") != std::string::npos  || song.find(".mp3") != std::string::npos || song.find("Generic Station ID") != std::string::npos || song.find("-aac") != std::string::npos || song.find("-mp3") != std::string::npos) {
             return;
         }
+        */
+        
+	 // Filter out common URL patterns to prevent "URL notifications"
+	void send_notification(const std::string& station, const std::string& song) {
+    	if (song.empty()) return;
+	  	  static const std::vector<std::string> skip_patterns = {
+       	  "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID"
+   			 };
+   			 for (const auto& pattern : skip_patterns) {
+       			 if (song.find(pattern) != std::string::npos) {
+          		  return; 
+        		 }
+    		}   
+	  }
+
+
 
         std::string cmd;
         #ifdef __HAIKU__
