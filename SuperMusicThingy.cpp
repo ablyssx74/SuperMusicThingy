@@ -1394,15 +1394,17 @@ void init_visuals() {
         */
         
 	 // Filter out common URL patterns to prevent "URL notifications"
-	void send_notification(const std::string& station, const std::string& song) {
-    	  if (song.empty()) return;
-	  	  static const std::vector<std::string> skip_patterns = {
-       	 	"http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID"
-   		  };
-   			 for (const auto& pattern : skip_patterns) {
-       			 if (song.find(pattern) != std::string::npos) { return;  }
-    		  }   
-	}
+		void send_notification(const std::string& station, const std::string& song) {
+    	if (song.empty()) return;
+    		static const std::vector<std::string> skip_patterns = {
+      		 "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID"
+   		 };
+  		  for (const auto& pattern : skip_patterns) {
+     	   if (song.find(pattern) != std::string::npos) {
+            return; 
+      	 		 }
+ 	  		 }
+		}
 
 
 
