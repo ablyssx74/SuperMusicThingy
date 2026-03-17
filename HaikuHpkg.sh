@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
 # HaikuHpkg
 # Automated build script with user input required.
