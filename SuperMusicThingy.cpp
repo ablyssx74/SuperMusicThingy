@@ -1391,7 +1391,7 @@ void init_visuals() {
     	if (song.empty()) return;
     	// Filter out common URL patterns to prevent "URL notifications"
     		static const std::vector<std::string> skip_patterns = {
-      		 "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID"
+      		 "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID", "Station ID"
    		 };
   		  for (const auto& pattern : skip_patterns) {
      	   if (song.find(pattern) != std::string::npos) {
