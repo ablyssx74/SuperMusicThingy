@@ -1404,7 +1404,7 @@ void init_visuals() {
             return; 
       	 		 }
  	  		 }
-		}
+		
 
 
 
