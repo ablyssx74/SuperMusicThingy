@@ -48,7 +48,6 @@ if [[ "$REPLY" == "1" ]];then
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
 elif [[ "$REPLY" == "2" ]];then
-	
 	pkgman install ${depends}
 	requires=("haiku")
 	buildspec="-DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF"
@@ -192,18 +191,14 @@ mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 if [[ "$thisProjectm" ]];then 
 		# Find libglvnd
 		if pkgman search libglvnd | grep -q "libglvnd"; then
-			echo -e "${LIGHT_BLUE}>>>libglvnd found."
-			skiplibglvnd=true
+			echo -e "${LIGHT_BLUE}>>libglvnd found."
 		else
+		  if [[ -e "$pathlibGlvnd" ]];then
 			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Installing..."
-		fi
-		
-		if [[ -e "$pathlibGlvnd" && ! "$skiplibglvnd" ]];then
-				echo -e "${LIGHT_BLUE}"
-				pkgman install "$pathlibGlvnd"				
+			pkgman install "$pathlibGlvnd"			
 			else
 				TMP_PKG=$(mktemp /tmp/libglvnd.XXXXXX.hpkg)
-				echo -e "${LIGHT_BLUE}>>Installing libglvnd..."
+				echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Installing..."
 				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 				if [ -s "$TMP_PKG" ]; then
 					echo -e "${LIGHT_BLUE}"
@@ -213,23 +208,20 @@ if [[ "$thisProjectm" ]];then
     					echo -e "${LIGHT_BLUE}Download failed!"
    		 				rm "$TMP_PKG"
 				fi
+			 fi
 		  fi
 	
 		# Find nebula
 		if pkgman search nebula | grep -q "nebula"; then
    		 	echo -e "${LIGHT_BLUE}>>nebula found."
-   		 	skipnebula=true
 		else
-			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Installing..."
-		fi
-		
-		if [[ -e "$pathNebula" && ! "$skipnebula" ]];then
-				echo -e "${LIGHT_BLUE}"
-				pkgman install "$pathNebula"				
+			if [[ -e "$pathNebula" ]];then
+			  echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Installing..."
+	  		  pkgman install "$pathNebula"				
 			else
 				TMP_PKG=$(mktemp /tmp/nvidia_driver.XXXXXX.hpkg)
 		
-				echo -e "${LIGHT_BLUE}>>Installing nebula driver..."
+				echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Installing..."
 				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg"
 				if [ -s "$TMP_PKG" ]; then
 					echo -e "${LIGHT_BLUE}"
@@ -238,7 +230,8 @@ if [[ "$thisProjectm" ]];then
 					else
     					echo -e "${LIGHT_BLUE}Download failed!"
     					rm "$TMP_PKG"
-				fi
+			    fi
+			 fi
 		  fi
 fi
 echo -e "${LIGHT_BLUE}>>>Finshed.${NC}"
