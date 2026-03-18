@@ -181,7 +181,7 @@ rc -o ${appname}.rsrc ${appname}.rdef
 xres -o build_${appname}/SuperMusicThingy ${appname}.rsrc     
 mv -f build_${appname}/SuperMusicThingy hpkgs/${appname}/apps/${appname}
 mimeset -f hpkgs/${appname}/apps/${appname}
-cp icon_24px.png hpkgs/${appname}/data/${appname}/icon/
+cp icons/icon_24px.png hpkgs/${appname}/data/${appname}/icon/
 ln -sf /boot/system/apps/${appname} hpkgs/${appname}/bin/${appname}
 ln -sf /boot/system/apps/${appname} hpkgs/${appname}/data/deskbar/menu/Applications/${appname}
 
