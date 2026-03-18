@@ -38,6 +38,8 @@ ${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supporte
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} without projectm and for normal Haiku beta5 release.
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
 
+
+	
 if [[ "$REPLY" == "1" ]];then
 	# Info if nebula
 	ifNebula="\nAdd milk drop presets in settings\/SuperMusicThingy\/milk_presets\/"
@@ -53,8 +55,10 @@ elif [[ "$REPLY" == "2" ]];then
 	skipprojectm="true"
 
 	else
+		echo -e "${LIGHT_BLUE}Wrong Choice!"
 		exit 1
 fi
+
 
 if [[ ! $skipprojectm ]];then
 read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install projectm in /boot/home/config/non-packaged/ 
@@ -62,9 +66,8 @@ ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is alr
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 fi
 
-[[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
-
-if [[ ! -d "${supermusicthingyDir}" ]];then
+if [[ "$thisProjectm" == "2" ]];then 
+	skipprojectm="true" 
 	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
 	cd ${supermusicthingyDir}
@@ -76,9 +79,9 @@ if [[ ! -d "${supermusicthingyDir}" ]];then
 	#[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
 	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
-fi
 
-if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
+
+elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
 		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
 		cd ${projectmDir}
 		git fetch --all --tags
@@ -88,6 +91,10 @@ if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
+		
+		else
+			echo -e "${LIGHT_BLUE}Wrong Choice!"
+			exit 1
 fi
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
@@ -183,16 +190,14 @@ mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
 
 if [[ "$thisProjectm" ]];then 
-
 		# Find libglvnd
 		if pkgman search libglvnd | grep -q "libglvnd"; then
 			echo -e "${LIGHT_BLUE}>>>libglvnd found."
 		else
-			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Download/Install? y/n: ")" glvnd
-	fi
-	
-	if [[ "$glvnd" == "y" ]];then
-			if [[ -e "$pathlibGlvnd" ]];then
+			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Installing..."
+		fi
+		
+		if [[ -e "$pathlibGlvnd" ]];then
 				echo -e "${LIGHT_BLUE}"
 				pkgman install "$pathlibGlvnd"				
 			else
@@ -207,16 +212,15 @@ if [[ "$thisProjectm" ]];then
     					echo -e "${LIGHT_BLUE}Download failed!"
    		 				rm "$TMP_PKG"
 				fi
-			fi	
-	fi	
+		  fi
 	
-	# Find nebula
-	if pkgman search nebula | grep -q "nebula"; then
-   		 echo -e "${LIGHT_BLUE}>>nebula found."
+		# Find nebula
+		if pkgman search nebula | grep -q "nebula"; then
+   		 	echo -e "${LIGHT_BLUE}>>nebula found."
 		else
-			read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Download/Install? y/n: ")" nebula
-	fi
-	if [[ "$nebula" == "y" ]];then
+			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Installing..."
+		fi
+		
 		if [[ -e "$pathNebula" ]];then
 				echo -e "${LIGHT_BLUE}"
 				pkgman install "$pathNebula"				
@@ -233,9 +237,7 @@ if [[ "$thisProjectm" ]];then
     					echo -e "${LIGHT_BLUE}Download failed!"
     					rm "$TMP_PKG"
 				fi
-		fi		
-	fi
-	
-	
+		  fi
 fi
 echo -e "${LIGHT_BLUE}>>>Finshed.${NC}"
+
