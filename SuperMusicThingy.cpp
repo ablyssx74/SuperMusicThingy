@@ -1659,31 +1659,29 @@ void handle_exit_signal(int sig) {
                 SDL_GL_SwapWindow(visualWin);
 
 
-                // Handle window events 
-				SDL_Event e;
-				while (SDL_PollEvent(&e)) {  
-   				 if (e.type == SDL_QUIT || 
-   			     (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
+                // Handle window events
+				 SDL_Event e;
+				while (SDL_PollEvent(&e)) {
 
-    		     visualsRunning = false; 
+  				  if (e.type == SDL_QUIT || 
+   				    (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
 
-     			   
-    		     if (glContext) {
-     		       SDL_GL_DeleteContext(glContext);
-      		  	   glContext = nullptr;
-      				  }
-      		     if (visualWin) {
-        		    SDL_DestroyWindow(visualWin);
-          		  visualWin = nullptr;
-       			     }
-       			
-       			 SDL_QuitSubSystem(SDL_INIT_VIDEO);
+   				     visualsRunning = false; /
 
-      			needsRedraw = true;
-   			     break; 
-  					  }
-					}
+   
+      				  if (glContext) {
+       				     SDL_GL_DeleteContext(glContext);
+        			    glContext = nullptr;
+       					 }
+       				  if (visualWin) {
+          				  SDL_DestroyWindow(visualWin);
+           				 visualWin = nullptr;
+       					 }
 
+       					SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
+       						 needsRedraw = true
+                        }
 
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
