@@ -1772,6 +1772,14 @@ void handle_exit_signal(int sig) {
                             mpv_command(mpv, cmd_mute);
                             needsRedraw = true;
                         }
+
+                        // Right click once to shuffle
+                         else if (e.button.button == SDL_BUTTON_RIGHT && e.button.clicks == 1) {
+                             play_random();
+                             currentSong = "Buffering...";
+                             needsRedraw = true;
+
+                         }
                         // Check if it's the Left Mouse Button and a Double Click (2)
                         else if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
 
