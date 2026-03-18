@@ -812,6 +812,7 @@ void init_visuals() {
             if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
             if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
             if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+            if (c == 'q') keep_running = 0;
 
 
             if (c == 'b' || c == 27) {
@@ -839,8 +840,7 @@ void init_visuals() {
                                 visualsRunning = false;
                                 if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
                                 if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                                // CLEAN WRAPPER CALLED HERE
-                               
+                                // CLEAN WRAPPER CALLED HERE                               
                                 cleanup_capture_device();
                             }
                         }
@@ -852,33 +852,8 @@ void init_visuals() {
                     else if (cfg.quality == "high") cfg.quality = "low";
                     else cfg.quality = "highest";
                 }
-                save_config(); // Save immediately to disk
-
-                // --- START THE TIMER HERE ---
-                saveMessageTimer = std::time(nullptr) + 3;
-                needsRedraw = true;
-
-                #ifdef USE_PROJECTM
-                // Handle window events if visuals are active
-                if (visualsRunning && pm != nullptr) {
-                    SDL_Event e;
-                    while (SDL_PollEvent(&e)) {
-                        if (e.type == SDL_QUIT) {
-                            visualsRunning = false;
-                        }
-                        // KEEP THIS: This updates projectM and OpenGL when you hit 'k' or drag the corner
-                        else if (e.type == SDL_WINDOWEVENT) {
-                            if (e.window.event == SDL_WINDOWEVENT_RESIZED || e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                                glViewport(0, 0, e.window.data1, e.window.data2);
-                                projectm_set_window_size(pm, e.window.data1, e.window.data2);
-                            }
-                        }
-                    }
-                }
-                #endif
-                usleep(33333); 
+                save_config(); 
                 return true;
-
                 needsRedraw = true;
             }
 
@@ -937,6 +912,7 @@ void init_visuals() {
         if (kbhit()) {
             char c = getchar();
             // Global Keus
+            if (c == 'q') keep_running = 0;
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
             if (c == '+') {  set_volume('+'); return false; }
             if (c == '-') {  set_volume('-'); return false; }
@@ -1022,6 +998,7 @@ void init_visuals() {
             if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
             if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
             if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+            if (c == 'q') keep_running = 0;
 
             if (c == 'b' || c == 27) {
                 currentMenu = NONE;
@@ -1692,6 +1669,11 @@ void handle_exit_signal(int sig) {
                             needsRedraw = true;
                         }
 
+						// Quit
+                        else if (e.key.keysym.sym == SDLK_q) {
+								keep_running = 0;
+                        }
+                        
                         // Shuffle
                         else if (e.key.keysym.sym == SDLK_s) {
                             play_random();
@@ -1998,7 +1980,7 @@ void handle_exit_signal(int sig) {
             if (kbhit()) {
                 char input = getchar(); // Get the raw key once
                 char c = std::tolower(input); // Create a lowercase version for the switch
-				if (c == 'q')keep_running = 0;
+				if (c == 'q') keep_running = 0;
                // if (c == 'q') break; 
                 switch (c) {
                     case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
