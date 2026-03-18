@@ -1751,7 +1751,6 @@ void handle_exit_signal(int sig) {
                     }
 
                     // Control vol with mouse wheel
-
                     else if (e.type == SDL_MOUSEWHEEL) {
                         if (e.wheel.y > 0) {
                             set_volume('+');
@@ -1780,7 +1779,7 @@ void handle_exit_signal(int sig) {
                              needsRedraw = true;
 
                          }
-                        // Check if it's the Left Mouse Button and a Double Click (2)
+                        // Left click twice to open fullscreen and disable cursor
                         else if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
 
                             // 1. Get current window flags
