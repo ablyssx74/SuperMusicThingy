@@ -1683,7 +1683,7 @@ void handle_exit_signal(int sig) {
                                 SDL_DestroyWindow(visualWin);
                                 visualWin = nullptr;
                             }
-                            SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                           // SDL_QuitSubSystem(SDL_INIT_VIDEO);
 			                needsRedraw = true;
                         }
 
