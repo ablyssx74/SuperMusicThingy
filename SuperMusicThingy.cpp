@@ -133,6 +133,8 @@ static const unsigned char icon_24px_png[] = {
 
 namespace fs = std::filesystem;
 
+volatile sig_atomic_t keep_running = 1;
+
 // Preset Shuffle
 const uint32_t PRESET_DURATION = 30000;  // 30 Sec
 uint32_t lastPresetChange = 0;
@@ -1449,25 +1451,7 @@ void cleanup_fifo() {
 
 // Signal handler wrapper
 void handle_exit_signal(int sig) {
-     #ifdef USE_PROJECTM
-        if (visualsRunning) {
-         visualsRunning = false;
-         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-         if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-         cleanup_capture_device();
-         }
-     #endif	
-    if (mpv) {
-        mpv_terminate_destroy(mpv);
-        mpv = nullptr;
-    }
-    cleanup_fifo();
-    struct termios t;
-    if (tcgetattr(STDIN_FILENO, &t) == 0) {
-        t.c_lflag |= (ICANON | ECHO);
-        tcsetattr(STDIN_FILENO, TCSANOW, &t);
-    }
-    _exit(0);
+	 keep_running = 0;
 }
 
 
@@ -1622,7 +1606,7 @@ void handle_exit_signal(int sig) {
 
 
         // 7. THE MAIN LOOP
-        while (true) {
+        while (keep_running) {
             bool needsRedraw = false;
 
           // A. --- VISUALS LOGIC ---
@@ -2032,8 +2016,8 @@ void handle_exit_signal(int sig) {
             if (kbhit()) {
                 char input = getchar(); // Get the raw key once
                 char c = std::tolower(input); // Create a lowercase version for the switch
-
-                if (c == 'q') break; 
+				if (c == 'q')keep_running = 0;
+               // if (c == 'q') break; 
                 switch (c) {
                     case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
                     case 's': play_random(); break;
