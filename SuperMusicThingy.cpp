@@ -1449,11 +1449,17 @@ void cleanup_fifo() {
 
 // Signal handler wrapper
 void handle_exit_signal(int sig) {
+     #ifdef USE_PROJECTM
+        if (visualsRunning) {
+         visualsRunning = false;
+         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+         if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+         cleanup_capture_device();
+         }
+     #endif	
     if (mpv) {
         mpv_terminate_destroy(mpv);
         mpv = nullptr;
-        //usleep(100000); 
-        usleep(1000000);
     }
     cleanup_fifo();
     struct termios t;
@@ -1475,6 +1481,7 @@ void handle_exit_signal(int sig) {
        // 2. Signal handler structure
    		   struct sigaction sa;
 		   sa.sa_handler = handle_exit_signal;
+
  		   sigemptyset(&sa.sa_mask);
  		   sa.sa_flags = 0;
 
@@ -2109,7 +2116,7 @@ void handle_exit_signal(int sig) {
          cleanup_capture_device();
          }
      #endif
-        
+        cleanup_fifo();
         system("stty cooked echo");
 
         struct winsize w;
