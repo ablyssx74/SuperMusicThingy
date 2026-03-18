@@ -1401,7 +1401,7 @@ void send_notification(const std::string& station, std::string song) {
     }
 
     static const std::vector<std::string> skip_patterns = {
-        "http://", "https://", ".aac", "-aac", ".mp3", "-mp4"
+        "http://", "https://", ".aac", "-aac", ".mp3", "-mp3"
     };
 
     for (const auto& pattern : skip_patterns) {
