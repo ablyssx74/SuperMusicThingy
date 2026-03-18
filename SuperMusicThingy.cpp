@@ -1664,28 +1664,37 @@ void handle_exit_signal(int sig) {
                 // Handle window events
                 SDL_Event e;
                 while (SDL_PollEvent(&e)) {
-                    if (e.type == SDL_QUIT) {
-                        visualsRunning = false;
-                       //  SDL_QuitSubSystem(SDL_INIT_VIDEO);
-                    }
-                    // --- NEW: for resizing ---
-                    else if (e.type == SDL_WINDOWEVENT) {
-                        if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
-
-                            visualsRunning = false; 
-
-                            // --- KILL THE WINDOW NOW ---
-                            if (glContext) {
+                    if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
+                    		/*
+                    	    if (pm) {
+            					projectm_destroy(pm);
+            					pm = NULL;
+      							 }
+      						if (glContext) {
                                 SDL_GL_DeleteContext(glContext);
                                 glContext = nullptr;
-                            }
-                            if (visualWin) {
-                                SDL_DestroyWindow(visualWin);
-                                visualWin = nullptr;
-                            }
-                           // SDL_QuitSubSystem(SDL_INIT_VIDEO);
-			                needsRedraw = true;
-                        }
+                                 }
+      						if (visualWin) {
+           						 SDL_DestroyWindow(visualWin);
+           						 visualWin = NULL;
+       							 }
+       					    cleanup_capture_device(); 
+                            visualsRunning = false;
+              				*/
+         					if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+         					if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+         					 visualsRunning = false;
+       						// cleanup_capture_device();  
+                            
+                            //SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                            //SDL_Quit();
+
+ 
+						
+                           needsRedraw = true;
+                    }
+                    // --- NEW: for resizing ---
+                    else if (e.type == SDL_WINDOWEVENT) {    
 
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
