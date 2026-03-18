@@ -383,7 +383,12 @@ void cleanup_fifo() {
 
 // Signal handler wrapper
 void handle_exit_signal(int sig) {
+    if (mpv) {
+        mpv_terminate_destroy(mpv);
+        mpv = nullptr;
+    }
     cleanup_fifo();
+    system("stty cooked echo");
     _exit(0); // Exit immediately after cleanup
 }
 
