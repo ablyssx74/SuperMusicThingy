@@ -540,7 +540,7 @@ void init_visuals() {
         // 4.
         visualWin = SDL_CreateWindow("SuperMusicThingy Visuals",
                                      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                     800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SKIP_TASKBAR);
+                                     800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!visualWin) return;
 
         glContext = SDL_GL_CreateContext(visualWin);
@@ -1683,6 +1683,7 @@ void handle_exit_signal(int sig) {
                                 SDL_DestroyWindow(visualWin);
                                 visualWin = nullptr;
                             }
+                            SDL_QuitSubSystem(SDL_INIT_VIDEO);
 			                needsRedraw = true;
                         }
 
