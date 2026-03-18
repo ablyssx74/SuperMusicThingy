@@ -1449,18 +1449,17 @@ void cleanup_fifo() {
 
 // Signal handler wrapper
 void handle_exit_signal(int sig) {
- // if (visualsRunning) {
-      cleanup_capture_device();	
- // }
     if (mpv) {
         mpv_terminate_destroy(mpv);
         mpv = nullptr;
+        usleep(100000); 
     }
     cleanup_fifo();
     struct termios t;
-    tcgetattr(STDIN_FILENO, &t);
-    t.c_lflag |= (ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &t);
+    if (tcgetattr(STDIN_FILENO, &t) == 0) {
+        t.c_lflag |= (ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &t);
+    }
     _exit(0);
 }
 
