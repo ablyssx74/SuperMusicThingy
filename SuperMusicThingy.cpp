@@ -540,7 +540,7 @@ void init_visuals() {
         // 4.
         visualWin = SDL_CreateWindow("SuperMusicThingy Visuals",
                                      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                     800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                                     800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SKIP_TASKBAR);
         if (!visualWin) return;
 
         glContext = SDL_GL_CreateContext(visualWin);
@@ -840,7 +840,7 @@ void init_visuals() {
                                 if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
                                 if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
                                 // CLEAN WRAPPER CALLED HERE
-                                SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                               
                                 cleanup_capture_device();
                             }
                         }
@@ -1683,8 +1683,7 @@ void handle_exit_signal(int sig) {
                                 SDL_DestroyWindow(visualWin);
                                 visualWin = nullptr;
                             }
-							SDL_QuitSubSystem(SDL_INIT_VIDEO);
-                            needsRedraw = true;
+			                needsRedraw = true;
                         }
 
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
