@@ -1679,9 +1679,9 @@ void handle_exit_signal(int sig) {
        					 }
 
        					SDL_QuitSubSystem(SDL_INIT_VIDEO);
-
-       						 needsRedraw = true
-                         
+       					needsRedraw = true
+       					break;
+  				  }
 				
 				
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
