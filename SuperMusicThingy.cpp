@@ -1673,7 +1673,7 @@ void handle_exit_signal(int sig) {
                         else if (e.key.keysym.sym == SDLK_q) {
 								keep_running = 0;
                         }
-                        
+
                         // Shuffle
                         else if (e.key.keysym.sym == SDLK_s) {
                             play_random();
@@ -1750,10 +1750,30 @@ void handle_exit_signal(int sig) {
                         }
                     }
 
+                    // Control vol with mouse wheel
+
+                    else if (e.type == SDL_MOUSEWHEEL) {
+                        if (e.wheel.y > 0) {
+                            set_volume('+');
+                            needsRedraw = true;
+                        }
+                        else if (e.wheel.y < 0) {
+                            set_volume('-');
+                            needsRedraw = true;
+                        }
+                    }
+
+
                     //
                     else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                        // Toggle Mute with middle mouse click
+                        if (e.button.button == SDL_BUTTON_MIDDLE) {
+                            const char* cmd_mute[] = {"cycle", "mute", NULL};
+                            mpv_command(mpv, cmd_mute);
+                            needsRedraw = true;
+                        }
                         // Check if it's the Left Mouse Button and a Double Click (2)
-                        if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
+                        else if (e.button.button == SDL_BUTTON_LEFT && e.button.clicks == 2) {
 
                             // 1. Get current window flags
                             uint32_t flags = SDL_GetWindowFlags(visualWin);
