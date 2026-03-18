@@ -1372,7 +1372,7 @@ void init_visuals() {
         }
 
     static const std::vector<std::string> skip_patterns = {
-        "http://", "https://", ".aac", "-aac", ".mp3", "-mp3"
+        "Generic", ".pls", "-pls", ".aac", "-aac", ".mp3", "-mp3"
     };
 
     for (const auto& pattern : skip_patterns) {
