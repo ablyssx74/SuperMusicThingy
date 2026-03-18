@@ -1387,11 +1387,11 @@ void init_visuals() {
     
         
 	 // Notify 
-void send_notification(const std::string& station_name, std::string song) {
+void send_notification(const std::string& station, std::string song) {
     if (song.empty()) return;
 
-    if (song.find(station_name) == 0) {
-        song.erase(0, station_name.length());
+    if (song.find(station) == 0) {
+        song.erase(0, station.length());
         
         // Optional: Clean up leading punctuation like ": " or " - "
         size_t start = song.find_first_not_of(": -");
