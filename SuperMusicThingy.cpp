@@ -58,7 +58,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #endif
 
-// Icon
+// Linux Notify Icon
 static const unsigned char icon_24px_png[] = {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x18,
@@ -147,7 +147,7 @@ void update_visuals_logic();
 #include <OS.h>
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <Application.h>
+//#include <Application.h>
 ALCdevice *alcCaptureDevice = nullptr;
 #elif defined(USE_SDL2)
 SDL_AudioDeviceID captureDevice = 0;
@@ -1381,18 +1381,18 @@ void init_visuals() {
     
         
 	 // Notify 
-void send_notification(const std::string& station, std::string song) {
-    if (song.empty()) return;
+    void send_notification(const std::string& station, std::string song) {
+        if (song.empty()) return;
 
-    if (song.find(station) == 0) {
-        song.erase(0, station.length());
+        if (song.find(station) == 0) {
+            song.erase(0, station.length());
         
-        // Optional: Clean up leading punctuation like ": " or " - "
-        size_t start = song.find_first_not_of(": -");
-        if (start != std::string::npos) {
-            song = song.substr(start);
+            // Optional: Clean up leading punctuation like ": " or " - "
+            size_t start = song.find_first_not_of(": -");
+                if (start != std::string::npos) {
+                song = song.substr(start);
+                }
         }
-    }
 
     static const std::vector<std::string> skip_patterns = {
         "http://", "https://", ".aac", "-aac", ".mp3", "-mp3"
@@ -1459,14 +1459,13 @@ void handle_exit_signal(int sig) {
     // --- Main Engine ---
 
     int main(int argc, char* argv[]) {
-        // 1. FUNDAMENTAL LOAD (Always first)
+       // 1. Load First
         	load_config();
         	srand(time(0));
 
        // 2. Signal handler structure
    		   struct sigaction sa;
 		   sa.sa_handler = handle_exit_signal;
-
  		   sigemptyset(&sa.sa_mask);
  		   sa.sa_flags = 0;
 
@@ -1569,10 +1568,10 @@ void handle_exit_signal(int sig) {
             std::cout << "\033]0;SuperMusicThingy\007" << std::flush;
 
         // Linux check
-       #if defined(__linux__)
-       if (is_already_running_linux()) {
-       std::cout << "Another instance is already running. " << std::endl;
-       return 0; 
+        #if defined(__linux__)
+        if (is_already_running_linux()) {
+        std::cout << "Another instance is already running. " << std::endl;
+        return 0; 
         }
         #endif
 
@@ -1617,14 +1616,12 @@ void handle_exit_signal(int sig) {
                 // Random preset every 30s
        			if (cfg.autoShuffleVisuals) { 
        				 uint32_t currentTime = SDL_GetTicks();
-        				// Check if 30 seconds have passed
         			if (currentTime - lastPresetChange >= PRESET_DURATION) {
            				load_random_preset(pm);
             			lastPresetChange = currentTime;
            				needsRedraw = true;
         			}
       			  }            
-
 
                 #ifdef __HAIKU__
                 if (alcCaptureDevice) {
@@ -1658,42 +1655,17 @@ void handle_exit_signal(int sig) {
                 // Render and Swap
                 projectm_opengl_render_frame(pm);
                 SDL_GL_SwapWindow(visualWin);
-
-
-                // Handle window events (closing the visualizer window)
+    
                 // Handle window events
                 SDL_Event e;
                 while (SDL_PollEvent(&e)) {
                     if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
-                    		/*
-                    	    if (pm) {
-            					projectm_destroy(pm);
-            					pm = NULL;
-      							 }
-      						if (glContext) {
-                                SDL_GL_DeleteContext(glContext);
-                                glContext = nullptr;
-                                 }
-      						if (visualWin) {
-           						 SDL_DestroyWindow(visualWin);
-           						 visualWin = NULL;
-       							 }
-       					    cleanup_capture_device(); 
-                            visualsRunning = false;
-              				*/
          					if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
          					if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-         					 visualsRunning = false;
-       						// cleanup_capture_device();  
-                            
-                            //SDL_QuitSubSystem(SDL_INIT_VIDEO);
-                            //SDL_Quit();
-
- 
-						
-                           needsRedraw = true;
+         					 visualsRunning = false;      		
+                             needsRedraw = true;
                     }
-                    // --- NEW: for resizing ---
+                    // --- For resizing ---
                     else if (e.type == SDL_WINDOWEVENT) {    
 
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
@@ -1921,7 +1893,6 @@ void handle_exit_signal(int sig) {
                     mpv_command(mpv, cmd_mute);
                     needsRedraw = true;
                 }
-
             }
 
 
