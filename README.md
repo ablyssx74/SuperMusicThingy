@@ -3,7 +3,7 @@
 ## <p align="center"> <img width="48" height="48" align="top" alt="icon" src="https://github.com/user-attachments/assets/40b6432d-33e5-4946-8eed-9f0508000b23" />SuperMusicThingy </p>
 ### <p align="center"> SuperMusicThingy is a free streaming terminal media client for [SomaFM](https://somafm.com/).<br> Fast, light, and fun! </p>
 ### <p align="center"> <img width="320" height="300" align="center" alt="Screenshot" src="https://github.com/user-attachments/assets/70a3adb1-d92a-4742-8406-a645bbe8823b" /></p>
-## Includes
+### Includes
 
 
 -	 projectM milkdrop visualizer.
@@ -14,14 +14,14 @@
 -	 config manger.
 -	 a CLI API backend for sending keyboard shortcuts like vol_up, shuffle, status. See SuperMusicThingy --help for details.
 -	 isolated volume control.
-## Tested on CachyOS and Haiku OS x86_64
+### Tested on CachyOS and Haiku OS x86_64
 
-## Presets 
+### Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.<br> I recommend [projectm_presets](http://spiegelmc.com/pub/projectm_presets.zip).
   
 
 
-## Build Latest SuperMusicThingy
+### Build Latest SuperMusicThingy
 ```shell
 #Download the source
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
@@ -42,7 +42,7 @@ cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 sudo cmake --install build
 ```
-## Preferred Method For Haiku
+### Preferred Method For Haiku
 This will create SuperMusicThingy.hpkg package on the Desktop<br>
 Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) <br>
 Note: Building without project visuals is possible.  Just select option 2 after running ./HaikuHpkg.sh <br>
