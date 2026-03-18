@@ -1663,7 +1663,7 @@ void handle_exit_signal(int sig) {
                 SDL_Event e;
                 while (SDL_PollEvent(&e)) {
                     if (e.type == SDL_QUIT) ||
-                           (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {     			
+                           (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {     			
                             visualsRunning = false; 
                             // --- KILL THE WINDOW ---
                             if (glContext) {
@@ -1678,7 +1678,7 @@ void handle_exit_signal(int sig) {
                             needsRedraw = true;
                         }
 
-                        if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
+                        else if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 
                         int newW = e.window.data1;
