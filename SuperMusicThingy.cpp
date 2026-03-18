@@ -1663,7 +1663,13 @@ void handle_exit_signal(int sig) {
                 // Handle window events
                 SDL_Event e;
                 while (SDL_PollEvent(&e)) {
-                     if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
+                    if (e.type == SDL_QUIT) {
+                        visualsRunning = false;
+                         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                    }
+                    // --- NEW: for resizing ---
+                    else if (e.type == SDL_WINDOWEVENT) {
+                        if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
 
                             visualsRunning = false; 
 
@@ -1679,8 +1685,6 @@ void handle_exit_signal(int sig) {
 							SDL_QuitSubSystem(SDL_INIT_VIDEO);
                             needsRedraw = true;
                         }
-                    // --- NEW: for resizing ---
-                    else if (e.type == SDL_WINDOWEVENT) {  
 
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
