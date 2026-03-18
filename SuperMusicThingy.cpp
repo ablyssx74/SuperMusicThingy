@@ -1659,13 +1659,15 @@ void handle_exit_signal(int sig) {
                 SDL_GL_SwapWindow(visualWin);
 
 
+                // Handle window events (closing the visualizer window)
                 // Handle window events
                 SDL_Event e;
                 while (SDL_PollEvent(&e)) {
-                    if (e.type == SDL_QUIT) ||
-                           (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {     			
+                     if (e.type == SDL_QUIT || (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)) {
+
                             visualsRunning = false; 
-                            // --- KILL THE WINDOW ---
+
+                            // --- KILL THE WINDOW NOW ---
                             if (glContext) {
                                 SDL_GL_DeleteContext(glContext);
                                 glContext = nullptr;
@@ -1677,8 +1679,10 @@ void handle_exit_signal(int sig) {
 							SDL_QuitSubSystem(SDL_INIT_VIDEO);
                             needsRedraw = true;
                         }
+                    // --- NEW: for resizing ---
+                    else if (e.type == SDL_WINDOWEVENT) {  
 
-                        else if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
+                        if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 
                         int newW = e.window.data1;
@@ -1695,6 +1699,7 @@ void handle_exit_signal(int sig) {
                     // FULL SCREEN KEY EVENTS
                     // Shuffle visual effeets
                     else if (e.type == SDL_KEYDOWN) {
+
                         if (e.key.keysym.sym == SDLK_v) {
                             load_random_preset(pm);
                             lastPresetChange = SDL_GetTicks();
