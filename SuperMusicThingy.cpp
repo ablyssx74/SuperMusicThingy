@@ -375,22 +375,7 @@ void load_config() {
   int fifoFd = -1;
 #endif
 
-// Delete fifo on exit
-void cleanup_fifo() {
-    unlink(fifoPath);
-    unlink(respPath);
-}
 
-// Signal handler wrapper
-void handle_exit_signal(int sig) {
-    if (mpv) {
-        mpv_terminate_destroy(mpv);
-        mpv = nullptr;
-    }
-    cleanup_fifo();
-    system("stty cooked echo");
-    _exit(0); // Exit immediately after cleanup
-}
 
 // --- OS Path Helper ---
 std::string get_self_path() {
@@ -1453,6 +1438,24 @@ void send_notification(const std::string& station, std::string song) {
         #endif
         system(cmd.c_str());
     }
+
+
+// Delete fifo on exit
+void cleanup_fifo() {
+    unlink(fifoPath);
+    unlink(respPath);
+}
+
+// Signal handler wrapper
+void handle_exit_signal(int sig) {
+    if (mpv) {
+        mpv_terminate_destroy(mpv);
+        mpv = nullptr;
+    }
+    cleanup_fifo();
+    system("stty cooked echo");
+    _exit(0);
+}
 
 
     // --- Main Engine ---
