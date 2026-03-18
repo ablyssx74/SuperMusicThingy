@@ -1452,7 +1452,8 @@ void handle_exit_signal(int sig) {
     if (mpv) {
         mpv_terminate_destroy(mpv);
         mpv = nullptr;
-        usleep(100000); 
+        //usleep(100000); 
+        usleep(1000000);
     }
     cleanup_fifo();
     struct termios t;
@@ -2107,12 +2108,6 @@ void handle_exit_signal(int sig) {
         buffer << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
         buffer << get_ui_footer(w.ws_row) << BLUE << "Good bye! " << RESET << std::endl;
         std::cout << buffer.str();
-       // if (visualsRunning) {
-          //visualsRunning = false;
-          //if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-         // if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-          cleanup_capture_device();	
-       // }
         if (mpv) mpv_terminate_destroy(mpv);
         return 0;
     }
