@@ -840,6 +840,7 @@ void init_visuals() {
                                 if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
                                 if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
                                 // CLEAN WRAPPER CALLED HERE
+                                SDL_QuitSubSystem(SDL_INIT_VIDEO);
                                 cleanup_capture_device();
                             }
                         }
