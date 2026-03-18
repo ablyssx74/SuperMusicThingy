@@ -37,6 +37,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
+#include <termios.h>
 #include <vector>
 
 #ifdef USE_SDL2
@@ -1449,9 +1450,6 @@ void cleanup_fifo() {
 // Signal handler wrapper
 void handle_exit_signal(int sig) {
   if (visualsRunning) {
-      visualsRunning = false;
-      if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-      if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
       cleanup_capture_device();	
   }
     if (mpv) {
@@ -1459,7 +1457,10 @@ void handle_exit_signal(int sig) {
         mpv = nullptr;
     }
     cleanup_fifo();
-    system("stty cooked echo");
+    struct termios t;
+    tcgetattr(STDIN_FILENO, &t);
+    t.c_lflag |= (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &t);
     _exit(0);
 }
 
