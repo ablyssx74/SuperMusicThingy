@@ -1665,7 +1665,7 @@ void handle_exit_signal(int sig) {
                 while (SDL_PollEvent(&e)) {
                     if (e.type == SDL_QUIT) {
                         visualsRunning = false;
-                         SDL_QuitSubSystem(SDL_INIT_VIDEO);
+                       //  SDL_QuitSubSystem(SDL_INIT_VIDEO);
                     }
                     // --- NEW: for resizing ---
                     else if (e.type == SDL_WINDOWEVENT) {
