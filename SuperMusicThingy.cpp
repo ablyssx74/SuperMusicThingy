@@ -2107,10 +2107,8 @@ void handle_exit_signal(int sig) {
          if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
          if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
          cleanup_capture_device();
-                 }
-             }
          }
-        #endif
+     #endif
         
         system("stty cooked echo");
 
