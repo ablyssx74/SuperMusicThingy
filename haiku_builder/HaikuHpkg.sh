@@ -25,6 +25,10 @@ NC='\033[0m' # No Color (Reset)
 pathNebula="$HOME/Downloads/nebula-0.0.2-1.x86_64.hpkg"
 pathlibGlvnd="$HOME/Downloads/libglvnd-1.7.0-4-x86_64.hpkg"
 
+# Always start fresh
+[[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
+[[ -d ${projectmDir} ]] && rm -fr ${projectmDir}
+
 # Start
 
 read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}Nebula${LIGHT_BLUE} with projectm visuals. 
@@ -57,11 +61,8 @@ read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 fi
+
 [[ "$thisProjectm" == "2" ]] && skipprojectm="true" 
-
-
-[[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
-
 
 if [[ ! -d "${supermusicthingyDir}" ]];then
 	echo -e "${LIGHT_BLUE}"
@@ -78,18 +79,6 @@ if [[ ! -d "${supermusicthingyDir}" ]];then
 fi
 
 if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
-
-	if [[ ! -d ${projectmDir} ]];then
-		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>>Required ${projectmDir}${LIGHT_BLUE} source not found. Download, build add link to SuperMusicThingy? y/n: ")" choice1
-	else
-		read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>${projectmDir}${LIGHT_BLUE} found. Deleteing this might help build problems. Delete and reinstall? y/n: ")" choice2
-	fi
-	if [[ "$choice2" == "y" ]];then
-		rm -fr ${projectmDir}
-		choice1=y
-	fi
-
-	if [[ "$choice1" == "y" ]];then
 		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
 		cd ${projectmDir}
 		git fetch --all --tags
@@ -99,7 +88,6 @@ if [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
- fi
 fi
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
@@ -189,22 +177,10 @@ cd ${supermusicthingyDir}/hpkgs/
 package create -C ${appname} ${appname}.hpkg
 mv ${supermusicthingyDir}/hpkgs/${appname}.hpkg $HOME/Desktop/${appname}.hpkg
 
-if [[ "$thisProjectm" == "1" ]];then 
-	if [[ -d ${projectmDir}  ]];then
-		read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${projectmDir}${LIGHT_BLUE} source? y/n: ")"
-	fi
-	if [[ $REPLY == y ]];then
-		rm -fr ${projectmDir}
-	fi
-fi
 
-#if [[ -d ${supermusicthingyDir} ]];then
-#	read -p "$(echo -e "${LIGHT_BLUE}>>Delete ${LIGHT_PURPLE}${supermusicthingyDir}${LIGHT_BLUE} source? y/n: ")"
-#fi
+[[ -d ${projectmDir} ]] && rm -fr ${projectmDir}
 [[ -d ${supermusicthingyDir} ]] && rm -fr ${supermusicthingyDir}
-#if [[ "$REPLY" == "y" ]];then
-#	rm -fr ${supermusicthingyDir}
-#fi
+
 
 if [[ "$thisProjectm" ]];then 
 
