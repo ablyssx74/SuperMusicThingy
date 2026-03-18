@@ -1387,17 +1387,28 @@ void init_visuals() {
     
         
 	 // Notify 
-		void send_notification(const std::string& station, const std::string& song) {
-    	if (song.empty()) return;
-    	// Filter out common URL patterns to prevent "URL notifications"
-    		static const std::vector<std::string> skip_patterns = {
-      		 "http://", "https://", ".aac", ".mp3", "-aac", "-mp3", "Generic Station ID", "Station ID"
-   		 };
-  		  for (const auto& pattern : skip_patterns) {
-     	   if (song.find(pattern) != std::string::npos) {
+void send_notification(const std::string& station_name, std::string song) {
+    if (song.empty()) return;
+
+    if (song.find(station_name) == 0) {
+        song.erase(0, station_name.length());
+        
+        // Optional: Clean up leading punctuation like ": " or " - "
+        size_t start = song.find_first_not_of(": -");
+        if (start != std::string::npos) {
+            song = song.substr(start);
+        }
+    }
+
+    static const std::vector<std::string> skip_patterns = {
+        "http://", "https://", ".aac", "-aac", ".mp3", "-mp4"
+    };
+
+    for (const auto& pattern : skip_patterns) {
+        if (song.find(pattern) != std::string::npos) {
             return; 
-      	 		 }
- 	  		 }
+        }
+    }
         std::string cmd;
         #ifdef __HAIKU__
         	#ifdef USE_PROJECTM
