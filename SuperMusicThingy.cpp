@@ -2093,12 +2093,10 @@ void handle_exit_signal(int sig) {
         end:
         
      #ifdef USE_PROJECTM
-        if (visualsRunning) {
          visualsRunning = false;
          if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
          if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-         cleanup_capture_device();
-         }
+         cleanup_capture_device();         
      #endif
         cleanup_fifo();
         system("stty cooked echo");
