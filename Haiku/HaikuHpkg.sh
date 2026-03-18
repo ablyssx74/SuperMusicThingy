@@ -193,11 +193,12 @@ if [[ "$thisProjectm" ]];then
 		# Find libglvnd
 		if pkgman search libglvnd | grep -q "libglvnd"; then
 			echo -e "${LIGHT_BLUE}>>>libglvnd found."
+			skiplibglvnd=true
 		else
 			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>libglvnd${LIGHT_BLUE} not found. Installing..."
 		fi
 		
-		if [[ -e "$pathlibGlvnd" ]];then
+		if [[ -e "$pathlibGlvnd" && ! "$skiplibglvnd" ]];then
 				echo -e "${LIGHT_BLUE}"
 				pkgman install "$pathlibGlvnd"				
 			else
@@ -217,11 +218,12 @@ if [[ "$thisProjectm" ]];then
 		# Find nebula
 		if pkgman search nebula | grep -q "nebula"; then
    		 	echo -e "${LIGHT_BLUE}>>nebula found."
+   		 	skipnebula=true
 		else
 			echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>nebula${LIGHT_BLUE} not found. Installing..."
 		fi
 		
-		if [[ -e "$pathNebula" ]];then
+		if [[ -e "$pathNebula" && ! "$skipnebula" ]];then
 				echo -e "${LIGHT_BLUE}"
 				pkgman install "$pathNebula"				
 			else
