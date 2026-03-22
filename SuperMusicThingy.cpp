@@ -786,13 +786,12 @@ void init_visuals() {
 }
 
 
- // Mouse input Terminal screen
+ // Mouse Events
  bool check_ui_click(int x, int y, int button) {
            // 1. HELP MENU
            if (currentMenu == HELP) {
                if (button == 2 || (y == 2 && x >= 43 && x <= 57)) {
                    currentMenu = NONE;
-                   showHelp = false;
                    draw_ui();
                    std::cout << std::flush;
                    return true;
@@ -800,9 +799,16 @@ void init_visuals() {
                 // If clicked again go back to main ui
                if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
                    currentMenu = FAVORITES;
-                   showFavorites = true;
                    return true;
                }
+               //Shuffle click
+               if (x >= 20 && x <= 29) {
+                   play_random();
+                   currentMenu = NONE;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+            }
 
                return false;
            }
@@ -816,7 +822,6 @@ void init_visuals() {
                    if (button == 64) set_volume('+');
                    else set_volume('-');
                }
-               //needsRedraw = true;
                return true;
            }
 
@@ -825,7 +830,6 @@ void init_visuals() {
                // BACK BUTTON: Right Click OR Click [B]ack
                if (button == 2 || (y == 2 && x >= 52 && x <= 57)) {
                    currentMenu = NONE;
-                   showFavorites = false;
                    draw_ui();
                    std::cout << std::flush;
                    return true;
@@ -833,7 +837,6 @@ void init_visuals() {
                 // If clicked again go back to main ui
                if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
                    currentMenu = NONE;
-                   showFavorites = false;
                    draw_ui();
                    std::cout << std::flush;
                    return true;
@@ -841,7 +844,14 @@ void init_visuals() {
                // If clicked Help go there
                if (x >= 41 && x <= 46) {
                    currentMenu = HELP;
-                   showHelp = true;
+                   return true;
+               }
+               //Shuffle click
+               if (x >= 20 && x <= 29) {
+                   play_random();
+                   currentMenu = NONE;
+                   draw_ui();
+                   std::cout << std::flush;
                    return true;
                }
 
@@ -859,7 +869,6 @@ void init_visuals() {
 
                    // 3. Exit back to main menu
                    currentMenu = NONE;
-                   showFavorites = false;
                    draw_ui();
                    std::cout << std::flush;
                    needsRedraw = true;
@@ -874,15 +883,13 @@ void init_visuals() {
              //  if (button == 0) { play_random(); needsRedraw = true; return true; }
             if (button == 1) {  toggle_mute(); return true; }
                if (y == 2 && button == 0) {
-                   if (x >= 20 && x <= 29) { play_random(); needsRedraw = true; return true; }
+                   if (x >= 20 && x <= 29) { play_random(); return true; }
                    if (x >= 32 && x <= 37) {
                        currentMenu = FAVORITES;
-                       showFavorites = true;
                        return true;
                    }
                    if (x >= 41 && x <= 46) {
                        currentMenu = HELP;
-                       showHelp = true;
                        return true;
                    }
 
@@ -2264,14 +2271,14 @@ void handle_exit_signal(int sig) {
 
                    	#ifdef USE_PROJECTM
                     case 'v':
-                   			if (cfg.showVisuals) {
-                            if (!visualsRunning && !is_native_tty()) { init_visuals(); }
-                            }
-
+                        if (!visualsRunning and !is_native_tty()) {
+                            statusMsg = "Visuals disabled in config!";
+                            statusExpiry = std::time(nullptr) + 3;
+                            break;
+                        }
                         load_random_preset(pm);
                         lastPresetChange = SDL_GetTicks();
                         break;
-
                     #endif
                     case 'h': showHelp = true; currentMenu = HELP; break;
                     case 'n': play_random(); break;
@@ -2283,7 +2290,11 @@ void handle_exit_signal(int sig) {
                     #ifdef USE_PROJECTM
                     case 'k': {
                         // Don't crash if visual screen not open
-                        if (!visualsRunning and !is_native_tty()) break;
+                        if (!visualsRunning and !is_native_tty()) {
+                            statusMsg = "Visuals disabled in config!";
+                            statusExpiry = std::time(nullptr) + 3;
+                            break;
+                        }
 
                         // 1. Get current window flags
                         uint32_t flags = SDL_GetWindowFlags(visualWin);
