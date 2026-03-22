@@ -74,6 +74,9 @@ int kbhit() {
         tcsetattr(STDIN_FILENO, TCSANOW, &term);
         setbuf(stdin, NULL);
         initialized = true;
+
+        std::cout << "\033[?1000h" << "\033[?1006h";
+        std::fflush(stdout);
     }
 
     int bytesWaiting;
@@ -159,6 +162,9 @@ static const unsigned char icon_24px_png[] = {
 
 
 namespace fs = std::filesystem;
+
+
+
 
 volatile sig_atomic_t keep_running = 1;
 
@@ -298,14 +304,19 @@ std::string get_ui_header(int rows) {
         header << BGTRUEBLK << BLUE << CLEARALL;
     }
 
-    header << "\033[1;32H" << BLUE << "SuperMusicThingy\n";
+    header << "\033[1;31H" << BLUE << "SuperMusicThingy\n";
     if (currentMenu == NONE) {
-        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | Vol [" << ORANGE << "+/-" << BLUE << "] | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
     }
     if (currentMenu == HELP) {
-        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | Vol [" << ORANGE << "+/-" << BLUE << "] | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
-    if (currentMenu == FAVORITES) {
+
+    if (currentMenu == FAVORITES && !is_native_tty()) {
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+    }
+
+    if (currentMenu == FAVORITES && is_native_tty()) {
         header << "\033[2;22H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Play | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
     if (currentMenu == CONFIG) {
@@ -323,10 +334,13 @@ std::string get_ui_footer(int rows) {
 }
 
 
+bool check_ui_click(int x, int y, int button);
+void draw_ui();
 std::string statusMsg = "";
 std::time_t statusExpiry = 0;
 const std::string BASE_URL = "https://somafm.com/";
 using json = nlohmann::json;
+std::vector<std::string> favUrls;
 int selectedFav = 0;
 int scrollOffset = 0;
 bool showFavorites = false;
@@ -702,7 +716,6 @@ void init_visuals() {
     }
 
 
-
     void set_volume(char direction) {
         double vol;
         mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
@@ -757,7 +770,7 @@ void init_visuals() {
         }
         return false;
     }
-    
+
     // Volume bar
     std::string get_vol_bar() {
     double vol;
@@ -771,7 +784,119 @@ void init_visuals() {
     bar += "]";
     return bar;
 }
-       
+
+
+ // Mouse input Terminal screen
+ bool check_ui_click(int x, int y, int button) {
+           // 1. HELP MENU
+           if (currentMenu == HELP) {
+               if (button == 2 || (y == 2 && x >= 43 && x <= 57)) {
+                   currentMenu = NONE;
+                   showHelp = false;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+                // If clicked again go back to main ui
+               if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
+                   currentMenu = FAVORITES;
+                   showFavorites = true;
+                   return true;
+               }
+
+               return false;
+           }
+
+           // 2. CONTEXT-AWARE SCROLLING
+           if (button == 64 || button == 65) {
+               if (currentMenu == FAVORITES && !favUrls.empty()) {
+                   if (button == 64) selectedFav = std::max(0, selectedFav - 1);
+                   else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
+               } else {
+                   if (button == 64) set_volume('+');
+                   else set_volume('-');
+               }
+               //needsRedraw = true;
+               return true;
+           }
+
+           // 4. FAVORITES MENU LOGIC
+           if (currentMenu == FAVORITES) {
+               // BACK BUTTON: Right Click OR Click [B]ack
+               if (button == 2 || (y == 2 && x >= 52 && x <= 57)) {
+                   currentMenu = NONE;
+                   showFavorites = false;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+                // If clicked again go back to main ui
+               if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
+                   currentMenu = NONE;
+                   showFavorites = false;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+               // If clicked Help go there
+               if (x >= 41 && x <= 46) {
+                   currentMenu = HELP;
+                   showHelp = true;
+                   return true;
+               }
+
+               // Middle CLICK: Load the selected song
+               if (button == 1 && !favUrls.empty()) {
+                   const char *cmd[] = {"loadfile", favUrls[selectedFav].c_str(), "replace", NULL};
+                   mpv_command(mpv, cmd);
+                   for (const auto& ch : channels) {
+                       if (favUrls[selectedFav].find(ch.id) != std::string::npos) {
+                           currentStation = ch.title;
+                           currentDesc = ch.desc;
+                           break;
+                       }
+                   }
+
+                   // 3. Exit back to main menu
+                   currentMenu = NONE;
+                   showFavorites = false;
+                   draw_ui();
+                   std::cout << std::flush;
+                   needsRedraw = true;
+                   return true;
+               }
+               return false;
+           }
+
+
+           // 5. MAIN PLAYER LOGIC
+           if (currentMenu == NONE) {
+             //  if (button == 0) { play_random(); needsRedraw = true; return true; }
+            if (button == 1) {  toggle_mute(); return true; }
+               if (y == 2 && button == 0) {
+                   if (x >= 20 && x <= 29) { play_random(); needsRedraw = true; return true; }
+                   if (x >= 32 && x <= 37) {
+                       currentMenu = FAVORITES;
+                       showFavorites = true;
+                       return true;
+                   }
+                   if (x >= 41 && x <= 46) {
+                       currentMenu = HELP;
+                       showHelp = true;
+                       return true;
+                   }
+
+                   // 6. Quit
+
+                   if (x >= 50 && x <= 56) { keep_running = 0; return true; }
+               }
+           }
+
+           return false;
+       }
+
+
+
 
     bool draw_config_menu() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -829,18 +954,19 @@ void init_visuals() {
             char input;
             read(STDIN_FILENO, &input, 1);
 
+
             while (kbhit()) {
                 char junk;
                 read(STDIN_FILENO, &junk, 1);
             }
             char c = std::tolower((unsigned char)input);
 
-            if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
+            if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
             if (c == '+') { set_volume('+'); return false; }
             if (c == '-') { set_volume('-'); return false; }
-            if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
-            if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
-            if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+            if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
+            if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+            if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
             if (c == 'q') keep_running = 0;
 
 
@@ -869,7 +995,7 @@ void init_visuals() {
                                 visualsRunning = false;
                                 if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
                                 if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                                // CLEAN WRAPPER CALLED HERE                               
+                                // CLEAN WRAPPER CALLED HERE
                                 cleanup_capture_device();
                             }
                         }
@@ -881,7 +1007,7 @@ void init_visuals() {
                     else if (cfg.quality == "high") cfg.quality = "low";
                     else cfg.quality = "highest";
                 }
-                save_config(); 
+                save_config();
                 return true;
                 needsRedraw = true;
             }
@@ -898,38 +1024,50 @@ void init_visuals() {
         std::stringstream buffer;
 
         buffer << get_ui_header(w.ws_row);
-        buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
+       // buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
 
         int r = 7;
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
+        if (!is_native_tty()) {
+        buffer << "\033[" << r++ << ";28H " << ORANGE << "Mouse Events Main Menu" << BLUE << "";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
+        buffer << "\033[" << r++ << ";17H " << "";
+
+        buffer << "\033[" << r++ << ";28H " << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]           : Play selection";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
+        buffer << "\033[" << r++ << ";17H " << "";
+
+
+        }
+        buffer << "\033[" << r++ << ";31H " << ORANGE << "Other Key Events" << BLUE << "";
+      //  buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to favorites list";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "enter" << BLUE << "] Play     : Play or Update selection";
+       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
+       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "enter" << BLUE << "] Play     : Play or Update selection";
         #ifdef USE_PROJECTM
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
         #endif
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "b" << BLUE << "] Back         : Return to Main Menu";
+        //buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
+       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "b" << BLUE << "] Back         : Return to Main Menu";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "c" << BLUE << "] Config       : Config Manager";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy";
+        //buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy";
         buffer << "\033[" << r++ << ";17H ";
 
         #ifndef __HAIKU__
         buffer << "\033[" << r++ << ";17H" << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
-        buffer << "\033[" << r++ << ";17H";
-        buffer << "\033[" << r++ << ";17H"  << ORANGE << "* " << BLUE << "Milkdrop presets:";
-        buffer << "\033[" << r++ << ";17H \n$HOME/.config/SuperMusicThingy/milk_presets/";
+        buffer << "\033[" << r++ << ";17H"  << ORANGE << "* " << BLUE << "Milkdrop presets: $HOME/.config/SuperMusicThingy/milk_presets/";
         #else
-        buffer << "\033[" << r++ << ";17H"  << ORANGE << "*" << BLUE << " Milkdrop presets:";
-        buffer << "\033[" << r++ << ";17H \n$HOME/config/settings/SuperMusicThingy/milk_presets/";
+        buffer << "\033[" << r++ << ";17H"  << ORANGE << "*" << BLUE << " Milkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets/";
         #endif
 
         buffer << get_ui_footer(w.ws_row);
@@ -941,23 +1079,40 @@ void init_visuals() {
             char input;
             read(STDIN_FILENO, &input, 1);
 
-            while (kbhit()) {
-                char junk;
-                read(STDIN_FILENO, &junk, 1);
-            }
-            char c = std::tolower((unsigned char)input);
+            if (input == '\033') { // Potential Mouse or Escape Sequence
+                char seq[2];
+                if (read(STDIN_FILENO, &seq, 2) == 2 && seq[0] == '[' && seq[1] == '<') {
+                    int button, x, y;
+                    char mode;
+                    // The '<' is already eaten, so start with %d
+
+                    if (scanf("%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
+                        if (mode == 'M') { // Only trigger on mouse-down
+                            check_ui_click(x, y, button);
+                            needsRedraw = true;
+                        }
+                    }
+                }
+            } else {
+
+                while (kbhit()) {
+                    char junk;
+                    read(STDIN_FILENO, &junk, 1);
+                }
+                char c = std::tolower((unsigned char)input);
 
             if (c == 'q') keep_running = 0;
-            if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
-            if (c == '+') {  set_volume('+'); return false; }
-            if (c == '-') {  set_volume('-'); return false; }
-            if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
-            if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
-            if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+            if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
+            if (c == '+') { set_volume('+'); return false; }
+            if (c == '-') { set_volume('-'); return false; }
+            if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
+            if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+            if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
             if (c == 'b' || c == 27 || c == 'h') {
                 currentMenu = NONE;
                 return false;
             }
+          }
         }
 
         return true;
@@ -991,7 +1146,8 @@ void init_visuals() {
         std::ifstream infile(home + "/.config/SuperMusicThingy/favorites.txt");
         #endif
 
-        std::vector<std::string> favUrls;
+        //std::vector<std::string> favUrls;
+        favUrls.clear();
         std::string line;
         while (std::getline(infile, line)) if (!line.empty()) favUrls.push_back(line);
 
@@ -1019,23 +1175,41 @@ void init_visuals() {
         std::cout << buffer.str() << std::flush;
 
 
-
         if (kbhit()) {
             char input;
             read(STDIN_FILENO, &input, 1);
 
-            while (kbhit()) {
-                char junk;
-                read(STDIN_FILENO, &junk, 1);
-            }
-            char c = std::tolower((unsigned char)input);
+            if (input == '\033') { // Potential Mouse or Escape Sequence
+                char seq[2];
+                if (read(STDIN_FILENO, &seq, 2) == 2 && seq[0] == '[' && seq[1] == '<') {
+                    int button, x, y;
+                    char mode;
+                    // The '<' is already eaten, so start with %d
 
-            if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
+                    if (scanf("%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
+                        if (mode == 'M') { // Only trigger on mouse-down
+                            check_ui_click(x, y, button);
+                            needsRedraw = true;
+                        }
+                    }
+                }
+            } else {
+
+                while (kbhit()) {
+                    char junk;
+                    read(STDIN_FILENO, &junk, 1);
+                }
+                char c = std::tolower((unsigned char)input);
+
+            if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
             if (c == '+') { set_volume('+'); return false; }
             if (c == '-') { set_volume('-'); return false; }
-            if (c == 'c') { showConfig = true; currentMenu = CONFIG; return false; }
-            if (c == 'l') { showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; return false; }
-            if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
+
+
+
+            if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
+            if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+            if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
             if (c == 'q') keep_running = 0;
 
             if (c == 'b' || c == 27) {
@@ -1060,9 +1234,9 @@ void init_visuals() {
                 currentMenu = NONE;
 
                 return false; // Exit menu after playing
+               }
             }
         }
-
         return true; // Keep menu open if no exit key was pressed
     }
 
@@ -1180,6 +1354,9 @@ void init_visuals() {
         ss << currentLine << BGTRUEBLK;
         return linesUsed;
     }
+
+
+
 /*
     #ifdef USE_PROJECTM
     void update_visuals_logic() {
@@ -1469,6 +1646,10 @@ void cleanup_fifo() {
 void handle_exit_signal(int sig) {
 	 keep_running = 0;
 }
+
+
+
+
 
 
     // --- Main Engine ---
@@ -1944,46 +2125,36 @@ void handle_exit_signal(int sig) {
 
 
             // D. MENU SCREENS
-            if (showConfig) {
-                showConfig = draw_config_menu();
-                if (!showConfig) {
+            // Only check currentMenu, ignore the old booleans here!
+            if (currentMenu == CONFIG) {
+                if (!draw_config_menu()) {
+                    currentMenu = NONE;
                     draw_ui();
                 }
-                if (is_native_tty()) {
-                    usleep(500000); // 2FPS // Have to slow things down a bit
-                } else {
-                    usleep(33333);  // 30 FPS
+                usleep(is_native_tty() ? 500000 : 33333);
+                continue;
+
+            }
+
+            if (currentMenu == HELP) {
+                // If the help menu function returns false, go back to NONE
+                if (!draw_help_menu()) {
+                    currentMenu = NONE;
+                    draw_ui();
                 }
+                usleep(is_native_tty() ? 500000 : 33333);
                 continue;
             }
 
-            if (showHelp) {
-                showHelp = draw_help_menu();
-                if (!showHelp) {
+            if (currentMenu == FAVORITES) {
+                if (!draw_favorites_menu()) {
+                    currentMenu = NONE;
                     draw_ui();
                 }
-
-                if (is_native_tty()) {
-                    usleep(500000); // 2FPS
-                } else {
-                    usleep(33333);  // 30 FPS
-                }
+                usleep(is_native_tty() ? 500000 : 33333);
                 continue;
             }
 
-            if (showFavorites) {
-                    showFavorites = draw_favorites_menu();
-                if (!showFavorites) {
-                    draw_ui();
-                }
-
-                if (is_native_tty()) {
-                    usleep(500000); // 2FPS
-                } else {
-                    usleep(33333);  // 30 FPS
-                }
-                continue;
-            }
 
 
             // E. STATUS EXPIRY
@@ -2046,14 +2217,34 @@ void handle_exit_signal(int sig) {
                 char input;
                 read(STDIN_FILENO, &input, 1);
 
-                while (kbhit()) {
-                    char junk;
-                    read(STDIN_FILENO, &junk, 1);
-                }
-               char c = std::tolower((unsigned char)input);
-				if (c == 'q') keep_running = 0;
-                switch (c) {
+                if (input == '\033') { // Potential Mouse or Escape Sequence
+                     char seq[2];
+                    if (read(STDIN_FILENO, &seq, 2) == 2 && seq[0] == '[' && seq[1] == '<') {
+                        int button, x, y;
+                        char mode;
+                        // The '<' is already eaten, so start with %d
+
+                        if (scanf("%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
+                            if (mode == 'M') { // Only trigger on mouse-down
+                                check_ui_click(x, y, button);
+                                needsRedraw = true;
+                            }
+                        }
+                    }
+                } else {
+
+                    while (kbhit()) {
+                        char junk;
+                        read(STDIN_FILENO, &junk, 1);
+                    }
+                    char c = std::tolower((unsigned char)input);
+                    if (c == 'q') keep_running = 0;
+
+                    switch (c) {
                     case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
+
+
+
                     case 's': play_random(); break;
                     case 'a': save_favorite(); break;
                     case 'c': showConfig = true; currentMenu = CONFIG;  break;
@@ -2108,11 +2299,13 @@ void handle_exit_signal(int sig) {
                         projectm_set_window_size(pm, w, h);
                         break;
 
-                    }
+                      }
                     #endif
-                }
+                   }
                 needsRedraw = true;
+               }
             }
+
 
             if (needsRedraw || resized) {
                 resized = 0;
@@ -2135,6 +2328,9 @@ void handle_exit_signal(int sig) {
          tcsetattr(STDIN_FILENO, TCSANOW, &t);
      });
 
+        //Disable mouse tracking
+     std::cout << "\033[?1000l" << "\033[?1006l";
+     std::fflush(stdout);
 
      #ifdef USE_PROJECTM
          visualsRunning = false;
