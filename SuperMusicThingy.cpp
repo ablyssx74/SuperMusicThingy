@@ -14,6 +14,7 @@
 #include <curl/curl.h>
 #include <csignal>
 #include <cstdlib>
+#include <cctype>
 #include <ctime>
 #include <cstring>
 #include <fcntl.h>
@@ -40,6 +41,7 @@
 #include <termios.h>
 #include <vector>
 
+
 #ifdef USE_SDL2
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -57,6 +59,31 @@
 #include <libnotify/notify.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #endif
+
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+
+int kbhit() {
+    static bool initialized = false;
+    if (!initialized) {
+        // Switch terminal to raw mode (disable line buffering/echo)
+        struct termios term;
+        tcgetattr(STDIN_FILENO, &term);
+        term.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &term);
+        setbuf(stdin, NULL);
+        initialized = true;
+    }
+
+    int bytesWaiting;
+    // FIONREAD asks the driver exactly how many bytes are ready to read
+    ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
+    return bytesWaiting;
+}
+
+
+
 
 // Linux Notify Icon
 static const unsigned char icon_24px_png[] = {
@@ -147,7 +174,6 @@ void update_visuals_logic();
 #include <OS.h>
 #include <AL/al.h>
 #include <AL/alc.h>
-//#include <Application.h>
 ALCdevice *alcCaptureDevice = nullptr;
 #elif defined(USE_SDL2)
 SDL_AudioDeviceID captureDevice = 0;
@@ -420,10 +446,6 @@ std::string currentListeners = "";
 // --- Helper Functions ---
 void handle_resize(int sig) { resized = 1; }
 
-bool kbhit() {
-    struct pollfd fds; fds.fd = STDIN_FILENO; fds.events = POLLIN;
-    return poll(&fds, 1, 0) > 0;
-}
 
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
@@ -802,10 +824,17 @@ void init_visuals() {
         buffer << RESET;
         std::cout << buffer.str() << std::flush;
 
-        if (kbhit()) {
-            char c = std::tolower(getchar());
 
-            // Global keys
+        if (kbhit()) {
+            char input;
+            read(STDIN_FILENO, &input, 1);
+
+            while (kbhit()) {
+                char junk;
+                read(STDIN_FILENO, &junk, 1);
+            }
+            char c = std::tolower((unsigned char)input);
+
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
             if (c == '+') { set_volume('+'); return false; }
             if (c == '-') { set_volume('-'); return false; }
@@ -908,10 +937,16 @@ void init_visuals() {
         std::cout << buffer.str() << std::flush;
         needsRedraw = false;
 
-
         if (kbhit()) {
-            char c = getchar();
-            // Global Keus
+            char input;
+            read(STDIN_FILENO, &input, 1);
+
+            while (kbhit()) {
+                char junk;
+                read(STDIN_FILENO, &junk, 1);
+            }
+            char c = std::tolower((unsigned char)input);
+
             if (c == 'q') keep_running = 0;
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
             if (c == '+') {  set_volume('+'); return false; }
@@ -921,11 +956,11 @@ void init_visuals() {
             if (c == 'h') { showHelp = true; currentMenu = HELP; return false; }
             if (c == 'b' || c == 27 || c == 'h') {
                 currentMenu = NONE;
-                return false; // Tell main loop to CLOSE the menu
+                return false;
             }
         }
 
-        return true; // Keep the menu OPEN
+        return true;
     }
 
 
@@ -985,12 +1020,15 @@ void init_visuals() {
 
 
 
-
-        // 3. Handle Input
         if (kbhit()) {
-            char c = getchar();
-            // Global Keys
-            // Global keys
+            char input;
+            read(STDIN_FILENO, &input, 1);
+
+            while (kbhit()) {
+                char junk;
+                read(STDIN_FILENO, &junk, 1);
+            }
+            char c = std::tolower((unsigned char)input);
 
             if (c == 's') { play_random(); currentSong = "Buffering...";  return false; }
             if (c == '+') { set_volume('+'); return false; }
@@ -2005,10 +2043,15 @@ void handle_exit_signal(int sig) {
 
             // G. KEYBOARD INPUT
             if (kbhit()) {
-                char input = getchar(); // Get the raw key once
-                char c = std::tolower(input); // Create a lowercase version for the switch
+                char input;
+                read(STDIN_FILENO, &input, 1);
+
+                while (kbhit()) {
+                    char junk;
+                    read(STDIN_FILENO, &junk, 1);
+                }
+               char c = std::tolower((unsigned char)input);
 				if (c == 'q') keep_running = 0;
-               // if (c == 'q') break; 
                 switch (c) {
                     case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
                     case 's': play_random(); break;
@@ -2078,11 +2121,21 @@ void handle_exit_signal(int sig) {
 
                 usleep(33333);  // 30 FPS
 
-        } //End The Main Loop
+        } //End Main Loop
 
 
         end:
-        
+
+     struct termios old_t;
+     tcgetattr(STDIN_FILENO, &old_t);
+     atexit([](){
+         struct termios t;
+         tcgetattr(STDIN_FILENO, &t);
+         t.c_lflag |= (ICANON | ECHO);
+         tcsetattr(STDIN_FILENO, TCSANOW, &t);
+     });
+
+
      #ifdef USE_PROJECTM
          visualsRunning = false;
          if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
