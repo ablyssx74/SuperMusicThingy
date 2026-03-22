@@ -2272,7 +2272,7 @@ void handle_exit_signal(int sig) {
                    	#ifdef USE_PROJECTM
                     case 'v':
                         if (!visualsRunning and !is_native_tty()) {
-                            statusMsg = "Visuals disabled in config!";
+                            statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BLUE);
                             statusExpiry = std::time(nullptr) + 3;
                             break;
                         }
@@ -2291,7 +2291,7 @@ void handle_exit_signal(int sig) {
                     case 'k': {
                         // Don't crash if visual screen not open
                         if (!visualsRunning and !is_native_tty()) {
-                            statusMsg = "Visuals disabled in config!";
+                            statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BLUE);
                             statusExpiry = std::time(nullptr) + 3;
                             break;
                         }
