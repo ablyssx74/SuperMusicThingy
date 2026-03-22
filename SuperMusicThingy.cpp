@@ -1034,7 +1034,7 @@ void init_visuals() {
         buffer << "\033[" << r++ << ";17H " << "";
 
         buffer << "\033[" << r++ << ";28H " << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]           : Play selection";
+        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]         : Play selection";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
         buffer << "\033[" << r++ << ";17H [" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
         buffer << "\033[" << r++ << ";17H " << "";
