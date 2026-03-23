@@ -1198,7 +1198,7 @@ void init_visuals() {
         const std::string h2 = ";34H";
         const std::string h3 = ";31H";
         const std::string h4 = ";37H";
-        const std::string n1 = ";16H";
+        const std::string n1 = ";12H";
         const std::string row1 = ";18H";
         const std::string row2 = ";19H";
 
@@ -1207,7 +1207,7 @@ void init_visuals() {
         if (!is_native_tty()) {
             buffer << "\033[" << r++ << h1 << ORANGE << "Mouse Events Main Menu" << BLUE << "";
             #ifdef __HAIKU__
-            buffer << "\033[" << r++ << n1 << ORANGE << "Haiku Terminal lacks some mouse events. Use Konsole instead." << BLUE << "";             
+            buffer << "\033[" << r++ << n1 << ORANGE << "Haiku Terminal lacks mouse scrolling events. Use Konsole or j/k to scroll." << BLUE << "";             
             #endif
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume"; 
