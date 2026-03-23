@@ -2,7 +2,7 @@
 
 ## <p align="center"> <img width="48" height="48" align="top" alt="icon" src="https://github.com/user-attachments/assets/40b6432d-33e5-4946-8eed-9f0508000b23" />SuperMusicThingy </p>
 ### <p align="center"> SuperMusicThingy is a free streaming terminal media client for [SomaFM](https://somafm.com/)<br> Fast, light, and fun! </p>
-##### <p align="center">Screenshots
+#### <p align="center">Screenshots
 <p align="center">Konsole &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Terminology &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Haiku &nbsp;&nbsp;&nbsp;&nbsp;
 <br><img width="200" height="180" align="center" alt="Screenshot1" src="https://github.com/user-attachments/assets/70a3adb1-d92a-4742-8406-a645bbe8823b" /><img width="200" height="180" align="center" alt="Screenshot2" src="https://github.com/user-attachments/assets/7661c7c9-f107-4485-ac68-a593bb09ca9e" /><img width="200" height="180" align="center" alt="Screenshot3" src="https://github.com/user-attachments/assets/d3bfab0e-8bcf-4b9f-a9d5-dfbb1363796f" /></p>
 
