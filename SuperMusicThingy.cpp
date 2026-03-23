@@ -1198,7 +1198,7 @@ void init_visuals() {
         const std::string h2 = ";34H";
         const std::string h3 = ";31H";
         const std::string h4 = ";37H";
-        const std::string n1 = ";12H";
+        const std::string n1 = ";10H";
         const std::string row1 = ";18H";
         const std::string row2 = ";19H";
 
