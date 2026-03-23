@@ -857,8 +857,8 @@ void init_visuals() {
             }
             // 2. DEFAULT: Volume Control
             else if (currentMenu == NONE) {
-                if (button == 64) mpv_command_string(mpv, "add volume 2");
-                else mpv_command_string(mpv, "add volume -2");
+                if (button == 64) mpv_command_string(mpv, "add volume 5");
+                else mpv_command_string(mpv, "add volume -5");
 
             }
 
