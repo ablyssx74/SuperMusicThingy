@@ -8,6 +8,14 @@ include(CMakeDependentOption)
 
 option(ENABLE_PROJECTM "Enable projectM support" ON)
 
+# Add the option (default is OFF)
+option(USE_KONSOLE_ON_HAIKU "Use Konsole instead of Terminal on Haiku" OFF)
+
+if(USE_KONSOLE_ON_HAIKU)
+    add_definitions(-DUSE_KONSOLE_ON_HAIKU)
+endif()
+
+
 cmake_dependent_option(ENABLE_SDL2 "Enable SDL2 support" ON "NOT ENABLE_PROJECTM" ON)
 cmake_dependent_option(ENABLE_GL   "Enable OpenGL support" ON "NOT ENABLE_PROJECTM" ON)
 
