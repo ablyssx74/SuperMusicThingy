@@ -284,7 +284,11 @@ float audioBuffer[2048];
 // --- Global UI Colors ---
 const std::string SCLR = "\033[H\033[J";
 const std::string CLEARALL = "\033[2J\033[3J\033[H";
-const std::string BGTRUEBLK = "\033[48;2;0;0;0m";
+//const std::string BGTRUEBLK = "\033[48;2;0;0;0m";
+
+//Global overides current profiles
+const std::string BGTRUEBLK = "\033]11;#000000\007";
+
 const std::string BLUE   = "\033[94m";
 const std::string RED    = "\033[91m";
 const std::string ORANGE = "\033[93m";
@@ -2554,6 +2558,8 @@ void init_visuals() {
         std::stringstream buffer;
         buffer << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
         buffer << get_ui_footer(w.ws_row) << BLUE << "Good bye! " << RESET << std::endl;
+        // Reset the background to the user's default theme color
+        std::string RESET_BG = "\033]111\007";
         std::cout << buffer.str();
         if (mpv) mpv_terminate_destroy(mpv);
         return 0;
