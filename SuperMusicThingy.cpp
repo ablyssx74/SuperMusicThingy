@@ -39,6 +39,7 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <termios.h>
+#include <thread>
 #include <vector>
 
 
@@ -238,6 +239,9 @@ void cleanup_capture_device() {
 }
 
 
+
+
+
 void ensure_config_dir() {
     std::string path;
 
@@ -320,7 +324,7 @@ std::string get_ui_header(int rows) {
         header << BGTRUEBLK << BLUE << CLEARALL;
     }
 
-    header << "\033[1;36H" << BLUE << "SuperMusicThingy\n";
+    header << "\033[1;35H" << BLUE << "SuperMusicThingy\n";
     if (currentMenu == NONE) {
         header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "C" << BLUE << "]onfig | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
     }
@@ -459,12 +463,26 @@ std::string get_self_path() {
     return "";
 }
 
+//
+void download_art(const std::string& url) {
+    CURL* curl = curl_easy_init();
+    if(curl) {
+        FILE* fp = fopen("/tmp/somafm_art.png", "wb");
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        curl_easy_perform(curl);
+        fclose(fp);
+        curl_easy_cleanup(curl);
+    }
+}
 
 struct Channel {
     std::string title;
     std::string id;
     std::string desc;
     std::string listeners;
+    std::string image;
 };
 
 mpv_handle *mpv = nullptr;
@@ -478,6 +496,7 @@ std::string currentSong = "None";
 std::string currentDesc = "None";
 std::string currentStation = "Press [s] to shuffle!";
 std::string currentListeners = "";
+std::string currentAlbumArtUrl = "";
 
 // --- Helper Functions ---
 void handle_resize(int sig) { resized = 1; }
@@ -505,9 +524,10 @@ void fetch_channels() {
                 for (auto& ch : data["channels"]) {
                     channels.push_back({
                         ch.value("title", ""),
-                                       ch.value("id", ""),
-                                       ch.value("description", ""),
-                                       ch.value("listeners", "0")
+                        ch.value("id", ""),
+                        ch.value("description", ""),
+                        ch.value("listeners", "0"),
+                        ch.value("image", "")
                     });
                 }
             } catch(...) {}
@@ -744,6 +764,14 @@ void init_visuals() {
         currentDesc = channels[idx].desc;
         currentListeners = channels[idx].listeners;
         currentSong = "Buffering...";
+        currentAlbumArtUrl = channels[idx].image;
+
+        if (!currentAlbumArtUrl.empty()) {
+            std::thread([url = currentAlbumArtUrl]() {
+                download_art(url);
+            }).detach();
+        }
+
 
         // USE THE HELPER
         std::string url = get_quality_url(channels[idx].id);
@@ -1587,7 +1615,37 @@ void init_visuals() {
 
         buffer << get_ui_header(w.ws_row);
 
+        static std::string lastRenderedArt = "";
+
+
+
+
+
+        if (const char* term = std::getenv("TERMINOLOGY")) {
+            if (!currentAlbumArtUrl.empty()) {
+                // 1. Position cursor specifically for the image (Row 5, Col 10)
+                buffer <<  "\033[4;35H";;
+
+                // 2. CRITICAL: Flush EVERYTHING in the buffer BEFORE tycat runs
+                // This ensures the terminal clears and moves the cursor FIRST
+                std::cout << buffer.str() << std::flush;
+                buffer.str("");
+
+                // 3. Draw the image (redirected to TTY)
+                std::string cmd = "tycat -s 10x5 /tmp/somafm_art.png > /dev/tty 2>&1";
+                std::system(cmd.c_str());
+
+                // 4. FIX: Re-enable mouse tracking (Crucial for J/K and scrolling!)
+                std::cout << "\033[?1000h\033[?1006h" << std::flush;
+
+                // 5. Update your currentRow so your text starts BELOW the image
+                // Since image is at row 5 and is 5 rows high, text starts at row 11
+
+            }
+        }
+
         int currentRow = w.ws_row - 13;
+
 
         if (std::time(nullptr) < statusExpiry) {
             buffer << "\033[" << currentRow <<";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
@@ -1617,6 +1675,7 @@ void init_visuals() {
         currentRow++;
         buffer << "\033[" << currentRow << ";10H" <<  BLUE  << " * Vol: " << niceGreenColor << ismuteColor << get_vol_bar() << "\n";
         currentRow++;
+
         #ifdef USE_PROJECTM
         if (cfg.showVisuals) {
             int currentPresetNameHeight = draw_wrapped_currentPresetName(buffer, currentPresetName, w.ws_col, currentRow);
@@ -1624,10 +1683,8 @@ void init_visuals() {
                 currentRow += currentPresetNameHeight; }
         }
         #endif
-        buffer << get_ui_footer(w.ws_row);
 
-        buffer << RESET;
-
+        buffer << get_ui_footer(w.ws_row) << RESET;
         std::cout << buffer.str() << std::flush;
     }
 
@@ -1720,10 +1777,20 @@ void init_visuals() {
                     currentStation = ch.title;
                     currentDesc = ch.desc;
                     currentListeners = ch.listeners;
+                    currentAlbumArtUrl = ch.image;
+
                     break;
                 }
             }
         }
+
+        if (!currentAlbumArtUrl.empty()) {
+            std::thread([url = currentAlbumArtUrl]() {
+                download_art(url);
+            }).detach();
+        }
+
+
         double original_vol;
         mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
         fade_volume(mpv, 0, 300);
@@ -1848,7 +1915,6 @@ void init_visuals() {
     void handle_exit_signal(int sig) {
         keep_running = 0;
     }
-
 
 
 
