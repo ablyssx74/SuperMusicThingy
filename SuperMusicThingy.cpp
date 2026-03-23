@@ -1137,9 +1137,7 @@ void init_visuals() {
 
         if (!is_native_tty()) {
             items.push_back({"Auto-Shuffle Presets / 30s", &cfg.autoShuffleVisuals});
-            #ifndef __HAIKU__
-            items.push_back({"Adaptive Vsync", &cfg.autoVsync});
-            #endif
+            items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
             items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
 
