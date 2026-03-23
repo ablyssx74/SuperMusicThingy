@@ -37,8 +37,6 @@ ${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supporte
 
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} without projectm and for normal Haiku beta5 release.
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer
-
-
 	
 if [[ "$answer" == "1" ]];then
 	# Info if nebula
@@ -58,14 +56,32 @@ elif [[ "$answer" == "2" ]];then
 		exit 1
 fi
 
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Terminal.
+
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Terminal by default instead of konsole.
+${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
+
+	
+if [[ "$answer2" == "1" ]];then
+buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
+fi
+
+
 
 if [[ ! $skipprojectm ]];then
-read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install projectm in /boot/home/config/non-packaged/ 
-${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE}  Install projectm in /boot/home/config/non-packaged/ 
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 fi
 
-if [[ "$thisProjectm" == "2" || "$answer" == "2" ]];then 
+
+#if [[ ! $skipprojectm ]];then
+#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install projectm in /boot/home/config/non-packaged/ 
+#${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
+#${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
+#fi
+
+if [[ "$thisProjectm" == "1" || "$answer" == "2" ]];then 
 	skipprojectm="true" 
 	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
@@ -169,7 +185,7 @@ resource vector_icon {
 " > ${appname}.rdef 
 
 
-cmake -B build_${appname} ${buildspec}
+cmake -B build_${appname} ${buildspec} ${buildspec2}
 cmake --build build_${appname}    
 rc -o ${appname}.rsrc ${appname}.rdef 
 xres -o build_${appname}/SuperMusicThingy ${appname}.rsrc     
