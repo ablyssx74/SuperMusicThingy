@@ -1255,6 +1255,7 @@ void init_visuals() {
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BLUE << "]          : Play a random station";
+            buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Left x2" << BLUE << "]        : Toggle fullscreen visual window";
             buffer << "\033[" << r++ << row2 << "";
             #endif
         }
@@ -1270,7 +1271,7 @@ void init_visuals() {
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "enter" << BLUE << "] Enter    : Update/Play selection";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
         #ifdef USE_PROJECTM
-        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "k" << BLUE << "] Fullscreen   : Toggle fullscreen visual window";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
         #endif
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
