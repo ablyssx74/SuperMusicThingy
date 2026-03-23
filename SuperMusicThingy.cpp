@@ -304,22 +304,25 @@ std::string get_ui_header(int rows) {
         header << BGTRUEBLK << BLUE << CLEARALL;
     }
 
-    header << "\033[1;31H" << BLUE << "SuperMusicThingy\n";
+    header << "\033[1;36H" << BLUE << "SuperMusicThingy\n";
     if (currentMenu == NONE) {
-        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "C" << BLUE << "]onfig | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "Q" << BLUE << "]uit\n";
     }
     if (currentMenu == HELP) {
-        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "C" << BLUE << "]onfig | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
 
     if (currentMenu == FAVORITES && !is_native_tty()) {
-        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "C" << BLUE << "]onfig | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
+    }
+    if (currentMenu == CONFIG && !is_native_tty()) {
+        header << "\033[2;20H" << "[" << ORANGE << "S" << BLUE << "]huffle | [" << ORANGE << "F" << BLUE << "]avs | [" << ORANGE << "C" << BLUE << "]onfig | [" << ORANGE << "H" << BLUE << "]elp | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
 
     if (currentMenu == FAVORITES && is_native_tty()) {
         header << "\033[2;22H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Play | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
-    if (currentMenu == CONFIG) {
+    if (currentMenu == CONFIG && is_native_tty()) {
         header << "\033[2;21H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Update | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
     return header.str();
@@ -362,7 +365,7 @@ struct Config {
     bool autoShuffle = false;
     bool autoShuffleVisuals = false;
     int defaultVolume = 100;
-    std::string quality = "highest";
+    std::string quality = "Highest";
 } cfg;
 
 int selectedConfig = 0;
@@ -673,15 +676,15 @@ void init_visuals() {
 
 
     std::string get_quality_url(const std::string& id) {
-        if (cfg.quality == "highest") {
+        if (cfg.quality == "Highest") {
             return BASE_URL + id + ".pls";
         }
 
-        if (cfg.quality == "high") {
+        if (cfg.quality == "High") {
             return BASE_URL + id + "64.pls";  
         }
 
-        if (cfg.quality == "low") {
+        if (cfg.quality == "Low") {
             return BASE_URL + id + "32.pls";  
         }
 
@@ -790,19 +793,25 @@ void init_visuals() {
  bool check_ui_click(int x, int y, int button) {
            // 1. HELP MENU
            if (currentMenu == HELP) {
-               if (button == 2 || (y == 2 && x >= 43 && x <= 57)) {
+                // BACK BUTTON: Right Click OR Click [B]ack
+                if (button == 2 || (button == 0 && y == 2 && ((x >= 61 && x <= 68) || (x >= 52 && x <= 57)))) {
                    currentMenu = NONE;
                    draw_ui();
                    std::cout << std::flush;
                    return true;
                }
-                // If clicked again go back to main ui
-               if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
+               // Fav click
+               if (button == 0 && y == 2 && x >= 32 && x <= 38) {
                    currentMenu = FAVORITES;
                    return true;
                }
-               //Shuffle click
-               if (x >= 20 && x <= 29) {
+               // Config click
+               if (x >= 41 && x <= 48) {
+                   currentMenu = CONFIG;
+                   return true;
+               }
+               // Shuffle click
+               if (x >= 20 && x <= 28) {
                    play_random();
                    currentMenu = NONE;
                    draw_ui();
@@ -813,22 +822,105 @@ void init_visuals() {
                return false;
            }
 
-           // 2. CONTEXT-AWARE SCROLLING
+           // 3. Favorites & Config CONTEXT-AWARE SCROLLING
            if (button == 64 || button == 65) {
+               // Favorites Menu Logic
                if (currentMenu == FAVORITES && !favUrls.empty()) {
                    if (button == 64) selectedFav = std::max(0, selectedFav - 1);
                    else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
-               } else {
-                   if (button == 64) set_volume('+');
-                   else set_volume('-');
+               }
+               // Config Menu Logic
+               else if (currentMenu == CONFIG) {
+                   // totalItems = 4 (items) + 1 (Quality) = 5
+                   int totalItems = 5;
+                   if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
+                   else selectedConfig = std::min(totalItems - 1, selectedConfig + 1);
                }
                return true;
            }
 
+           // 4. Config MENU LOGIC
+
+           if (currentMenu == CONFIG) {
+               // BACK BUTTON: Right Click OR Click [B]ack
+               if (button == 2 || (button == 0 && y == 2 && ((x >= 61 && x <= 68) || (x >= 39 && x <= 50)))) {
+                   currentMenu = NONE;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+
+               // Fav click
+               if (button == 0 && y == 2 && x >= 32 && x <= 38) {
+                   currentMenu = FAVORITES;
+                   return true;
+               }
+
+               // Help click
+               if (button == 0 && y == 2 && x >= 52 && x <= 57) {
+                   currentMenu = HELP;
+                   draw_ui();
+                   return true;
+               }
+
+               // Shuffle click
+               if (button == 0 && y == 2 && x >= 20 && x <= 28) {
+                   play_random();
+                   currentMenu = NONE;
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+
+               // Middle CLICK (or Left Click) to toggle settings
+               if (button == 1) {
+                   if (selectedConfig == 0) cfg.showNotifications = !cfg.showNotifications;
+                   else if (selectedConfig == 1) cfg.autoShuffle = !cfg.autoShuffle;
+                   else if (selectedConfig == 2) cfg.autoShuffleVisuals = !cfg.autoShuffleVisuals;
+                   else if (selectedConfig == 3) {
+                       // Toggle the boolean
+                       cfg.showVisuals = !cfg.showVisuals;
+
+                       #ifdef USE_PROJECTM
+                       // Sync the Visualizer Window state
+                       if (cfg.showVisuals) {
+                           if (!visualsRunning && !is_native_tty()) {
+                               init_visuals();
+                           }
+                       } else {
+                           if (visualsRunning) {
+                               visualsRunning = false;
+                               if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+                               if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+                               cleanup_capture_device();
+                           }
+                       }
+                       #endif
+                   }
+                   else if (selectedConfig == 4) {
+
+                       if (cfg.quality == "Low") {
+                           cfg.quality = "High";
+                       } else if (cfg.quality == "High") {
+                           cfg.quality = "Highest";
+                       } else {
+                           cfg.quality = "Low";
+                       }
+                   }
+
+                   draw_ui();
+                   std::cout << std::flush;
+                   return true;
+               }
+
+               return true;
+           }
+
+
            // 4. FAVORITES MENU LOGIC
            if (currentMenu == FAVORITES) {
                // BACK BUTTON: Right Click OR Click [B]ack
-               if (button == 2 || (y == 2 && x >= 52 && x <= 57)) {
+               if (button == 2 || (y == 2 && x >= 61 && x <= 68)) {
                    currentMenu = NONE;
                    draw_ui();
                    std::cout << std::flush;
@@ -841,13 +933,18 @@ void init_visuals() {
                    std::cout << std::flush;
                    return true;
                }
-               // If clicked Help go there
-               if (x >= 41 && x <= 46) {
+               // Help Click
+               if (x >= 52 && x <= 57) {
                    currentMenu = HELP;
                    return true;
                }
+               // Config click
+               if (x >= 41 && x <= 48) {
+                   currentMenu = CONFIG;
+                   return true;
+               }
                //Shuffle click
-               if (x >= 20 && x <= 29) {
+               if (x >= 20 && x <= 28) {
                    play_random();
                    currentMenu = NONE;
                    draw_ui();
@@ -888,14 +985,18 @@ void init_visuals() {
                        currentMenu = FAVORITES;
                        return true;
                    }
-                   if (x >= 41 && x <= 46) {
+                   if (x >= 41 && x <= 48) {
+                       currentMenu = CONFIG;
+                       return true;
+                   }
+                   if (x >= 52 && x <= 57) {
                        currentMenu = HELP;
                        return true;
                    }
 
                    // 6. Quit
 
-                   if (x >= 50 && x <= 56) { keep_running = 0; return true; }
+                   if (x >= 61 && x <= 67) { keep_running = 0; return true; }
                }
            }
 
@@ -918,9 +1019,12 @@ void init_visuals() {
         std::vector<MenuItem> items = {
             {"Desktop Notifications", &cfg.showNotifications},
             {"Auto-Shuffle on Start", &cfg.autoShuffle},
-            {"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals},
-            {"Show Visuals", &cfg.showVisuals}
         };
+
+        if (!is_native_tty()) {
+            items.push_back({"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals});
+            items.push_back({"Show Visuals", &cfg.showVisuals});
+        }
 
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
 
@@ -957,16 +1061,32 @@ void init_visuals() {
         std::cout << buffer.str() << std::flush;
 
 
+
         if (kbhit()) {
             char input;
             read(STDIN_FILENO, &input, 1);
 
+            if (input == '\033') { // Potential Mouse or Escape Sequence
+                char seq[2];
+                if (read(STDIN_FILENO, &seq, 2) == 2 && seq[0] == '[' && seq[1] == '<') {
+                    int button, x, y;
+                    char mode;
+                    // The '<' is already eaten, so start with %d
 
-            while (kbhit()) {
-                char junk;
-                read(STDIN_FILENO, &junk, 1);
-            }
-            char c = std::tolower((unsigned char)input);
+                    if (scanf("%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
+                        if (mode == 'M') { // Only trigger on mouse-down
+                            check_ui_click(x, y, button);
+                            needsRedraw = true;
+                        }
+                    }
+                }
+            } else {
+
+                while (kbhit()) {
+                    char junk;
+                    read(STDIN_FILENO, &junk, 1);
+                }
+                char c = std::tolower((unsigned char)input);
 
             if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
             if (c == '+') { set_volume('+'); return false; }
@@ -1010,15 +1130,15 @@ void init_visuals() {
                     #endif
                 } else {
                     // Cycle the Quality string...
-                    if (cfg.quality == "highest") cfg.quality = "high";
-                    else if (cfg.quality == "high") cfg.quality = "low";
-                    else cfg.quality = "highest";
+                    if (cfg.quality == "Highest") cfg.quality = "High";
+                    else if (cfg.quality == "High") cfg.quality = "Low";
+                    else cfg.quality = "Highest";
                 }
                 save_config();
                 return true;
                 needsRedraw = true;
+              }
             }
-
         }
 
         return true;
@@ -1033,50 +1153,58 @@ void init_visuals() {
         buffer << get_ui_header(w.ws_row);
        // buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
 
+        const std::string h1 = ";34H";
+        const std::string h2 = ";34H";
+        const std::string h3 = ";31H";
+        const std::string h4 = ";37H";
+        const std::string row1 = ";18H";
+        const std::string row2 = ";19H";
+
         int r = 7;
         if (!is_native_tty()) {
-        buffer << "\033[" << r++ << ";28H " << ORANGE << "Mouse Events Main Menu" << BLUE << "";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
-        buffer << "\033[" << r++ << ";17H " << "";
+        buffer << "\033[" << r++ << h1 << ORANGE << "Mouse Events Main Menu" << BLUE << "";
+        buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
+        buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
+        buffer << "\033[" << r++ << row1 << "";
 
-        buffer << "\033[" << r++ << ";28H " << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Middle" << BLUE << "]         : Play selection";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
-        buffer << "\033[" << r++ << ";17H " << "";
+        buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Play/Update selection";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
+        buffer << "\033[" << r++ << row2 << "";
 
-
-        }
-        buffer << "\033[" << r++ << ";31H " << ORANGE << "Other Key Events" << BLUE << "";
-      //  buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to favorites list";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
-       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
-       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "enter" << BLUE << "] Play     : Play or Update selection";
         #ifdef USE_PROJECTM
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
+        buffer << "\033[" << r++ << h3 << ORANGE << "Mouse Events Visualizer Window" << BLUE << "";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BLUE << "]          : Play a random station";
+        buffer << "\033[" << r++ << row2 << "";
         #endif
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
-        //buffer << "\033[" << r++ << ";17H [" << ORANGE << "h" << BLUE << "] Help         : Show this menu";
-       // buffer << "\033[" << r++ << ";17H [" << ORANGE << "b" << BLUE << "] Back         : Return to Main Menu";
-        buffer << "\033[" << r++ << ";17H [" << ORANGE << "c" << BLUE << "] Config       : Config Manager";
-        //buffer << "\033[" << r++ << ";17H [" << ORANGE << "q" << BLUE << "] Quit         : Exit Music Thingy";
-        buffer << "\033[" << r++ << ";17H ";
+        }
 
+        buffer << "\033[" << r++ << h4 << ORANGE << "Other Key Events" << BLUE << "";
+      //  buffer << "\033[" << r++ << ";17H [" << ORANGE << "s/n" << BLUE << "] Shuffle    : Play a random station";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "f" << BLUE << "] Play Fav     : Play a random favorite";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "l" << BLUE << "] List Favs    : Open scrollable favorite menu";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to favorites list";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
+        #ifdef USE_PROJECTM
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "v" << BLUE << "] Shuffle      : Shuffle milk drop presets";
+        #endif
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "x" << BLUE << "] Stop         : Stop the music";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "p" << BLUE << "] Toggle       : Play/Pause the music";
+        buffer << "\033[" << r++ << row2;
+        if (!is_native_tty()) {
         #ifndef __HAIKU__
-        buffer << "\033[" << r++ << ";17H" << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
-        buffer << "\033[" << r++ << ";17H"  << ORANGE << "* " << BLUE << "Milkdrop presets: $HOME/.config/SuperMusicThingy/milk_presets/";
+        buffer << "\033[" << r++ << row2 << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
+        buffer << "\033[" << r++ << row2  << ORANGE << "* " << BLUE << "Milkdrop presets: $HOME/.config/SuperMusicThingy/milk_presets/";
         #else
-        buffer << "\033[" << r++ << ";17H"  << ORANGE << "*" << BLUE << " Milkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets/";
+        buffer << "\033[" << r++ << row2 << ORANGE << "*" << BLUE << " Milkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets/";
         #endif
-
+        }
         buffer << get_ui_footer(w.ws_row);
         buffer << RESET;
         std::cout << buffer.str() << std::flush;
@@ -1251,9 +1379,9 @@ void init_visuals() {
     //[\033[31mF\033[33ma\033[32mv\033[36mo\033[34m\033[35mr\033[31mi\033[33mt\033[32me\033[94m]
 
     std::string get_bitrate_text() {
-        if (cfg.quality == "highest") return "128k";
-        if (cfg.quality == "low")     return "32k";
-        return "64k"; // Default for "high"
+        if (cfg.quality == "Highest") return "128k";
+        if (cfg.quality == "High")    return "64k";
+        return "32k";
     }
 
 
@@ -2220,12 +2348,13 @@ void handle_exit_signal(int sig) {
 
 
             // G. KEYBOARD INPUT
+
             if (kbhit()) {
                 char input;
                 read(STDIN_FILENO, &input, 1);
 
                 if (input == '\033') { // Potential Mouse or Escape Sequence
-                     char seq[2];
+                    char seq[2];
                     if (read(STDIN_FILENO, &seq, 2) == 2 && seq[0] == '[' && seq[1] == '<') {
                         int button, x, y;
                         char mode;
