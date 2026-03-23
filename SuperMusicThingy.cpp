@@ -1141,10 +1141,6 @@ void init_visuals() {
             items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
         
-        #ifndef __HAIKU__       
-        	items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
-        #endif 
-	
 		
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
 
