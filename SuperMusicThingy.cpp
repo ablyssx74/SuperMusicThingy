@@ -920,7 +920,7 @@ void init_visuals() {
             }
             else if (currentMenu == CONFIG) {
                 if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
-                else selectedConfig = std::min(5, selectedConfig + 1);
+                else selectedConfig = std::min(6, selectedConfig + 1);
 
             }
             // 2. DEFAULT: Volume Control
