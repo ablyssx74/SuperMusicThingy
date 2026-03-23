@@ -1198,6 +1198,7 @@ void init_visuals() {
         const std::string h2 = ";34H";
         const std::string h3 = ";31H";
         const std::string h4 = ";37H";
+        const std::string n1 = ";8H";
         const std::string row1 = ";18H";
         const std::string row2 = ";19H";
 
@@ -1205,17 +1206,16 @@ void init_visuals() {
 
         if (!is_native_tty()) {
             buffer << "\033[" << r++ << h1 << ORANGE << "Mouse Events Main Menu" << BLUE << "";
-            buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
-            #ifndef __HAIKU__
-            buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
+            #ifdef __HAIKU__
+            buffer << "\033[" << r++ << n1 << ORANGE << "Haiku Terminal lacks some mouse events. Use Konsole instead." << BLUE << "";             
             #endif
+            buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
+            buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume"; 
             buffer << "\033[" << r++ << row1 << "";
 
             buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
-            buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Play/Update selection";
-            #ifndef __HAIKU__
+            buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Play/Update selection";  
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
-            #endif
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
             buffer << "\033[" << r++ << row2 << "";
 
