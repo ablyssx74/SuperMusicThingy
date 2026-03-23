@@ -5,8 +5,13 @@
  *
  * Some AI was used to help make this possibe.
  * Original inspiration started with a bash script
+
+ Note: cmake -DUSE_KONSOLE_ON_HAIKU=ON ..
+
+
  *
  */
+
 
 
 
@@ -1987,7 +1992,8 @@ void init_visuals() {
                 << "Usage: SuperMusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
                 << "Commands:\n"
                 << niceGreenColor << "  status        " << BLUE << "  - Show current song, volume, and visualizer preset\n" << BLUE
-                << niceGreenColor << "  shuffle       " << BLUE << "  - Skip to the next song in the queue\n" << BLUE
+                << niceGreenColor << "  shuffle       " << BLUE << "  - Shuffle all stations\n" << BLUE favorites
+                << niceGreenColor << "  favorites     " << BLUE << "  - Shuffle favorites list\n" << BLUE
                 #ifdef USE_PROJECTM
                 << niceGreenColor << "  visual        " << BLUE << "  - Shuffle to a new random Milkdrop preset\n" << BLUE
                 #endif
@@ -2036,16 +2042,25 @@ void init_visuals() {
             std::string cmd = "";
 
             #ifdef __HAIKU__
-            // Haiku: 'Terminal' is always available.
-            cmd = "Terminal -t \"SuperMusicThingy\" " + path + " &";
+            #ifdef USE_KONSOLE_ON_HAIKU
+            // Haiku: Using the Konsole port
+            cmd = "Konsole --title \"SuperMusicThingy\" -e " + path + " &";
             #else
+            // Haiku: Default native Terminal
+            cmd = "Terminal -t \"SuperMusicThingy\" " + path + " &";
+            #endif
+            #else
+
             // Linux: Search for available terminals
             struct Term { std::string name; std::string flag; };
             std::vector<Term> terms = {
                 {"x-terminal-emulator", "-e"},
                 {"konsole", "--title \"SuperMusicThingy\" -e"},
                 {"gnome-terminal", "--"}, // Modern GNOME requires '--' for command execution
+                {"kgx", "-e"},
                 {"xfce4-terminal", "-e"},
+                {"terminology", "-e"},
+                {"ptyxis", "-x"},
                 {"xterm", "-e"}
             };
 
