@@ -64,6 +64,14 @@
 #include <termios.h>
 #include <unistd.h>
 
+#ifndef KEY_UP
+#define KEY_UP 65
+#endif
+
+#ifndef KEY_DOWN
+#define KEY_DOWN 66
+#endif
+
 int kbhit() {
     static bool initialized = false;
     if (!initialized) {
@@ -822,26 +830,22 @@ void init_visuals() {
             return false;
         }
 
+
         // 3. Favorites & Config CONTEXT-AWARE SCROLLING
-
-
-        // Check for both Linux (64/65) and older/Haiku (4/5) scroll codes
-        bool isScrollUp = (button == 64 || button == 4);
-        bool isScrollDown = (button == 65 || button == 5);
-
-        if (isScrollUp || isScrollDown) {
+        if (button == 64 || button == 65) {
+            // Favorites Menu Logic
             if (currentMenu == FAVORITES && !favUrls.empty()) {
-                if (isScrollUp) selectedFav = std::max(0, selectedFav - 1);
+                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
                 else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
             }
+            // Config Menu Logic
             else if (currentMenu == CONFIG) {
                 int totalItems = 5;
-                if (isScrollUp) selectedConfig = std::max(0, selectedConfig - 1);
+                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
                 else selectedConfig = std::min(totalItems - 1, selectedConfig + 1);
             }
             return true;
         }
-
 
         // 4. Config MENU LOGIC
 
@@ -1806,10 +1810,7 @@ void init_visuals() {
 
         #ifdef __HAIKU__
         // Haiku-specific: Some terminals prefer basic tracking without SGR extensions
-        //std::cout << "\033[?1000h" << std::flush;
-        // Enable 1000 (normal), 1002 (button), and 1006 (SGR)
-        std::cout << "\033[?1000h\033[?1002h\033[?1006h" << std::flush;
-
+        std::cout << "\033[?1000h" << std::flush;
         #else
         // Linux/Standard: Modern SGR mouse tracking
         std::cout << "\033[?1000h\033[?1006h" << std::flush;
@@ -2405,7 +2406,17 @@ void init_visuals() {
                     switch (c) {
                         case 'l': showFavorites = true; selectedFav = 0; currentMenu = FAVORITES; break;
 
+                        case KEY_UP:
+                            if (currentMenu == FAVORITES) selectedFav = std::max(0, selectedFav - 1);
+                              else if (currentMenu == CONFIG) selectedConfig = std::max(0, selectedConfig - 1);
+                            draw_ui();
+                            break;
 
+                        case KEY_DOWN:
+                            if (currentMenu == FAVORITES) selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
+                                else if (currentMenu == CONFIG) selectedConfig = std::min(4, selectedConfig + 1);
+                            draw_ui();
+                            break;
 
                         case 's': play_random(); break;
                         case 'a': save_favorite(); break;
