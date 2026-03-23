@@ -924,6 +924,7 @@ void init_visuals() {
                     else cfg.quality = "Low";
                 }
                  save_config();
+                 saveMessageTimer = std::time(nullptr) + 3;
                  return true;
             }
 
@@ -1174,6 +1175,7 @@ void init_visuals() {
                         else cfg.quality = "Highest";
                     }
                     save_config();
+                    saveMessageTimer = std::time(nullptr) + 3;
                     return true;
                     needsRedraw = true;
                 }
