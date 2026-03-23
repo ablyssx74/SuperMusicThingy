@@ -1241,6 +1241,7 @@ void init_visuals() {
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "enter" << BLUE << "] Enter    : Update/Play selection";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
         #ifdef USE_PROJECTM
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
