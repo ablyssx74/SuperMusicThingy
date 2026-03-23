@@ -91,9 +91,9 @@ elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
 		
-		#else
-		#	echo -e "${LIGHT_BLUE}Error code 2!"
-		#	exit 1
+		else
+			echo -e "${LIGHT_BLUE}Error code 2!"
+			exit 1
 fi
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
