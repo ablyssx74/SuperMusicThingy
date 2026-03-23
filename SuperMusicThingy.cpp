@@ -332,10 +332,10 @@ std::string get_ui_header(int rows) {
     }
 
     if (currentMenu == FAVORITES && is_native_tty()) {
-        header << "\033[2;22H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Play | [" << ORANGE << "B" << BLUE << "]ack\n";
+        header << "\033[2;25H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Play | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
     if (currentMenu == CONFIG && is_native_tty()) {
-        header << "\033[2;21H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Update | [" << ORANGE << "B" << BLUE << "]ack\n";
+        header << "\033[2;24H" << "[" << ORANGE << "j/k" << BLUE << "] Scroll | [" << ORANGE << "Enter" << BLUE << "] Update | [" << ORANGE << "B" << BLUE << "]ack\n";
     }
     return header.str();
 }
@@ -803,6 +803,8 @@ void init_visuals() {
 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
+        if (button == 3) return false;
+        bool stateChanged = false;
         // 1. HELP MENU
         if (currentMenu == HELP) {
             // Check for any valid Left (0) or Right (2) click on buttons
@@ -830,6 +832,7 @@ void init_visuals() {
                 }
 
                 // If we reach here, a setting changed. Redraw ONCE.
+                stateChanged = true;
                 draw_ui();
                 std::cout << std::flush;
                 return true;
@@ -1344,7 +1347,7 @@ void init_visuals() {
         // 2. Build UI
 
         buffer << get_ui_header(w.ws_row);
-        const std::string h1 = ";36H";
+        const std::string h1 = ";35H";
         const std::string row1 = ";27H";
 
         buffer << "\033[5" << h1 <<  ORANGE << "--- FAVORITES ---" << BLUE;
