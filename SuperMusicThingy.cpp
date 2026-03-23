@@ -1806,7 +1806,10 @@ void init_visuals() {
 
         #ifdef __HAIKU__
         // Haiku-specific: Some terminals prefer basic tracking without SGR extensions
-        std::cout << "\033[?1000h" << std::flush;
+        //std::cout << "\033[?1000h" << std::flush;
+        // Enable 1000 (normal), 1002 (button), and 1006 (SGR)
+        std::cout << "\033[?1000h\033[?1002h\033[?1006h" << std::flush;
+
         #else
         // Linux/Standard: Modern SGR mouse tracking
         std::cout << "\033[?1000h\033[?1006h" << std::flush;
