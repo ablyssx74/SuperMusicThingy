@@ -2556,11 +2556,14 @@ void init_visuals() {
         struct winsize w;
         ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
         std::stringstream buffer;
-        buffer << "\033[48;2;0;0;0m" << BLUE << "\033[2J\033[3J\033[H";
-        buffer << get_ui_footer(w.ws_row) << BLUE << "Good bye! " << RESET << std::endl;
-        // Reset the background to the user's default theme color
-        std::string RESET_BG = "\033]111\007";
-        std::cout << buffer.str();
+        std::string RESET_PROFILE = "\033]111\007";
+        buffer << RESET_PROFILE << std::endl;
+
+
+        buffer << CLEARALL;
+        std::system("tput init");
+        buffer << get_ui_footer(w.ws_row) << "Good bye! " << RESET << std::endl;
+        std::cout << buffer.str() << std::flush;
         if (mpv) mpv_terminate_destroy(mpv);
         return 0;
     }
