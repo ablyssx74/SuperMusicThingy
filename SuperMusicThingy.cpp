@@ -923,15 +923,17 @@ void init_visuals() {
                     else if (cfg.quality == "High") cfg.quality = "Highest";
                     else cfg.quality = "Low";
                 }
+                 save_config();
+                 return true;
             }
 
-            // REDRAW ONLY IF SOMETHING CHANGED
+
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
             }
 
-            return true; // Consume the event so Haiku doesn't "strobe"
+            return true; 
         }
 
 
@@ -979,14 +981,11 @@ void init_visuals() {
                 }
             }
 
-            // REDRAW ONLY IF WE CHANGED SOMETHING
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
             }
 
-            // ALWAYS return true here so the mouse event doesn't "fall through"
-            // to a global redraw at the bottom of the function.
             return true;
         }
 
@@ -1027,25 +1026,18 @@ void init_visuals() {
                 // Quit
                 else if (x >= 61 && x <= 67) {
                     keep_running = 0;
-                    // No redraw needed for exit
                     return true;
                 }
             }
 
-            // REDRAW ONLY IF SOMETHING CHANGED
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
                 return true;
             }
 
-            // If the user clicked elsewhere in the player, consume the event
-            // but don't redraw to save Haiku's CPU.
             return true;
         }
-
-        return false;
-
 
         return false;
     }
