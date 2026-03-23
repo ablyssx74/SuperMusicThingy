@@ -638,7 +638,7 @@ void init_visuals() {
          }
         }
 
-       
+        /*
         int defaultInterval = SDL_GL_GetSwapInterval();
         std::cout << "System default swap interval: " << defaultInterval << std::endl;
         if (defaultInterval == 0) {
@@ -648,7 +648,7 @@ void init_visuals() {
         } else if (defaultInterval == -1) {
             std::cout << "Adaptive VSync is enabled" << std::endl;
         }
-        
+        */
 
         // 5. THE "EARS" LOGIC
         #ifdef __HAIKU__
@@ -1140,7 +1140,14 @@ void init_visuals() {
             items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
             items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
-
+        
+        #ifdef __HAIKU__
+        if (cfg.autoVsync) {
+        	items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
+        }        
+		#endif 
+	
+		
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
 
         // 1. Draw standard toggles
