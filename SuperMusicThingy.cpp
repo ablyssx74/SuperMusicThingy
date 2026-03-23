@@ -1289,17 +1289,20 @@ void init_visuals() {
         // 2. Build UI
 
         buffer << get_ui_header(w.ws_row);
-        buffer << "\033[5;30H" <<  ORANGE << "--- FAVORITES ---" << BLUE;
+        const std::string h1 = ";36H";
+        const std::string row1 = ";27H";
+
+        buffer << "\033[5" << h1 <<  ORANGE << "--- FAVORITES ---" << BLUE;
         int maxVisible = 10;
         if (favUrls.empty()) {
-            buffer << "\033[7;25H  (No favorites saved yet)";
+            buffer << "\033[7" << row1 << "  (No favorites saved yet)";
         } else {
             if (selectedFav < scrollOffset) scrollOffset = selectedFav;
             if (selectedFav >= scrollOffset + maxVisible) scrollOffset = selectedFav - maxVisible + 1;
 
             for (int i = 0; i < maxVisible && (i + scrollOffset) < (int)favUrls.size(); ++i) {
                 int idx = i + scrollOffset;
-                buffer << "\033[" << (7 + i) << ";19H";
+                buffer << "\033[" << (7 + i) << row1;
                 if (idx == selectedFav) buffer << ORANGE << " > " <<  ORANGE << favUrls[idx] << BLUE;
                 else buffer << "   " << favUrls[idx];
             }
