@@ -399,7 +399,7 @@ int selectedConfig = 0;
 void save_config() {
     json j;
     j["quality"] = cfg.quality;
-    j["somethingNew"] = cfg.somethingNew;
+   // j["somethingNew"] = cfg.somethingNew;
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
     j["autoShuffleVisuals"] = cfg.autoShuffleVisuals;
@@ -416,7 +416,7 @@ void load_config() {
         try {
             json j = json::parse(infile);
             cfg.quality = j.value("quality", "highest");
-            cfg.somethingNew = j.value("somethingNew", "one");
+        //    cfg.somethingNew = j.value("somethingNew", "one");
             cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
             cfg.autoShuffleVisuals = j.value("autoShuffleVisuals", false);
@@ -916,7 +916,7 @@ void init_visuals() {
             }
             else if (currentMenu == CONFIG) {
                 if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
-                else selectedConfig = std::min(6, selectedConfig + 1);
+                else selectedConfig = std::min(5, selectedConfig + 1);
 
             }
             // 2. DEFAULT: Volume Control
@@ -986,11 +986,11 @@ void init_visuals() {
                     else if (cfg.quality == "High") cfg.quality = "Highest";
                     else cfg.quality = "Low";
                 }
-                else if (selectedConfig == 6) {
-                    if (cfg.somethingNew == "one") cfg.somethingNew = "two";
-                    else if (cfg.somethingNew == "two") cfg.somethingNew = "three";
-                    else cfg.somethingNew = "one";
-                }
+              //  else if (selectedConfig == 6) {
+              //     if (cfg.somethingNew == "one") cfg.somethingNew = "two";
+              //      else if (cfg.somethingNew == "two") cfg.somethingNew = "three";
+              //      else cfg.somethingNew = "one";
+              //  }
                  save_config();
                  saveMessageTimer = std::time(nullptr) + 3;
                  return true;
@@ -1131,17 +1131,17 @@ void init_visuals() {
         // Define the list of options to display
         struct MenuItem { std::string label; bool* val; };
         std::vector<MenuItem> items = {
-            {"Desktop Notifications", &cfg.showNotifications},
             {"Auto-Shuffle on Start", &cfg.autoShuffle},
         };
 
         if (!is_native_tty()) {
+            items.push_back({"Desktop Notifications", &cfg.showNotifications});
             items.push_back({"Auto-Shuffle Presets / 30s", &cfg.autoShuffleVisuals});
-            items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
+            items.push_back({"Adaptive Vsync", &cfg.autoVsync});
             items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
         
-		
+
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
 
         // 1. Draw standard toggles
@@ -1154,7 +1154,7 @@ void init_visuals() {
 
             // COLOR LOGIC FOR ON/OFF
             if (*(items[i].val)) {
-                buffer << GREEN << "[ON]" << BLUE;
+                buffer << "[ON]" << BLUE;
             } else {
                 buffer << RED << "[OFF]" << BLUE;
             }
@@ -1165,14 +1165,14 @@ void init_visuals() {
         buffer << "\033[" << (10 + qIdx) << ";10H";
         if (selectedConfig == qIdx) buffer << ORANGE << " > " << BLUE;
         else buffer << "   ";
-        buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
+        buffer << "Audio Quality: [" << cfg.quality << BLUE << "]";
 
        // 2. Future Quality (Next row down)
-        int qIdx2 = qIdx + 1; // Increment the row!
-        buffer << "\033[" << (10 + qIdx2) << ";10H";
-        if (selectedConfig == qIdx2) buffer << ORANGE << " > " << BLUE; // Check against qIdx2
-        else buffer << "   ";
-        buffer << "Something New: [" << GREEN << cfg.somethingNew << BLUE << "]";
+       // int qIdx2 = qIdx + 1; // Increment the row!
+       // buffer << "\033[" << (10 + qIdx2) << ";10H";
+       // if (selectedConfig == qIdx2) buffer << ORANGE << " > " << BLUE; // Check against qIdx2
+       // else buffer << "   ";
+       // buffer << "Something New: [" << cfg.somethingNew << BLUE << "]";
 
 
 
