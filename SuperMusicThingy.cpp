@@ -5,10 +5,6 @@
  *
  * Some AI was used to help make this possibe.
  * Original inspiration started with a bash script
-
- Note: cmake -DUSE_KONSOLE_ON_HAIKU=ON ..
-
-
  *
  */
 
