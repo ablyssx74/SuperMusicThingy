@@ -823,20 +823,25 @@ void init_visuals() {
         }
 
         // 3. Favorites & Config CONTEXT-AWARE SCROLLING
-        if (button == 64 || button == 65) {
-            // Favorites Menu Logic
+
+
+        // Check for both Linux (64/65) and older/Haiku (4/5) scroll codes
+        bool isScrollUp = (button == 64 || button == 4);
+        bool isScrollDown = (button == 65 || button == 5);
+
+        if (isScrollUp || isScrollDown) {
             if (currentMenu == FAVORITES && !favUrls.empty()) {
-                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
+                if (isScrollUp) selectedFav = std::max(0, selectedFav - 1);
                 else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
             }
-            // Config Menu Logic
             else if (currentMenu == CONFIG) {
                 int totalItems = 5;
-                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
+                if (isScrollUp) selectedConfig = std::max(0, selectedConfig - 1);
                 else selectedConfig = std::min(totalItems - 1, selectedConfig + 1);
             }
             return true;
         }
+
 
         // 4. Config MENU LOGIC
 
