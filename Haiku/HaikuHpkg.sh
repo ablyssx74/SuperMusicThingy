@@ -36,25 +36,25 @@ ${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supporte
 >>This script will try to automatically download libprojectm and nebula if not already installed.
 
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} without projectm and for normal Haiku beta5 release.
-${LIGHT_PURPLE}>>Select Option: 1 or 2: ")"
+${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer
 
 
 	
-if [[ "$REPLY" == "1" ]];then
+if [[ "$answer" == "1" ]];then
 	# Info if nebula
 	ifNebula="\nAdd milk drop presets in settings\/SuperMusicThingy\/milk_presets\/"
 	pkgman install ${depends} grep libsdl2_devel libx11_devel 
 	appname="SuperMusicThingyNebula"
 	requires=("haiku >= r1~beta5_hrev59183-1" "libglvnd >= 1.7.0-1" "nebula" "libsdl2")
 
-elif [[ "$REPLY" == "2" ]];then
+elif [[ "$answer" == "2" ]];then
 	pkgman install ${depends}
 	requires=("haiku")
 	buildspec="-DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF"
 	skipprojectm="true"
 
 	else
-		echo -e "${LIGHT_BLUE}Wrong Choice!"
+		echo -e "${LIGHT_BLUE}Error code 1 !"
 		exit 1
 fi
 
@@ -65,7 +65,7 @@ ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is alr
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 fi
 
-if [[ "$thisProjectm" == "2" ]];then 
+if [[ "$thisProjectm" == "2" || "$answer" == "2" ]];then 
 	skipprojectm="true" 
 	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
@@ -91,9 +91,9 @@ elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j && cmake --build . --target install 
 		
-		else
-			echo -e "${LIGHT_BLUE}Wrong Choice!"
-			exit 1
+		#else
+		#	echo -e "${LIGHT_BLUE}Error code 2!"
+		#	exit 1
 fi
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
