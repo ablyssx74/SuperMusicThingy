@@ -64,7 +64,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-//# Enable mouse reporting,
+//# mouse reporting event codes
 //printf "\033[?1003h\033[?1006h"; cat -v; printf "\033[?1003l\033[?1006l"
 
 
@@ -805,212 +805,244 @@ void init_visuals() {
     bool check_ui_click(int x, int y, int button) {
         // 1. HELP MENU
         if (currentMenu == HELP) {
-            // BACK BUTTON: Right Click OR Click [B]ack
-            if (button == 2 || (button == 0 && y == 2 && ((x >= 61 && x <= 68) || (x >= 52 && x <= 57)))) {
-                currentMenu = NONE;
+            // Check for any valid Left (0) or Right (2) click on buttons
+            if (button == 0 || button == 2) {
+                // BACK BUTTON: Right Click OR Click [B]ack labels
+                if (button == 2 || (y == 2 && ((x >= 61 && x <= 68) || (x >= 52 && x <= 57)))) {
+                    currentMenu = NONE;
+                }
+                // Fav click
+                else if (y == 2 && x >= 32 && x <= 38) {
+                    currentMenu = FAVORITES;
+                }
+                // Config click
+                else if (y == 2 && x >= 41 && x <= 48) {
+                    currentMenu = CONFIG;
+                }
+                // Shuffle click
+                else if (y == 2 && x >= 20 && x <= 28) {
+                    play_random();
+                    currentMenu = NONE;
+                }
+                else {
+                    // Clicked empty space in the Help menu - stop here!
+                    return true;
+                }
+
+                // If we reach here, a setting changed. Redraw ONCE.
                 draw_ui();
                 std::cout << std::flush;
                 return true;
             }
-            // Fav click
-            if (button == 0 && y == 2 && x >= 32 && x <= 38) {
-                currentMenu = FAVORITES;
-                return true;
-            }
-            // Config click
-            if (x >= 41 && x <= 48) {
-                currentMenu = CONFIG;
-                return true;
-            }
-            // Shuffle click
-            if (x >= 20 && x <= 28) {
-                play_random();
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
-            }
 
-            return false;
-        }
-
-
-        // 3. Favorites & Config CONTEXT-AWARE SCROLLING
-        if (button == 64 || button == 65) {
-            // Favorites Menu Logic
-            if (currentMenu == FAVORITES && !favUrls.empty()) {
-                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
-                else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
-            }
-            // Config Menu Logic
-            else if (currentMenu == CONFIG) {
-                int totalItems = 5;
-                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
-                else selectedConfig = std::min(totalItems - 1, selectedConfig + 1);
-            }
+            // If it's a mouse-up or scroll event inside Help, just consume it
             return true;
         }
 
+
+
+        // 3. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
+        if (button == 64 || button == 65) {
+
+            // 1. Favorites/Config scrolling
+            if (currentMenu == FAVORITES && !favUrls.empty()) {
+                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
+                else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
+
+            }
+            else if (currentMenu == CONFIG) {
+                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
+                else selectedConfig = std::min(4, selectedConfig + 1);
+
+            }
+            // 2. DEFAULT: Volume Control
+            else if (currentMenu == NONE) {
+                if (button == 64) mpv_command_string(mpv, "add volume 2");
+                else mpv_command_string(mpv, "add volume -2");
+
+            }
+
+            return true;
+        }
+
+
+
         // 4. Config MENU LOGIC
-
         if (currentMenu == CONFIG) {
-            // BACK BUTTON: Right Click OR Click [B]ack
-            if (button == 2 || (button == 0 && y == 2 && ((x >= 61 && x <= 68) || (x >= 39 && x <= 50)))) {
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
+            bool stateChanged = false;
+
+            // BACK / MENU SWITCH BUTTONS (Row 2)
+            if (button == 0 || button == 2) {
+                // A. Back Logic: Right Click OR Click [B]ack or [C]onfig label
+                if (button == 2 || (y == 2 && ((x >= 61 && x <= 68) || (x >= 39 && x <= 50)))) {
+                    currentMenu = NONE;
+                    stateChanged = true;
+                }
+                // B. Fav click
+                else if (y == 2 && x >= 32 && x <= 38) {
+                    currentMenu = FAVORITES;
+                    stateChanged = true;
+                }
+                // C. Help click
+                else if (y == 2 && x >= 52 && x <= 57) {
+                    currentMenu = HELP;
+                    stateChanged = true;
+                }
+                // D. Shuffle click
+                else if (y == 2 && x >= 20 && x <= 28) {
+                    play_random();
+                    currentMenu = NONE;
+                    stateChanged = true;
+                }
             }
 
-            // Fav click
-            if (button == 0 && y == 2 && x >= 32 && x <= 38) {
-                currentMenu = FAVORITES;
-                return true;
-            }
-
-            // Help click
-            if (button == 0 && y == 2 && x >= 52 && x <= 57) {
-                currentMenu = HELP;
-                draw_ui();
-                return true;
-            }
-
-            // Shuffle click
-            if (button == 0 && y == 2 && x >= 20 && x <= 28) {
-                play_random();
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
-            }
-
-            // Middle CLICK (or Left Click) to toggle settings
+            // SETTINGS TOGGLE (Middle Click)
             if (button == 1) {
+                stateChanged = true; // Any middle click here triggers a redraw
                 if (selectedConfig == 0) cfg.showNotifications = !cfg.showNotifications;
                 else if (selectedConfig == 1) cfg.autoShuffle = !cfg.autoShuffle;
                 else if (selectedConfig == 2) cfg.autoShuffleVisuals = !cfg.autoShuffleVisuals;
                 else if (selectedConfig == 3) {
-                    // Toggle the boolean
                     cfg.showVisuals = !cfg.showVisuals;
-
                     #ifdef USE_PROJECTM
-                    // Sync the Visualizer Window state
                     if (cfg.showVisuals) {
-                        if (!visualsRunning && !is_native_tty()) {
-                            init_visuals();
-                        }
-                    } else {
-                        if (visualsRunning) {
-                            visualsRunning = false;
-                            if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-                            if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                            cleanup_capture_device();
-                        }
+                        if (!visualsRunning && !is_native_tty()) init_visuals();
+                    } else if (visualsRunning) {
+                        visualsRunning = false;
+                        if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+                        if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+                        cleanup_capture_device();
                     }
                     #endif
                 }
                 else if (selectedConfig == 4) {
-
-                    if (cfg.quality == "Low") {
-                        cfg.quality = "High";
-                    } else if (cfg.quality == "High") {
-                        cfg.quality = "Highest";
-                    } else {
-                        cfg.quality = "Low";
-                    }
+                    if (cfg.quality == "Low") cfg.quality = "High";
+                    else if (cfg.quality == "High") cfg.quality = "Highest";
+                    else cfg.quality = "Low";
                 }
-
-                draw_ui();
-                std::cout << std::flush;
-                return true;
             }
 
-            return true;
+            // REDRAW ONLY IF SOMETHING CHANGED
+            if (stateChanged) {
+                draw_ui();
+                std::cout << std::flush;
+            }
+
+            return true; // Consume the event so Haiku doesn't "strobe"
         }
+
 
 
         // 4. FAVORITES MENU LOGIC
         if (currentMenu == FAVORITES) {
-            // BACK BUTTON: Right Click OR Click [B]ack
-            if (button == 2 || (y == 2 && x >= 61 && x <= 68)) {
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
-            }
-            // If clicked again go back to main ui
-            if (button == 2 || (y == 2 && x >= 32 && x <= 37)) {
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
-            }
-            // Help Click
-            if (x >= 52 && x <= 57) {
-                currentMenu = HELP;
-                return true;
-            }
-            // Config click
-            if (x >= 41 && x <= 48) {
-                currentMenu = CONFIG;
-                return true;
-            }
-            //Shuffle click
-            if (x >= 20 && x <= 28) {
-                play_random();
-                currentMenu = NONE;
-                draw_ui();
-                std::cout << std::flush;
-                return true;
-            }
+            bool stateChanged = false;
 
-            // Middle CLICK: Load the selected song
-            if (button == 1 && !favUrls.empty()) {
-                const char *cmd[] = {"loadfile", favUrls[selectedFav].c_str(), "replace", NULL};
-                mpv_command(mpv, cmd);
-                for (const auto& ch : channels) {
-                    if (favUrls[selectedFav].find(ch.id) != std::string::npos) {
-                        currentStation = ch.title;
-                        currentDesc = ch.desc;
-                        break;
-                    }
+            // HANDLE BUTTON CLICKS (Left 0, Middle 1, Right 2)
+            if (button == 0 || button == 1 || button == 2) {
+                // A. Back Logic: Right Click OR Click [B]ack or [F]avs label
+                if (button == 2 || (y == 2 && ((x >= 61 && x <= 68) || (x >= 32 && x <= 37)))) {
+                    currentMenu = NONE;
+                    stateChanged = true;
                 }
+                // B. Help Click
+                else if (y == 2 && x >= 52 && x <= 57) {
+                    currentMenu = HELP;
+                    stateChanged = true;
+                }
+                // C. Config click
+                else if (y == 2 && x >= 41 && x <= 48) {
+                    currentMenu = CONFIG;
+                    stateChanged = true;
+                }
+                // D. Shuffle click
+                else if (y == 2 && x >= 20 && x <= 28) {
+                    play_random();
+                    currentMenu = NONE;
+                    stateChanged = true;
+                }
+                // E. Middle CLICK: Load the selected song
+                else if (button == 1 && !favUrls.empty()) {
+                    const char *cmd[] = {"loadfile", favUrls[selectedFav].c_str(), "replace", NULL};
+                    mpv_command(mpv, cmd);
+                    for (const auto& ch : channels) {
+                        if (favUrls[selectedFav].find(ch.id) != std::string::npos) {
+                            currentStation = ch.title;
+                            currentDesc = ch.desc;
+                            break;
+                        }
+                    }
+                    currentMenu = NONE;
+                    stateChanged = true;
+                }
+            }
 
-                // 3. Exit back to main menu
-                currentMenu = NONE;
+            // REDRAW ONLY IF WE CHANGED SOMETHING
+            if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
-                needsRedraw = true;
-                return true;
             }
-            return false;
+
+            // ALWAYS return true here so the mouse event doesn't "fall through"
+            // to a global redraw at the bottom of the function.
+            return true;
         }
+
 
 
         // 5. MAIN PLAYER LOGIC
         if (currentMenu == NONE) {
-            //  if (button == 0) { play_random(); needsRedraw = true; return true; }
-            if (button == 1) {  toggle_mute(); return true; }
-            if (y == 2 && button == 0) {
-                if (x >= 20 && x <= 29) { play_random(); return true; }
-                if (x >= 32 && x <= 37) {
-                    currentMenu = FAVORITES;
-                    return true;
-                }
-                if (x >= 41 && x <= 48) {
-                    currentMenu = CONFIG;
-                    return true;
-                }
-                if (x >= 52 && x <= 57) {
-                    currentMenu = HELP;
-                    return true;
-                }
+            bool stateChanged = false;
 
-                // 6. Quit
-
-                if (x >= 61 && x <= 67) { keep_running = 0; return true; }
+            // Middle Click: Mute
+            if (button == 1) {
+                toggle_mute();
+                stateChanged = true;
             }
+
+            // Top Bar Buttons (Row 2)
+            if (button == 0 && y == 2) {
+                // Shuffle
+                if (x >= 20 && x <= 29) {
+                    play_random();
+                    stateChanged = true;
+                }
+                // Favorites
+                else if (x >= 32 && x <= 37) {
+                    currentMenu = FAVORITES;
+                    stateChanged = true;
+                }
+                // Config
+                else if (x >= 41 && x <= 48) {
+                    currentMenu = CONFIG;
+                    stateChanged = true;
+                }
+                // Help
+                else if (x >= 52 && x <= 57) {
+                    currentMenu = HELP;
+                    stateChanged = true;
+                }
+                // Quit
+                else if (x >= 61 && x <= 67) {
+                    keep_running = 0;
+                    // No redraw needed for exit
+                    return true;
+                }
+            }
+
+            // REDRAW ONLY IF SOMETHING CHANGED
+            if (stateChanged) {
+                draw_ui();
+                std::cout << std::flush;
+                return true;
+            }
+
+            // If the user clicked elsewhere in the player, consume the event
+            // but don't redraw to save Haiku's CPU.
+            return true;
         }
+
+        return false;
+
 
         return false;
     }
@@ -1184,7 +1216,9 @@ void init_visuals() {
 
             buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BLUE << "]         : Play/Update selection";
+            #ifndef __HAIKU__
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BLUE << "]         : Scroll up/down selection";
+            #endif
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BLUE << "]          : Return to Main Menu";
             buffer << "\033[" << r++ << row2 << "";
 
@@ -1204,6 +1238,7 @@ void init_visuals() {
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "a" << BLUE << "] Add Fav      : Save current station to favorites list";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "d" << BLUE << "] Delete Fav   : Remove current station from favorites list";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "+/-" << BLUE << "] Volume     : Increase/Decrease volume";
+        buffer << "\033[" << r++ << row2 << "[" << ORANGE << "j/k" << BLUE << "] Scroll     : Scroll up/down selection";
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "m" << BLUE << "] Mute         : Toggle audio mute";
         #ifdef USE_PROJECTM
         buffer << "\033[" << r++ << row2 << "[" << ORANGE << "k" << BLUE << "] Fullscreen   : Fullscreen visual effects window";
@@ -1811,15 +1846,6 @@ void init_visuals() {
     // --- Main Engine ---
 
     int main(int argc, char* argv[]) {
-
-        #ifdef __HAIKU__
-        // 1002 reports scroll wheel events more aggressively in some terminals
-        std::cout << "\033[?1002h\033[?1006h" << std::flush;
-        #else
-        std::cout << "\033[?1000h\033[?1006h" << std::flush;
-        #endif
-
-
 
         // 1. Load First
         load_config();
