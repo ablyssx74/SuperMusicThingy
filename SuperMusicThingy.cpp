@@ -15,6 +15,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <cctype>
+#include <cstdio>
 #include <ctime>
 #include <cstring>
 #include <fcntl.h>
@@ -362,6 +363,7 @@ void draw_ui();
 std::string statusMsg = "";
 std::time_t statusExpiry = 0;
 const std::string BASE_URL = "https://somafm.com/";
+
 using json = nlohmann::json;
 std::vector<std::string> favUrls;
 int selectedFav = 0;
@@ -386,6 +388,7 @@ struct Config {
     bool autoShuffleVisuals = false;
     bool autoVsync = false;
     int defaultVolume = 100;
+    std::string somethingNew = "one";
     std::string quality = "Highest";
 } cfg;
 
@@ -395,6 +398,7 @@ int selectedConfig = 0;
 void save_config() {
     json j;
     j["quality"] = cfg.quality;
+    j["somethingNew"] = cfg.somethingNew;
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
     j["autoShuffleVisuals"] = cfg.autoShuffleVisuals;
@@ -411,6 +415,7 @@ void load_config() {
         try {
             json j = json::parse(infile);
             cfg.quality = j.value("quality", "highest");
+            cfg.somethingNew = j.value("somethingNew", "one");
             cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
             cfg.autoShuffleVisuals = j.value("autoShuffleVisuals", false);
@@ -465,6 +470,7 @@ std::string get_self_path() {
 
 //
 void download_art(const std::string& url) {
+  if (const char* term = std::getenv("TERMINOLOGY")) {
     CURL* curl = curl_easy_init();
     if(curl) {
         FILE* fp = fopen("/tmp/somafm_art.png", "wb");
@@ -474,6 +480,7 @@ void download_art(const std::string& url) {
         curl_easy_perform(curl);
         fclose(fp);
         curl_easy_cleanup(curl);
+       }
     }
 }
 
@@ -972,10 +979,16 @@ void init_visuals() {
                     }
                     #endif
                 }
+
                 else if (selectedConfig == 5) {
                     if (cfg.quality == "Low") cfg.quality = "High";
                     else if (cfg.quality == "High") cfg.quality = "Highest";
                     else cfg.quality = "Low";
+                }
+                else if (selectedConfig == 6) {
+                    if (cfg.somethingNew == "one") cfg.somethingNew = "two";
+                    else if (cfg.somethingNew == "two") cfg.somethingNew = "three";
+                    else cfg.somethingNew = "one";
                 }
                  save_config();
                  saveMessageTimer = std::time(nullptr) + 3;
@@ -1028,6 +1041,12 @@ void init_visuals() {
                         if (favUrls[selectedFav].find(ch.id) != std::string::npos) {
                             currentStation = ch.title;
                             currentDesc = ch.desc;
+                            currentAlbumArtUrl = ch.image;
+                                  if (!currentAlbumArtUrl.empty()) {
+                                  std::thread([url = currentAlbumArtUrl]() {
+                                    download_art(url);
+                                }).detach();
+                            }
                             break;
                         }
                     }
@@ -1141,13 +1160,21 @@ void init_visuals() {
             }
         }
 
-        // 2. Draw the Quality
+        // 1. Audio Quality (Current size)
         int qIdx = items.size();
         buffer << "\033[" << (10 + qIdx) << ";10H";
         if (selectedConfig == qIdx) buffer << ORANGE << " > " << BLUE;
         else buffer << "   ";
-
         buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
+
+       // 2. Future Quality (Next row down)
+       // int qIdx2 = qIdx + 1; // Increment the row!
+       // buffer << "\033[" << (10 + qIdx2) << ";10H";
+       // if (selectedConfig == qIdx2) buffer << ORANGE << " > " << BLUE; // Check against qIdx2
+       // else buffer << "   ";
+       // buffer << "Something New: [" << GREEN << cfg.somethingNew << BLUE << "]";
+
+
 
         if (std::time(nullptr) < saveMessageTimer) {
             buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;
@@ -1371,6 +1398,14 @@ void init_visuals() {
                 currentStation = ch.title;
                 currentDesc = ch.desc;
                 currentListeners = ch.listeners;
+                currentAlbumArtUrl = ch.image;
+
+                    if (!currentAlbumArtUrl.empty()) {
+                        std::thread([url = currentAlbumArtUrl]() {
+                            download_art(url);
+                        }).detach();
+                    }
+
                 currentSong = "Loading Favorite...";
                 break;
             }
@@ -1605,6 +1640,7 @@ void init_visuals() {
         return linesUsed;
     }
 
+
     void draw_ui() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
         std::stringstream buffer;
@@ -1615,31 +1651,25 @@ void init_visuals() {
 
         buffer << get_ui_header(w.ws_row);
 
-        static std::string lastRenderedArt = "";
 
-
-
-
-
+        static std::string lastDisplayedUrl = "";
         if (const char* term = std::getenv("TERMINOLOGY")) {
-            if (!currentAlbumArtUrl.empty()) {
+
+            if (currentAlbumArtUrl != lastDisplayedUrl) {
                 // 1. Position cursor specifically for the image (Row 5, Col 10)
-                buffer <<  "\033[4;35H";;
+                buffer <<  "\033[4;35H";
 
                 // 2. CRITICAL: Flush EVERYTHING in the buffer BEFORE tycat runs
                 // This ensures the terminal clears and moves the cursor FIRST
                 std::cout << buffer.str() << std::flush;
                 buffer.str("");
 
-                // 3. Draw the image (redirected to TTY)
                 std::string cmd = "tycat -s 10x5 /tmp/somafm_art.png > /dev/tty 2>&1";
                 std::system(cmd.c_str());
 
                 // 4. FIX: Re-enable mouse tracking (Crucial for J/K and scrolling!)
                 std::cout << "\033[?1000h\033[?1006h" << std::flush;
 
-                // 5. Update your currentRow so your text starts BELOW the image
-                // Since image is at row 5 and is 5 rows high, text starts at row 11
 
             }
         }
@@ -1779,16 +1809,18 @@ void init_visuals() {
                     currentListeners = ch.listeners;
                     currentAlbumArtUrl = ch.image;
 
+                    if (!currentAlbumArtUrl.empty()) {
+                        std::thread([url = currentAlbumArtUrl]() {
+                            download_art(url);
+                        }).detach();
+                    }
+
+
                     break;
                 }
             }
         }
 
-        if (!currentAlbumArtUrl.empty()) {
-            std::thread([url = currentAlbumArtUrl]() {
-                download_art(url);
-            }).detach();
-        }
 
 
         double original_vol;
@@ -2624,6 +2656,10 @@ void init_visuals() {
         #endif
         cleanup_fifo();
         system("stty cooked echo");
+
+        if (const char* term = std::getenv("TERMINOLOGY")) {
+            std::remove("/tmp/somafm_art.png");
+        }
 
         struct winsize w;
         ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
