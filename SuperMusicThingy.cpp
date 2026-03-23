@@ -1211,7 +1211,9 @@ void init_visuals() {
         if (!is_native_tty()) {
             buffer << "\033[" << r++ << h1 << ORANGE << "Mouse Events Main Menu" << BLUE << "";
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
+            #ifndef __HAIKU__
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BLUE << "]         : Increase/Decrease volume";
+            #endif
             buffer << "\033[" << r++ << row1 << "";
 
             buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BLUE << "";
