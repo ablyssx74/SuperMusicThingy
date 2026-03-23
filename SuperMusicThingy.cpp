@@ -380,6 +380,7 @@ struct Config {
     bool showVisuals = false;
     bool autoShuffle = false;
     bool autoShuffleVisuals = false;
+    bool autoVsync = false;
     int defaultVolume = 100;
     std::string quality = "Highest";
 } cfg;
@@ -393,6 +394,7 @@ void save_config() {
     j["showNotifications"] = cfg.showNotifications;
     j["autoShuffle"] = cfg.autoShuffle;
     j["autoShuffleVisuals"] = cfg.autoShuffleVisuals;
+    j["autoVsync"] = cfg.autoVsync;
     j["showVisuals"] = cfg.showVisuals;
 
     std::ofstream outfile(configPath);
@@ -404,11 +406,12 @@ void load_config() {
     if (infile.is_open()) {
         try {
             json j = json::parse(infile);
-            cfg.quality = j.value("quality", "high");
+            cfg.quality = j.value("quality", "highest");
             cfg.showNotifications = j.value("showNotifications", true);
             cfg.autoShuffle = j.value("autoShuffle", false);
             cfg.autoShuffleVisuals = j.value("autoShuffleVisuals", false);
-            cfg.showVisuals = j.value("showVisuals", true);
+            cfg.autoVsync = j.value("autoVsync", false);
+            cfg.showVisuals = j.value("showVisuals", false);
         } catch(...) {}
     }
 }
@@ -593,7 +596,7 @@ void init_visuals() {
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
         // 4.
-        visualWin = SDL_CreateWindow("SuperMusicThingy Visuals",
+        visualWin = SDL_CreateWindow("SuperMusicThingy Visualizer",
                                      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                      800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!visualWin) return;
@@ -601,11 +604,29 @@ void init_visuals() {
         glContext = SDL_GL_CreateContext(visualWin);
         SDL_GL_MakeCurrent(visualWin, glContext);
 
-        // Disable VSync for better responsiveness on Haiku
-        SDL_GL_SetSwapInterval(0);
+        if (cfg.autoVsync) {
+         if (SDL_GL_SetSwapInterval(-1) < 0) {
+            SDL_GL_SetSwapInterval(1);
+         }
+        }
+
+        /*
+        int defaultInterval = SDL_GL_GetSwapInterval();
+        std::cout << "System default swap interval: " << defaultInterval << std::endl;
+        if (defaultInterval == 0) {
+            std::cout << "VSync is OFF (immediate updates)" << std::endl;
+        } else if (defaultInterval == 1) {
+            std::cout << "VSync is ON (synchronized)" << std::endl;
+        } else if (defaultInterval == -1) {
+            std::cout << "Adaptive VSync is enabled" << std::endl;
+        }
+        */
 
         // 5. THE "EARS" LOGIC
         #ifdef __HAIKU__
+        // Disable VSync for better responsiveness on Haiku
+        SDL_GL_SetSwapInterval(0);
+
         alcCaptureDevice = alcCaptureOpenDevice(NULL, 48000, AL_FORMAT_STEREO16, 8192);
         if (!alcCaptureDevice) {
             // HAIL MARY: Open the "null" backend just to get a node in Cortex
@@ -859,7 +880,7 @@ void init_visuals() {
             }
             else if (currentMenu == CONFIG) {
                 if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
-                else selectedConfig = std::min(4, selectedConfig + 1);
+                else selectedConfig = std::min(5, selectedConfig + 1);
 
             }
             // 2. DEFAULT: Volume Control
@@ -909,7 +930,8 @@ void init_visuals() {
                 if (selectedConfig == 0) cfg.showNotifications = !cfg.showNotifications;
                 else if (selectedConfig == 1) cfg.autoShuffle = !cfg.autoShuffle;
                 else if (selectedConfig == 2) cfg.autoShuffleVisuals = !cfg.autoShuffleVisuals;
-                else if (selectedConfig == 3) {
+                else if (selectedConfig == 3) cfg.autoVsync = !cfg.autoVsync;
+                else if (selectedConfig == 4) {
                     cfg.showVisuals = !cfg.showVisuals;
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
@@ -922,7 +944,7 @@ void init_visuals() {
                     }
                     #endif
                 }
-                else if (selectedConfig == 4) {
+                else if (selectedConfig == 5) {
                     if (cfg.quality == "Low") cfg.quality = "High";
                     else if (cfg.quality == "High") cfg.quality = "Highest";
                     else cfg.quality = "Low";
@@ -1066,8 +1088,11 @@ void init_visuals() {
         };
 
         if (!is_native_tty()) {
-            items.push_back({"Auto-Shuffle Visuals / 30s", &cfg.autoShuffleVisuals});
-            items.push_back({"Show Visuals", &cfg.showVisuals});
+            items.push_back({"Auto-Shuffle Presets / 30s", &cfg.autoShuffleVisuals});
+            #ifndef __HAIKU__
+            items.push_back({"Adaptive Vsync", &cfg.autoVsync});
+            #endif
+            items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
 
         int totalItems = items.size() + 1; // Toggles + 1 for Quality
@@ -1551,26 +1576,6 @@ void init_visuals() {
         return linesUsed;
     }
 
-
-
-    /*
-     *    #ifdef USE_PROJECTM
-     *    void update_visuals_logic() {
-     *        if (!visualsRunning || !pm) return;
-     *        if (!cfg.autoShuffleVisuals) return;
-     *
-     *        uint32_t currentTime = SDL_GetTicks();
-     *
-     *        // Check if 30 seconds have passed
-     *
-     *        if (currentTime - lastPresetChange >= PRESET_DURATION) {
-     *            load_random_preset(pm);
-     *            lastPresetChange = currentTime;
-     *           	needsRedraw = true;
-}
-}
-#endif
-*/
     void draw_ui() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
         std::stringstream buffer;
