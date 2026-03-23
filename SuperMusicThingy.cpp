@@ -1992,7 +1992,7 @@ void init_visuals() {
                 << "Usage: SuperMusicThingy ["  << niceGreenColor << "command" << BLUE << "]\n\n" << BLUE
                 << "Commands:\n"
                 << niceGreenColor << "  status        " << BLUE << "  - Show current song, volume, and visualizer preset\n" << BLUE
-                << niceGreenColor << "  shuffle       " << BLUE << "  - Shuffle all stations\n" << BLUE favorites
+                << niceGreenColor << "  shuffle       " << BLUE << "  - Shuffle all stations\n" << BLUE
                 << niceGreenColor << "  favorites     " << BLUE << "  - Shuffle favorites list\n" << BLUE
                 #ifdef USE_PROJECTM
                 << niceGreenColor << "  visual        " << BLUE << "  - Shuffle to a new random Milkdrop preset\n" << BLUE
