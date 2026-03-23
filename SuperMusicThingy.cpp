@@ -64,6 +64,10 @@
 #include <termios.h>
 #include <unistd.h>
 
+//# Enable mouse reporting,
+//printf "\033[?1003h\033[?1006h"; cat -v; printf "\033[?1003l\033[?1006l"
+
+
 #ifndef KEY_UP
 #define KEY_UP 65
 #endif
