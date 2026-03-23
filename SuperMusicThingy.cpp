@@ -831,7 +831,6 @@ void init_visuals() {
                }
                // Config Menu Logic
                else if (currentMenu == CONFIG) {
-                   // totalItems = 4 (items) + 1 (Quality) = 5
                    int totalItems = 5;
                    if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
                    else selectedConfig = std::min(totalItems - 1, selectedConfig + 1);
@@ -1153,6 +1152,8 @@ void init_visuals() {
         buffer << get_ui_header(w.ws_row);
        // buffer << "\033[5;33H" <<  ORANGE << "--- HELP ---" << BLUE;
 
+        //int maxVisible = w.ws_row - 10;
+
         const std::string h1 = ";34H";
         const std::string h2 = ";34H";
         const std::string h3 = ";31H";
@@ -1161,6 +1162,7 @@ void init_visuals() {
         const std::string row2 = ";19H";
 
         int r = 7;
+
         if (!is_native_tty()) {
         buffer << "\033[" << r++ << h1 << ORANGE << "Mouse Events Main Menu" << BLUE << "";
         buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BLUE << "]         : Toggle audio mute";
@@ -1205,7 +1207,9 @@ void init_visuals() {
         buffer << "\033[" << r++ << row2 << ORANGE << "*" << BLUE << " Milkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets/";
         #endif
         }
+
         buffer << get_ui_footer(w.ws_row);
+
         buffer << RESET;
         std::cout << buffer.str() << std::flush;
         needsRedraw = false;
@@ -1293,7 +1297,8 @@ void init_visuals() {
         const std::string row1 = ";27H";
 
         buffer << "\033[5" << h1 <<  ORANGE << "--- FAVORITES ---" << BLUE;
-        int maxVisible = 10;
+        //int maxVisible = 15;
+        int maxVisible = w.ws_row - 10;
         if (favUrls.empty()) {
             buffer << "\033[7" << row1 << "  (No favorites saved yet)";
         } else {
