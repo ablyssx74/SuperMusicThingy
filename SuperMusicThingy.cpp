@@ -1809,12 +1809,12 @@ void init_visuals() {
     int main(int argc, char* argv[]) {
 
         #ifdef __HAIKU__
-        // Haiku-specific: Some terminals prefer basic tracking without SGR extensions
-        std::cout << "\033[?1000h" << std::flush;
+        // 1002 reports scroll wheel events more aggressively in some terminals
+        std::cout << "\033[?1002h\033[?1006h" << std::flush;
         #else
-        // Linux/Standard: Modern SGR mouse tracking
         std::cout << "\033[?1000h\033[?1006h" << std::flush;
         #endif
+
 
 
         // 1. Load First
