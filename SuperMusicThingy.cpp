@@ -1173,11 +1173,11 @@ void init_visuals() {
         buffer << "Audio Quality: [" << GREEN << cfg.quality << BLUE << "]";
 
        // 2. Future Quality (Next row down)
-       // int qIdx2 = qIdx + 1; // Increment the row!
-       // buffer << "\033[" << (10 + qIdx2) << ";10H";
-       // if (selectedConfig == qIdx2) buffer << ORANGE << " > " << BLUE; // Check against qIdx2
-       // else buffer << "   ";
-       // buffer << "Something New: [" << GREEN << cfg.somethingNew << BLUE << "]";
+        int qIdx2 = qIdx + 1; // Increment the row!
+        buffer << "\033[" << (10 + qIdx2) << ";10H";
+        if (selectedConfig == qIdx2) buffer << ORANGE << " > " << BLUE; // Check against qIdx2
+        else buffer << "   ";
+        buffer << "Something New: [" << GREEN << cfg.somethingNew << BLUE << "]";
 
 
 
