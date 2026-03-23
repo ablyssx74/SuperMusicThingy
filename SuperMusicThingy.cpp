@@ -1435,7 +1435,8 @@ void init_visuals() {
     std::string get_bitrate_text() {
         if (cfg.quality == "Highest") return "128k";
         if (cfg.quality == "High")    return "64k";
-        return "32k";
+        if (cfg.quality == "Low")     return "32k";
+        return;
     }
 
 
