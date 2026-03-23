@@ -30,13 +30,19 @@ pathlibGlvnd="$HOME/Downloads/libglvnd-1.7.0-4-x86_64.hpkg"
 [[ -d ${projectmDir} ]] && rm -fr ${projectmDir}
 
 # Start
-
+clear
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}---SuperMusicThingy Installer---"
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
 read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}Nebula${LIGHT_BLUE} with projectm visuals. 
 ${LIGHT_PURPLE}>>Requires${LIGHT_BLUE} libprojectm, Haiku nightly and a supported nvidia card with nebula (nvidia driver).
 >>This script will try to automatically download libprojectm and nebula if not already installed.
 
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} without projectm and for normal Haiku beta5 release.
+
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
+
+
 	
 if [[ "$answer" == "1" ]];then
 	# Info if nebula
@@ -55,23 +61,35 @@ elif [[ "$answer" == "2" ]];then
 		echo -e "${LIGHT_BLUE}Error code 1 !"
 		exit 1
 fi
+clear
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}---Default terminal---"
 
-read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Terminal.
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Haiku Terminal.
 
-${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Terminal by default instead of konsole.
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Haiku Terminal by default instead of konsole.
+
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
 
 	
-if [[ "$answer2" == "1" ]];then
-buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
+if [[ "${answer2}" == "1" ]];then
+	buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
+	 elif [[ "${answer2}" == "2" ]];then
+	 	unset buildspec2
+	 	else
+	 	echo -e "${LIGHT_BLUE}Error code 2!"
+			exit 1
+	 	
 fi
 
 
-
+clear
 if [[ ! $skipprojectm ]];then
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}---ProjectM---"
 read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
+
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE}  Install projectm in /boot/home/config/non-packaged/ 
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
+echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
 fi
 
 
@@ -108,7 +126,7 @@ elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cmake --build . -- -j && cmake --build . --target install 
 		
 		else
-			echo -e "${LIGHT_BLUE}Error code 2!"
+			echo -e "${LIGHT_BLUE}Error code 3!"
 			exit 1
 fi
 
