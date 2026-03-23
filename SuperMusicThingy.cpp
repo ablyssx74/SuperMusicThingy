@@ -2044,7 +2044,7 @@ void init_visuals() {
             #ifdef __HAIKU__
             #ifdef USE_KONSOLE_ON_HAIKU
             // Haiku: Using the Konsole port
-            cmd = "Konsole --title \"SuperMusicThingy\" -e " + path + " &";
+            cmd = "/bin/konsole --title \"SuperMusicThingy\" -e " + path + " &";
             #else
             // Haiku: Default native Terminal
             cmd = "Terminal -t \"SuperMusicThingy\" " + path + " &";
