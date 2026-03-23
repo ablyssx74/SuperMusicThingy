@@ -1436,7 +1436,7 @@ void init_visuals() {
         if (cfg.quality == "Highest") return "128k";
         if (cfg.quality == "High")    return "64k";
         if (cfg.quality == "Low")     return "32k";
-        return;
+        return "";
     }
 
 
