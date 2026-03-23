@@ -1141,7 +1141,7 @@ void init_visuals() {
             items.push_back({"Show Visualizer", &cfg.showVisuals});
         }
         
-        #ifdef __HAIKU__
+        #ifndef __HAIKU__
         if (cfg.autoVsync) {
         	items.push_back({"Adaptive Vsync", &cfg.autoVsync});  
         }        
