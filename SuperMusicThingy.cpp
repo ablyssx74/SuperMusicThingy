@@ -2649,37 +2649,58 @@ void restore_terminal() {
 
         } //End Main Loop
 
-// Shutdown routine
-end:
-    visualsRunning = false;
-    #ifdef USE_PROJECTM
-    if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-    if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-    cleanup_capture_device();
-    #endif
+        // Shutdown routine
+        end:
 
-     // Reset for terminology specifically
-    if (std::getenv("TERMINOLOGY")) {
-        std::remove("/tmp/somafm_art.png");
+
+        // Normalize term
+        struct termios old_t;
+        tcgetattr(STDIN_FILENO, &old_t);
+        atexit([](){
+            struct termios t;
+            tcgetattr(STDIN_FILENO, &t);
+            t.c_lflag |= (ICANON | ECHO);
+            tcsetattr(STDIN_FILENO, TCSANOW, &t);
+        });
+
+        //Disable mouse tracking
+        std::cout << "\033[?1000l" << "\033[?1006l";
+        std::fflush(stdout);
+
+        // Clean up the visual backend
+        #ifdef USE_PROJECTM
+        visualsRunning = false;
+        if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+        if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
+        cleanup_capture_device();
+        #endif
+
+        // Cleanup fifo and stty
+        cleanup_fifo();
+        system("stty cooked echo");
+
+        // Cleanup any terminology tmp images
+        if (const char* term = std::getenv("TERMINOLOGY")) {
+            std::remove("/tmp/somafm_art.png");
+        }
+
+        // Reset users default profiles for certain terminals
+        struct winsize w;
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        std::stringstream buffer;
+        std::string RESET_PROFILE = "\033]111\007";
+        buffer << RESET_PROFILE << std::endl;
+        buffer << CLEARALL;
+
+        // Aggressive terminal reset for terminology
         std::system("tput init");
-    }
 
-    cleanup_fifo();
-    
-    // Combined Buffer for smoother exit
-    std::stringstream buffer;
-    buffer << "\033]111\007"; // Reset profile
-    buffer << CLEARALL;
-    
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    buffer << get_ui_footer(w.ws_row) << "Good bye! " << RESET << "\n";
-    
-    std::cout << buffer.str() << std::flush;
+        // Print friendly good by message
+        buffer << get_ui_footer(w.ws_row) << "Good bye! " << RESET << std::endl;
+        std::cout << buffer.str() << std::flush;
+        // Shutdown mpv backend
+        if (mpv) mpv_terminate_destroy(mpv);
 
-    if (mpv) mpv_terminate_destroy(mpv);
-
-    // Final reset call
-    restore_terminal();
-    return 0;
+        // Finite
+        return 0;
     }
