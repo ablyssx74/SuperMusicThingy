@@ -2682,3 +2682,4 @@ end:
     // Final reset call
     restore_terminal();
     return 0;
+    }
