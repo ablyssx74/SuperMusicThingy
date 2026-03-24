@@ -63,14 +63,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #endif
 
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <unistd.h>
-
-//# mouse reporting event codes
-//printf "\033[?1003h\033[?1006h"; cat -v; printf "\033[?1003l\033[?1006l"
-
-
 #ifndef KEY_UP
 #define KEY_UP 65
 #endif
@@ -78,6 +70,8 @@
 #ifndef KEY_DOWN
 #define KEY_DOWN 66
 #endif
+
+namespace fs = std::filesystem;
 
 int kbhit() {
     static bool initialized = false;
@@ -99,8 +93,6 @@ int kbhit() {
     ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
     return bytesWaiting;
 }
-
-
 
 
 // Linux Notify Icon
@@ -176,14 +168,11 @@ static const unsigned char icon_24px_png[] = {
 
 
 
-namespace fs = std::filesystem;
-
-
 
 
 volatile sig_atomic_t keep_running = 1;
 
-// Preset Shuffle
+// Milkdrop auto-shuffle timer
 const uint32_t PRESET_DURATION = 30000;  // 30 Sec
 uint32_t lastPresetChange = 0;
 std::string currentPresetName = "None";
@@ -313,10 +302,10 @@ bool is_native_tty() {
     const char* term = std::getenv("TERM");
     return (term && std::string(term) == "linux");
 }
+
+
 std::string get_ui_header(int rows) {
-
     std::stringstream header;
-
 
     if (is_native_tty()) {
         // Safe mode for TTY2 (Ctrl+Alt+F2)
@@ -720,8 +709,6 @@ void init_visuals() {
     }
 
 
-
-
     void fade_volume(mpv_handle *mpv, double target_vol, double duration_ms) {
         double current_vol;
         mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &current_vol);
@@ -779,7 +766,6 @@ void init_visuals() {
                 download_art(url);
             }).detach();
         }
-
 
         // USE THE HELPER
         std::string url = get_quality_url(channels[idx].id);
@@ -904,6 +890,7 @@ void init_visuals() {
         }
 
 
+        
 
         // 3. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
         if (button == 64 || button == 65) {
@@ -930,6 +917,7 @@ void init_visuals() {
         }
 
 
+        
 
         // 4. Config MENU LOGIC
         if (currentMenu == CONFIG) {
@@ -960,6 +948,7 @@ void init_visuals() {
                 }
             }
 
+            
             // SETTINGS TOGGLE (Middle Click)
             if (button == 1) {
                 stateChanged = true; // Any middle click here triggers a redraw
