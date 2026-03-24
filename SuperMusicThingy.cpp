@@ -1216,7 +1216,7 @@ void init_visuals() {
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
-                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; needsRedraw = true; return true; }
                 if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
                 if (c == 'q') keep_running = 0;
 
@@ -1378,7 +1378,7 @@ void init_visuals() {
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
-                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; needsRedraw = true; return true; }
                 if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
                 if (c == 'b' || c == 27 || c == 'h') {
                     currentMenu = NONE;
@@ -1488,11 +1488,8 @@ void init_visuals() {
                 if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
-
-
-
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
-                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; currentMenu = FAVORITES; needsRedraw = true; return true; }
+                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; needsRedraw = true; return true; }
                 if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
                 if (c == 'q') keep_running = 0;
 
@@ -1821,8 +1818,6 @@ void init_visuals() {
             }
         }
 
-
-
         double original_vol;
         mpv_get_property(mpv, "volume", MPV_FORMAT_DOUBLE, &original_vol);
         fade_volume(mpv, 0, 300);
@@ -2084,6 +2079,8 @@ void init_visuals() {
             if (!cmd.empty()) { system(cmd.c_str()); return 0; }
             return 1;
         }
+
+
         // Title set
         std::cout << "\033]0;SuperMusicThingy\007" << std::flush;
 
@@ -2449,8 +2446,7 @@ void init_visuals() {
 
 
             // D. MENU SCREENS
-            // Only check currentMenu, ignore the old booleans here!
-            if (currentMenu == CONFIG) {
+             if (currentMenu == CONFIG) {
                 if (!draw_config_menu()) {
                     currentMenu = NONE;
                     draw_ui();
@@ -2461,7 +2457,6 @@ void init_visuals() {
             }
 
             if (currentMenu == HELP) {
-                // If the help menu function returns false, go back to NONE
                 if (!draw_help_menu()) {
                     currentMenu = NONE;
                     draw_ui();
