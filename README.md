@@ -4,7 +4,7 @@
 ### <p align="center"> SuperMusicThingy is a free streaming terminal media client for [SomaFM](https://somafm.com/)<br> Fast, light, and fun! </p>
 #### <p align="center">Screenshots
 <p align="center">&nbsp;&nbsp;&nbsp; Konsole &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Terminology &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; Haiku &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br><img width="200" height="180" align="center" alt="Screenshot1" src="https://github.com/user-attachments/assets/cfdaf54e-b502-4317-89b9-365cdd11dd6c" /><img width="180" height="160" align="center" alt="Screenshot2" src="https://github.com/user-attachments/assets/7661c7c9-f107-4485-ac68-a593bb09ca9e" /><img width="200" height="180" align="center" alt="Screenshot3" src="https://github.com/user-attachments/assets/c1575020-3bb6-45f4-a6b3-4fe4c3f495dc" /></p>
+<br><img width="200" height="180" align="center" alt="Screenshot1" src="https://github.com/user-attachments/assets/cfdaf54e-b502-4317-89b9-365cdd11dd6c" /><img width="180" height="160" align="center" alt="Screenshot2" src="https://github.com/user-attachments/assets/53d087fa-292c-4c98-8d55-13b5d6babcce" /><img width="200" height="180" align="center" alt="Screenshot3" src="https://github.com/user-attachments/assets/c1575020-3bb6-45f4-a6b3-4fe4c3f495dc" /></p>
 
 ### Includes
 
