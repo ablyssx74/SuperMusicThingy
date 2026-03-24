@@ -1334,7 +1334,7 @@ void init_visuals() {
         buffer << "\033[" << r++ << row2;
         if (!is_native_tty()) {
             #ifndef __HAIKU__
-            buffer << "\033[" << r++ << row2 << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
+            //buffer << "\033[" << r++ << row2 << ORANGE << "* " << BLUE << "Visuals: Set pavucontrol to switch recording to 'Monitor'";
             buffer << "\033[" << r++ << row2  << ORANGE << "* " << BLUE << "Milkdrop presets: $HOME/.config/SuperMusicThingy/milk_presets/";
             #else
             buffer << "\033[" << r++ << row2 << ORANGE << "*" << BLUE << " Milkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets/";
