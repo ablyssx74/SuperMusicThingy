@@ -963,8 +963,8 @@ void init_visuals() {
             // SETTINGS TOGGLE (Middle Click)
             if (button == 1) {
                 stateChanged = true; // Any middle click here triggers a redraw
-                if (selectedConfig == 0) cfg.showNotifications = !cfg.showNotifications;
-                else if (selectedConfig == 1) cfg.autoShuffle = !cfg.autoShuffle;
+                if (selectedConfig == 0) cfg.autoShuffle = !cfg.autoShuffle;
+                else if (selectedConfig == 1) cfg.showNotifications = !cfg.showNotifications;
                 else if (selectedConfig == 2) cfg.autoShuffleVisuals = !cfg.autoShuffleVisuals;
                 else if (selectedConfig == 3) cfg.autoVsync = !cfg.autoVsync;
                 else if (selectedConfig == 4) {
@@ -1154,7 +1154,7 @@ void init_visuals() {
 
             // COLOR LOGIC FOR ON/OFF
             if (*(items[i].val)) {
-                buffer << "[ON]" << BLUE;
+                buffer << GREEN << "[ON]" << BLUE;
             } else {
                 buffer << RED << "[OFF]" << BLUE;
             }
@@ -1212,7 +1212,7 @@ void init_visuals() {
                 }
                 char c = std::tolower((unsigned char)input);
 
-                if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
+                if (c == 's') { play_random(); currentSong = "Buffering..."; needsRedraw = true; return true; }
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
@@ -1280,10 +1280,10 @@ void init_visuals() {
 
         //int maxVisible = w.ws_row - 10;
 
-        const std::string h1 = ";34H";
-        const std::string h2 = ";34H";
-        const std::string h3 = ";31H";
-        const std::string h4 = ";37H";
+        const std::string h1 = ";32H";
+        const std::string h2 = ";32H";
+        const std::string h3 = ";29H";
+        const std::string h4 = ";36H";
         const std::string n1 = ";10H";
         const std::string row1 = ";18H";
         const std::string row2 = ";19H";
@@ -1374,7 +1374,7 @@ void init_visuals() {
                 char c = std::tolower((unsigned char)input);
 
                 if (c == 'q') keep_running = 0;
-                if (c == 's') { play_random(); currentSong = "Buffering...";  needsRedraw = true; return true; }
+                if (c == 's') { play_random(); currentSong = "Buffering..."; needsRedraw = true; return true; }
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
