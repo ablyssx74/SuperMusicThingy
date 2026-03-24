@@ -31,15 +31,14 @@ cd SuperMusicThingy
 ```
 ```shell
 
-# To build wtih projectm
-# Default install prefix is /usr/local/bin
+# Build wtih projectm
+# Default install prefix: /usr/local/bin
 cmake -B build
 cmake --build build
 sudo cmake --install build
 ```
 ```shell
-# To build without projectm visualizer
-# Default install prefix is /usr/local/bin
+# Build without projectm
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 sudo cmake --install build
