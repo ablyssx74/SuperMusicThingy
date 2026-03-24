@@ -1948,7 +1948,7 @@ void init_visuals() {
         keep_running = 0;
     }
 
-
+/*
     void restore_terminal() {
         // Normalize term
         struct termios old_t;
@@ -1962,7 +1962,7 @@ void init_visuals() {
         std::cout << "\033[?1000l\033[?1006l" << std::flush; // Disable mouse
         std::fflush(stdout);
     }
-
+*/
 
 
     // --- Main Engine ---
@@ -2658,6 +2658,21 @@ void init_visuals() {
         // Shutdown routine
         end:
 
+
+        // Normalize term
+        struct termios old_t;
+        tcgetattr(STDIN_FILENO, &old_t);
+        atexit([](){
+            struct termios t;
+            tcgetattr(STDIN_FILENO, &t);
+            t.c_lflag |= (ICANON | ECHO);
+            tcsetattr(STDIN_FILENO, TCSANOW, &t);
+        });
+
+        //Disable mouse tracking
+        std::cout << "\033[?1000l" << "\033[?1006l";
+        std::fflush(stdout);
+
         // Clean up the visual backend
         #ifdef USE_PROJECTM
         visualsRunning = false;
@@ -2670,6 +2685,12 @@ void init_visuals() {
         cleanup_fifo();
         system("stty cooked echo");
 
+        // Cleanup any terminology tmp images
+        if (const char* term = std::getenv("TERMINOLOGY")) {
+            std::remove("/tmp/somafm_art.png");
+            // Aggressive terminal reset for terminology
+            std::system("tput init");
+        }
 
         // Reset users default profiles for certain terminals
         struct winsize w;
@@ -2679,21 +2700,13 @@ void init_visuals() {
         buffer << RESET_PROFILE << std::endl;
         buffer << CLEARALL;
 
-        // Aggressive terminal reset for terminology
-        // Cleanup any terminology tmp images
-        if (std::getenv("TERMINOLOGY")) {
-            std::remove("/tmp/somafm_art.png");
-            std::system("tput init");
-        }
+
 
         // Print friendly good by message
         buffer << get_ui_footer(w.ws_row) << "Good bye! " << RESET << std::endl;
         std::cout << buffer.str() << std::flush;
-
         // Shutdown mpv backend
         if (mpv) mpv_terminate_destroy(mpv);
-
-        restore_terminal()
 
         // Finite
         return 0;
