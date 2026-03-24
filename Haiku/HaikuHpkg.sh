@@ -72,6 +72,7 @@ ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
 
 	
 if [[ "${answer2}" == "1" ]];then
+	pkgman install konsole_kf6
 	buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
 	 elif [[ "${answer2}" == "2" ]];then
 	 	unset buildspec2
