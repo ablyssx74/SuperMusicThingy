@@ -93,12 +93,6 @@ echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
 fi
 
 
-#if [[ ! $skipprojectm ]];then
-#read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Install projectm in /boot/home/config/non-packaged/ 
-#${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Don't install projectm because it is already installed in /boot/home/config/non-packaged/  
-#${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
-#fi
-
 if [[ "$thisProjectm" == "1" || "$answer" == "2" ]];then 
 	skipprojectm="true" 
 	echo -e "${LIGHT_BLUE}"
