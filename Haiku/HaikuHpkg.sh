@@ -14,7 +14,7 @@ description="SuperMusicThingy is a free streaming terminal media client for Soma
 
 depends="haiku_devel pkgconfig cmake gcc mpv_devel curl_devel openssl3_devel nlohmann_json git"
 projectmDir="/tmp/projectm"
-supermusicthingyDir="/tmp/SuperMusicThingy"
+supermusicthingyDir="/tmp/${appname}"
 
 # Define color codes
 LIGHT_BLUE='\033[1;34m'
@@ -58,15 +58,17 @@ elif [[ "$answer" == "2" ]];then
 	skipprojectm="true"
 
 	else
-		echo -e "${LIGHT_BLUE}Error code 1 !"
+		echo -ne "\n${LIGHT_BLUE}Error code 1: Invalid input\n"
 		exit 1
 fi
 clear
-echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}---Default terminal---"
+echo -en "${LIGHT_BLUE}${LIGHT_PURPLE}---Default terminal---\n\n"
 
-read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Haiku Terminal.
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Haiku Terminal 
+~~> Recommended ~ requires Haiku >= hrev57937_111.
 
 ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Haiku Terminal by default instead of konsole.
+~~> Mouse scrolling will not work and screen flickering may be more noticeable.
 
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
 
@@ -77,7 +79,7 @@ if [[ "${answer2}" == "1" ]];then
 	 elif [[ "${answer2}" == "2" ]];then
 	 	unset buildspec2
 	 	else
-	 	echo -e "${LIGHT_BLUE}Error code 2!"
+	 	echo -en "\n${LIGHT_BLUE}Error code 2: Invalid input\n"
 			exit 1
 	 	
 fi
@@ -104,7 +106,6 @@ if [[ "$thisProjectm" == "1" || "$answer" == "2" ]];then
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
-	#[[ ! "$skipprojectm" ]] &&  mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/projectm
 	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 
@@ -121,7 +122,7 @@ elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then
 		cmake --build . -- -j && cmake --build . --target install 
 		
 		else
-			echo -e "${LIGHT_BLUE}Error code 3!"
+			echo -en "\n${LIGHT_BLUE}Error code 3: Invalid input\n"
 			exit 1
 fi
 
@@ -231,7 +232,7 @@ if [[ "$thisProjectm" ]];then
 				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 				if [ -s "$TMP_PKG" ]; then
 					echo -e "${LIGHT_BLUE}"
-       				pkgman install "$TMP_PKG" 
+       				pkgman install "$TMP_PKG" -y
        				rm "$TMP_PKG"    		
 					else
     					echo -e "${LIGHT_BLUE}Download failed!"
