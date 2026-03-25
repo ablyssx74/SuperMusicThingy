@@ -231,7 +231,7 @@ if [[ "$thisProjectm" ]];then
 				curl -L -o "$TMP_PKG" "https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg"
 				if [ -s "$TMP_PKG" ]; then
 					echo -e "${LIGHT_BLUE}"
-       				pkgman install "$TMP_PKG" -y
+       				pkgman install "$TMP_PKG" 
        				rm "$TMP_PKG"    		
 					else
     					echo -e "${LIGHT_BLUE}Download failed!"
