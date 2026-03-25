@@ -639,11 +639,13 @@ void init_visuals() {
         }
         */
 
-        // 5. THE "EARS" LOGIC
+        
         #ifdef __HAIKU__
         // Disable VSync for better responsiveness on Haiku
         SDL_GL_SetSwapInterval(0);
-
+        
+        
+		// 5. THE "EARS" LOGIC
         alcCaptureDevice = alcCaptureOpenDevice(NULL, 48000, AL_FORMAT_STEREO16, 8192);
         if (!alcCaptureDevice) {
             // HAIL MARY: Open the "null" backend just to get a node in Cortex
@@ -814,8 +816,7 @@ void init_visuals() {
         #else
         std::ifstream infile(home + "/.config/SuperMusicThingy/favorites.txt");
         #endif
-
-
+        
         std::string currentUrl = "";
         for(const auto& ch : channels) {
             if(ch.title == currentStation) {
@@ -825,7 +826,6 @@ void init_visuals() {
         }
 
         if (currentUrl.empty()) return false;
-
         std::string line;
         while (std::getline(infile, line)) {
             if (line == currentUrl) return true;
@@ -1331,7 +1331,6 @@ void init_visuals() {
         }
 
         buffer << get_ui_footer(w.ws_row);
-
         buffer << RESET;
         std::cout << buffer.str() << std::flush;
         needsRedraw = false;
@@ -1661,8 +1660,6 @@ void init_visuals() {
         }
 
         int currentRow = w.ws_row - 13;
-
-
         if (std::time(nullptr) < statusExpiry) {
             buffer << "\033[" << currentRow <<";10H" << GREEN << ">> " << statusMsg << "\n" << BLUE ;
             currentRow++;
@@ -1801,7 +1798,6 @@ void init_visuals() {
                         }).detach();
                     }
 
-
                     break;
                 }
             }
@@ -1931,7 +1927,6 @@ void init_visuals() {
     void handle_exit_signal(int sig) {
         keep_running = 0;
     }
-
 
     void restore_terminal() {
         // Normalize term
@@ -2177,7 +2172,7 @@ void init_visuals() {
                         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
                             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 
-                            int newW = e.window.data1;
+                        int newW = e.window.data1;
                         int newH = e.window.data2;
 
                         // 1. Tell OpenGL the new drawing area
@@ -2290,7 +2285,6 @@ void init_visuals() {
                             needsRedraw = true;
                         }
                     }
-
 
                     //
                     else if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -2413,24 +2407,25 @@ void init_visuals() {
                     delete_favorite();
                 }
                 else if (cmd == "quit") {
-                    goto end;                 }
-                    else if (cmd == "shuffle") {
-                        play_random();
-                        needsRedraw = true;
-                    }
-                    else if (cmd == "vol_up") {
-                        set_volume('+');
-                        needsRedraw = true;
-                    }
-                    else if (cmd == "vol_down") {
-                        set_volume('-');
-                        needsRedraw = true;
-                    }
-                    else if (cmd == "mute") {
-                        const char* cmd_mute[] = {"cycle", "mute", NULL};
-                        mpv_command(mpv, cmd_mute);
-                        needsRedraw = true;
-                    }
+                    goto end;    
+                                 }
+                else if (cmd == "shuffle") {
+                    play_random();
+                    needsRedraw = true;
+                }
+                else if (cmd == "vol_up") {
+                    set_volume('+');
+                    needsRedraw = true;
+                }
+                else if (cmd == "vol_down") {
+                    set_volume('-');
+                    needsRedraw = true;
+                }
+                else if (cmd == "mute") {
+                    const char* cmd_mute[] = {"cycle", "mute", NULL};
+                    mpv_command(mpv, cmd_mute);
+                    needsRedraw = true;
+                }
             }
 
 
@@ -2442,7 +2437,6 @@ void init_visuals() {
                 }
                 usleep(is_native_tty() ? 500000 : 33333);
                 continue;
-
             }
 
             if (currentMenu == HELP) {
@@ -2471,11 +2465,12 @@ void init_visuals() {
                 statusMsg = "";
                 needsRedraw = true;
             }
-            // Check if terminal was resized
-            if (resized) {
-                resized = 0;
-                needsRedraw = true;
-            }
+            
+           // Check if terminal was resized
+           // if (resized) {
+           //     resized = 0;
+           //     needsRedraw = true;
+           // }
 
 
             // F. MPV EVENTS (Buffered + Delayed Notification Version)
