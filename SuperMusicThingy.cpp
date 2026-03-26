@@ -352,6 +352,14 @@ void load_config() {
     }
 }
 
+
+bool is_native_tty() {
+    const char* term = std::getenv("TERM");
+    return (term && std::string(term) == "linux");
+}
+
+
+
 // --- Global UI Colors ---
 const std::string SCLR = "\033[H\033[J";
 const std::string CLEARALL = "\033[2J\033[3J\033[H";
@@ -376,18 +384,20 @@ std::string RESET		   = "\033[0m";
 
 void init_theme() {
 	CLRSCREEN  	   = "\033[2J\033[3J\033[H";
-	
-    if (cfg.updateTheme == "Light") {        
-        BACKGROUND     = "\033]11;#FFFFFF\007";
-        BASE_FONT      = "\033[30m";  
-        RED            = "\033[30m"; 
-        ORANGE         = "\033[30m"; 
-        WHITE          = "\033[30m"; 
-        YELLOW         = "\033[30m"; 
-        GREEN     	   = "\033[30m"; 
-		niceGreenColor = "\033[30m"; 
 
-    }
+       if (cfg.updateTheme == "Light" && !is_native_tty()) {
+        BACKGROUND     = "\033]11;#FFFFFF\007";
+        BASE_FONT      = "\033[30m";
+        RED            = "\033[30m";
+        ORANGE         = "\033[30m";
+        WHITE          = "\033[30m";
+        YELLOW         = "\033[30m";
+        GREEN     	   = "\033[30m";
+        niceGreenColor = "\033[30m";
+
+        }
+
+
     else if (cfg.updateTheme == "Dark") {        
         BACKGROUND     = "\033]11;#000000\007";
         BASE_FONT      = "\033[94m";
@@ -447,10 +457,6 @@ enum MenuState { NONE, FAVORITES, HELP, CONFIG };
 MenuState currentMenu = NONE;
 
 
-bool is_native_tty() {
-    const char* term = std::getenv("TERM");
-    return (term && std::string(term) == "linux");
-}
 
 
 std::string get_ui_header(int rows) {
@@ -2236,12 +2242,11 @@ void init_visuals() {
         
         init_theme();
         draw_ui();
-		bool needsRedraw = true;
+        bool firstrun = false;
 
-		
         // 7. THE MAIN LOOP
         while (keep_running) {
-            
+            bool needsRedraw = false;
 
             // A. --- VISUALS LOGIC ---
             #ifdef USE_PROJECTM
@@ -2765,12 +2770,18 @@ void init_visuals() {
                     }
                     needsRedraw = true;
                 }
+
             }
 
 
             if (needsRedraw || resized) {
                 resized = 0;
                 draw_ui();
+            }
+
+            if (!cfg.autoShuffle && !firstrun) {
+                draw_ui();
+                firstrun = true;
             }
 
             usleep(33333);  // 30 FPS
