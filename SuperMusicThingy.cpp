@@ -2805,7 +2805,7 @@ void init_visuals() {
 
         // Cleanup fifo and stty
         cleanup_fifo();
-       // system("stty cooked echo");
+        system("stty cooked echo");
         restore_terminal();
 
         // Cleanup any terminology tmp images
