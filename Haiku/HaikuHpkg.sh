@@ -62,18 +62,18 @@ elif [[ "$answer" == "2" ]];then
 		exit 1
 fi
 clear
-echo -en "${LIGHT_BLUE}${LIGHT_PURPLE}---Default terminal---\n\n"
+echo -en "${LIGHT_BLUE}${LIGHT_PURPLE}---Default terminal---\n\n"    
 
-read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Haiku Terminal 
+read -p "$(echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}>>Option 1:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Haiku Terminal by default instead of konsole.
+
+
+${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use konsole by default instead of Haiku Terminal 
 ~~> requires Haiku >= hrev57937_111.
-
-${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_BLUE} to use Haiku Terminal by default instead of konsole.
-
 
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
 
 	
-if [[ "${answer2}" == "1" ]];then
+if [[ "${answer2}" == "2" ]];then
 	pkgman install konsole_kf6
 	buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
 	 elif [[ "${answer2}" == "2" ]];then
