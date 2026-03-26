@@ -1338,7 +1338,7 @@ void init_visuals() {
                 if (selectedConfig < items.size()) {
                     *(items[selectedConfig].val) = !(*(items[selectedConfig].val));
                     #ifdef USE_PROJECTM
-                    if (items[selectedConfig].label == "Show Visuals") {
+                    if (items[selectedConfig].label == "Show Visualizer") {
                         if (cfg.showVisuals) {
                             if (!visualsRunning && !is_native_tty()) init_visuals();
                         } else {
