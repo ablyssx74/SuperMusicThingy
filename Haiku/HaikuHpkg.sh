@@ -72,12 +72,15 @@ ${LIGHT_PURPLE}>>Option 2:${LIGHT_BLUE} Build ${LIGHT_PURPLE}${appname}${LIGHT_B
 
 ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" answer2
 
+
 	
 if [[ "${answer2}" == "2" ]];then
 	pkgman install konsole_kf6
 	buildspec2="-DUSE_KONSOLE_ON_HAIKU=ON"
 	 elif [[ "${answer2}" == "2" ]];then
 	 	unset buildspec2
+	 	elif [[ "${answer2}" == "1" ]];then
+	 		 echo	 		
 	 	else
 	 	echo -en "\n${LIGHT_BLUE}Error code 2: Invalid input\n"
 			exit 1
@@ -265,4 +268,3 @@ if [[ "$thisProjectm" ]];then
 		  fi
 fi
 echo -e "${LIGHT_BLUE}>>>Finshed.${NC}"
-
