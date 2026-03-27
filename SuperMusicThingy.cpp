@@ -948,7 +948,7 @@ void init_visuals() {
         return bar;
     }
 
- 	static bool middleButtonHeld = false; 
+
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
         if (button == 3) return false;
@@ -1051,11 +1051,8 @@ void init_visuals() {
 
 		          
             // SETTINGS TOGGLE (Middle Click)
-            if (button == 1) {           	
-                   //  if (!middleButtonHeld) {
-       			    //    middleButtonHeld = true; 
-       				//    stateChanged = true;
-            	
+            bool handled = false;
+            if (button == 1 && !handled) {           	
                 stateChanged = true; // Any middle click here triggers a redraw
                 if (selectedConfig == 0) cfg.autoShuffle = !cfg.autoShuffle;
                 else if (selectedConfig == 1) cfg.showNotifications = !cfg.showNotifications;
@@ -1065,12 +1062,16 @@ void init_visuals() {
                     cfg.showVisuals = !cfg.showVisuals;
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
-                        if (!visualsRunning && !is_native_tty()) init_visuals();
+                        if (!visualsRunning && !is_native_tty()) { 
+                        init_visuals();
+                        handled = true; 
+                        }
                     } else if (visualsRunning) {
                         visualsRunning = false;
+                        cleanup_capture_device();
                         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
                         if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                        cleanup_capture_device();
+                       
                     }
                     #endif
                 }
@@ -1087,17 +1088,13 @@ void init_visuals() {
                     toggleTheme();
                 }
                  save_config();
-                 saveMessageTimer = std::time(nullptr) + 3;
-                
-                 //needsRedraw = true; 
-             //}
+                 saveMessageTimer = std::time(nullptr) + 3;       
             } 
             
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
-            }
-		
+            }		
             return true; 
         }
 
@@ -1354,9 +1351,9 @@ void init_visuals() {
                         } else {
                             if (visualsRunning) {
                                 visualsRunning = false;
+                                 cleanup_capture_device();
                                 if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-                                if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
-                                cleanup_capture_device();
+                                if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }                               
                             }
                         }
                     }
@@ -2820,9 +2817,9 @@ void init_visuals() {
         // Clean up the visual backend
         #ifdef USE_PROJECTM
         visualsRunning = false;
-        if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
-        if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }
         cleanup_capture_device();
+        if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
+        if (visualWin) { SDL_DestroyWindow(visualWin); visualWin = nullptr; }        
         #endif
 
         // Cleanup fifo and stty
