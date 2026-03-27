@@ -1067,7 +1067,7 @@ void init_visuals() {
                     if (cfg.showVisuals) {
                         if (!visualsRunning && !is_native_tty()) { 
                         init_visuals();
-                        if (button == 1) button = nullptr;
+                         button = nullptr;
                         }
                     } else if (visualsRunning) {
                         visualsRunning = false;
