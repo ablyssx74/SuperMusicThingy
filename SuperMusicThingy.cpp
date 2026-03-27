@@ -1052,9 +1052,9 @@ void init_visuals() {
 		          
             // SETTINGS TOGGLE (Middle Click)
             if (button == 1) {           	
-                     if (!middleButtonHeld) {
-       			        middleButtonHeld = true; 
-       				    stateChanged = true;
+                   //  if (!middleButtonHeld) {
+       			    //    middleButtonHeld = true; 
+       				//    stateChanged = true;
             	
                 stateChanged = true; // Any middle click here triggers a redraw
                 if (selectedConfig == 0) cfg.autoShuffle = !cfg.autoShuffle;
