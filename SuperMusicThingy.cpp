@@ -1090,7 +1090,7 @@ void init_visuals() {
                  saveMessageTimer = std::time(nullptr) + 3;
                 
                  //needsRedraw = true; 
-            	     }
+             //}
             } 
             
             if (stateChanged) {
