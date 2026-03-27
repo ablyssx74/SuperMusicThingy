@@ -951,7 +951,7 @@ void init_visuals() {
  	static bool middleButtonHeld = false; 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
-        //if (button == 3) return false;
+        if (button == 3) return false;
         bool stateChanged = false;
         // 1. HELP MENU
         if (currentMenu == HELP) {
@@ -1065,7 +1065,7 @@ void init_visuals() {
                     cfg.showVisuals = !cfg.showVisuals;
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
-                        if (!visualsRunning && !is_native_tty()) init_visuals();
+                        if (!visualsRunning && !is_native_tty()) init_visuals(); stateChanged = true;
                     } else if (visualsRunning) {
                         visualsRunning = false;
                         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
