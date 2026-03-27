@@ -1061,7 +1061,7 @@ void init_visuals() {
                     cfg.showVisuals = !cfg.showVisuals;
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
-                        if (!visualsRunning && !is_native_tty()) init_visuals(); return false;
+                        if (!visualsRunning && !is_native_tty()) init_visuals();
                     } else if (visualsRunning) {
                         visualsRunning = false;
                         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
