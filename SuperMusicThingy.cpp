@@ -948,7 +948,7 @@ void init_visuals() {
         return bar;
     }
 
-
+ 	static bool middleButtonHeld = false; 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
         if (button == 3) return false;
@@ -1049,9 +1049,13 @@ void init_visuals() {
                 }
             }
 
-		           
+		          
             // SETTINGS TOGGLE (Middle Click)
-            if (button == 1) {
+            if (button == 1) {           	
+                     if (!middleButtonHeld) {
+       			        middleButtonHeld = true; 
+       				    stateChanged = true;
+            	
                 stateChanged = true; // Any middle click here triggers a redraw
                 if (selectedConfig == 0) cfg.autoShuffle = !cfg.autoShuffle;
                 else if (selectedConfig == 1) cfg.showNotifications = !cfg.showNotifications;
@@ -1061,7 +1065,7 @@ void init_visuals() {
                     cfg.showVisuals = !cfg.showVisuals;
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
-                        if (!visualsRunning && !is_native_tty()) init_visuals();  return false;
+                        if (!visualsRunning && !is_native_tty()) init_visuals();
                     } else if (visualsRunning) {
                         visualsRunning = false;
                         if (glContext) { SDL_GL_DeleteContext(glContext); glContext = nullptr; }
@@ -1084,16 +1088,16 @@ void init_visuals() {
                 }
                  save_config();
                  saveMessageTimer = std::time(nullptr) + 3;
+                
                  //needsRedraw = true; 
-                 
-            }
-
-
+            	     }
+            } else {
+            		 static bool middleButtonHeld = false;
+          		   }
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
             }
-
 		
             return true; 
         }
@@ -1594,7 +1598,7 @@ void init_visuals() {
                         if (sscanf(&buf[2], "%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
                             if (button == 64) input = 'j';
                             else if (button == 65) input = 'k';
-                            if (button == 1 && mode == 'M') { 
+                            if (mode == 'M') { 
                                 // ACTUAL MOUSE CLICK
                                 check_ui_click(x, y, button);
                                 needsRedraw = true;
