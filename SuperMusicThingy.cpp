@@ -951,7 +951,7 @@ void init_visuals() {
  	static bool middleButtonHeld = false; 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
-        if (button == 3 || mode =='m') middleButtonHeld = false;
+        //if (button == 3) return false;
         bool stateChanged = false;
         // 1. HELP MENU
         if (currentMenu == HELP) {
