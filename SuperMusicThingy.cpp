@@ -1594,7 +1594,7 @@ void init_visuals() {
                         if (sscanf(&buf[2], "%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
                             if (button == 64) input = 'j';
                             else if (button == 65) input = 'k';
-                            else if (mode == 'M') {
+                            if (button == 1 && mode == 'M') { 
                                 // ACTUAL MOUSE CLICK
                                 check_ui_click(x, y, button);
                                 needsRedraw = true;
