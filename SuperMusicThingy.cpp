@@ -981,7 +981,7 @@ void init_visuals() {
         }
 
 
-        
+        /*
 
         // 3. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
         if (button == 64 || button == 65) {
@@ -1006,7 +1006,7 @@ void init_visuals() {
 
             return true;
         }
-
+		*/
 
         
 
