@@ -1092,7 +1092,7 @@ void init_visuals() {
                  //needsRedraw = true; 
             	     }
             } else {
-            		 static bool middleButtonHeld = false;
+            		 middleButtonHeld = false;
           		   }
             if (stateChanged) {
                 draw_ui();
