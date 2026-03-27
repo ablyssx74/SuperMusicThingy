@@ -951,7 +951,7 @@ void init_visuals() {
  	static bool middleButtonHeld = false; 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
-       // if (button == 3) return false;
+        if (button == 3) middleButtonHeld = false;
         bool stateChanged = false;
         // 1. HELP MENU
         if (currentMenu == HELP) {
@@ -1047,7 +1047,7 @@ void init_visuals() {
                     currentMenu = NONE;
                     stateChanged = true;
                 }
-             }
+            }
 
 		          
             // SETTINGS TOGGLE (Middle Click)
@@ -1087,24 +1087,19 @@ void init_visuals() {
                     toggleTheme();
                 }
                  save_config();
-                 saveMessageTimer = std::time(nullptr) + 3;                
+                 saveMessageTimer = std::time(nullptr) + 3;
+                
                  //needsRedraw = true; 
             	     }
-                 } 
+            } 
             
-          else if (button == 3) { 
-          middleButtonHeld = false; 
-          } 
-          else {
-               middleButtonHeld = false;
-          }  
-            
-          if (stateChanged) {
-          draw_ui();
-          std::cout << std::flush;
-           } 
+            if (stateChanged) {
+                draw_ui();
+                std::cout << std::flush;
+            }
+		
             return true; 
-         }
+        }
 
 	
 
