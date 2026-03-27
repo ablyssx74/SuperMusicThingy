@@ -494,12 +494,22 @@ std::string get_ui_header(int rows) {
     return header.str();
 }
 
-
 std::string get_ui_footer(int rows) {
     std::stringstream footer;
-    struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    footer << "\033[" << w.ws_row << ";0H" << RED << "SuperMusicThingy~ $:"
-    << "\033[0m\033[K"; 
+    struct winsize w; 
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+    // 1. Move to the bottom row and clear the line FIRST
+    footer << "\033[" << w.ws_row << ";0H" << "\033[K"; 
+
+    // 2. Draw your main footer text
+    footer << RED << "SuperMusicThingy~ $:" << RESET;
+
+    // 3. Draw the message ON TOP of the cleared line if the timer is active
+    if (std::time(nullptr) < saveMessageTimer) {
+        footer << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << RESET;
+    }
+
     return footer.str();
 }
 
@@ -1039,7 +1049,7 @@ void init_visuals() {
                 }
             }
 
-            
+		           
             // SETTINGS TOGGLE (Middle Click)
             if (button == 1) {
                 stateChanged = true; // Any middle click here triggers a redraw
@@ -1074,7 +1084,8 @@ void init_visuals() {
                 }
                  save_config();
                  saveMessageTimer = std::time(nullptr) + 3;
-                 return true;
+                 //needsRedraw = true; 
+                 
             }
 
 
@@ -1083,10 +1094,11 @@ void init_visuals() {
                 std::cout << std::flush;
             }
 
+		
             return true; 
         }
 
-
+	
 
         // 4. FAVORITES MENU LOGIC
         if (currentMenu == FAVORITES) {
@@ -1256,11 +1268,6 @@ void init_visuals() {
         buffer << "Themes: [" << cfg.updateTheme << BASE_FONT << "]";
 
 
-
-        if (std::time(nullptr) < saveMessageTimer) {
-            buffer  << "\033[" << w.ws_row << ";23H" << ORANGE << "Settings saved." << ORANGE;
-        }
-
         buffer << get_ui_footer(w.ws_row);
         buffer << RESET;
         std::cout << buffer.str() << std::flush;
@@ -1364,7 +1371,8 @@ void init_visuals() {
         			toggleTheme();
    				 }
                 save_config();
-                saveMessageTimer = std::time(nullptr) + 3;
+ 			    saveMessageTimer = std::time(nullptr) + 3;   
+
                 needsRedraw = true;
                 return true;
             }
