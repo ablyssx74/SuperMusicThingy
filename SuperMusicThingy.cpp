@@ -2964,7 +2964,8 @@ bool draw_help_menu_bak() {
 
                         #ifdef USE_PROJECTM
                         case 'v':
-                            if (!visualsRunning and !is_native_tty()) {
+                            if (is_native_tty()) break;
+                            if (!visualsRunning) {
                                 statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BASE_FONT);
                                 statusExpiry = std::time(nullptr) + 3;
                                 break;
@@ -2982,8 +2983,8 @@ bool draw_help_menu_bak() {
 
                         #ifdef USE_PROJECTM
                         case 'k': {
-                            // Don't crash if visual screen not open
-                            if (!visualsRunning and !is_native_tty()) {
+                             if (is_native_tty()) break;
+                             if (!visualsRunning) {
                                 statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BASE_FONT);
                                 statusExpiry = std::time(nullptr) + 3;
                                 break;
