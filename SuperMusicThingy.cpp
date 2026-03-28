@@ -1458,7 +1458,7 @@ bool draw_help_menu_bak() {
             outfile << "   Mouse Events Visualizer Window\n\n";
             outfile << "Middle           : Toggle audio mute\n";
             outfile << "Scroll           : Increase/Decrease volume\n";
-            outfile << "Right            : Play a random station\n";
+            outfile << "Right            : Shuffle milk drop presets\n";
             outfile << "Left x2          : Toggle fullscreen visual window\n";            
             outfile << "\n\n";            
             #endif
@@ -1649,7 +1649,7 @@ bool draw_help_menu_bak() {
             buffer << "\033[" << r++ << h3 << ORANGE << "Mouse Events Visualizer Window" << BASE_FONT << "";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Middle" << BASE_FONT << "]         : Toggle audio mute";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Scroll" << BASE_FONT << "]         : Increase/Decrease volume";
-            buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BASE_FONT << "]          : Play a random station";
+            buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Right" << BASE_FONT << "]          : Shuffle milk drop presets";
             buffer << "\033[" << r++ << row2 << "[" << ORANGE << "Left x2" << BASE_FONT << "]        : Toggle fullscreen visual window";
             buffer << "\033[" << r++ << row2 << "";
             #endif
@@ -2673,8 +2673,8 @@ bool draw_help_menu_bak() {
 
                         // Right click once to shuffle
                         else if (e.button.button == SDL_BUTTON_RIGHT && e.button.clicks == 1) {
-                            play_random();
-                            currentSong = "Buffering...";
+                            load_random_preset(pm);
+                            lastPresetChange = SDL_GetTicks();
                             needsRedraw = true;
 
                         }
@@ -2965,11 +2965,12 @@ bool draw_help_menu_bak() {
                         #ifdef USE_PROJECTM
                         case 'v':
                             if (is_native_tty()) break;
-                            if (!visualsRunning) {
+                            if (!visualsRunning && !cfg.showVisuals) {
                                 statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BASE_FONT);
                                 statusExpiry = std::time(nullptr) + 3;
                                 break;
                             }
+                            init_visuals();
                             load_random_preset(pm);
                             lastPresetChange = SDL_GetTicks();
                             break;
@@ -2984,12 +2985,12 @@ bool draw_help_menu_bak() {
                         #ifdef USE_PROJECTM
                         case 'k': {
                              if (is_native_tty()) break;
-                             if (!visualsRunning) {
+                             if (!visualsRunning && !cfg.showVisuals) {
                                 statusMsg = std::string(RED) + "Visuals disabled in config!" + std::string(BASE_FONT);
                                 statusExpiry = std::time(nullptr) + 3;
                                 break;
                             }
-
+                            init_visuals();
                             // 1. Get current window flags
                             uint32_t flags = SDL_GetWindowFlags(visualWin);
                             bool isFullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP);
