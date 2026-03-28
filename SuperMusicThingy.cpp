@@ -953,27 +953,48 @@ void init_visuals() {
         return bar;
     }
 
-// Disable all common mouse tracking modes
-void disable_mouse_tracking() {
-   // std::cout //<< "\033[?1000l"  // Disable mouse click tracking
-              //<< "\033[?1002l"  // Disable mouse button event tracking
-    std::cout   << "\033[?1003l"  // Disable all mouse tracking (including movement)
-             // << "\033[?1006l"  // Disable SGR extended mode
-              << std::flush;
-}
-
-// Re-enable mouse tracking
-void enable_mouse_tracking() {
-    // Usually, you only need 1000h or 1002h and 1006h for your UI
-    std::cout << "\033[?1000h\033[?1006h" << std::flush;
-}
 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
         if (button == 3) return false;
         bool stateChanged = false;      
+
+
+        // 1. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
+        if (button == 64 || button == 65) {
+
+            // 1. Favorites/Config scrolling
+            if (currentMenu == FAVORITES && !favUrls.empty()) {
+                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
+                else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
+
+            }
+            else if (currentMenu == CONFIG) {
+                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
+                else selectedConfig = std::min(6, selectedConfig + 1);
+
+            }
+            else if (currentMenu == HELP && !helpMenu.empty()) {
+                if (button == 64) selectedhelp = std::max(0, selectedhelp - 1);
+                else selectedhelp = std::min((int)helpMenu.size() - 1, selectedhelp + 1);
+
+            }
+
+            /*
+             *          // Don't need this heare its done in draw_ui
+             *          // 2. DEFAULT: Volume Control
+             *          else if (currentMenu == NONE) {
+             *              if (button == 64) mpv_command_string(mpv, "add volume 5");
+             *              else mpv_command_string(mpv, "add volume -5");
+             *
+        }
+        */
+
+            return true;
+        }
+
         
-        // 1. HELP MENU
+        // 2. HELP MENU
         if (currentMenu == HELP) {
             // Check for any valid Left (0) or Right (2) click on buttons
             if (button == 0 || button == 2) {
@@ -1013,43 +1034,11 @@ void enable_mouse_tracking() {
 
        
 
-        // 3. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
-        if (button == 64 || button == 65) {
 
-            // 1. Favorites/Config scrolling
-            if (currentMenu == FAVORITES && !favUrls.empty()) {
-                if (button == 64) selectedFav = std::max(0, selectedFav - 1);
-                else selectedFav = std::min((int)favUrls.size() - 1, selectedFav + 1);
-
-            }
-            else if (currentMenu == CONFIG) {
-                if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
-                else selectedConfig = std::min(6, selectedConfig + 1);
-
-            }            
-            else if (currentMenu == HELP && !helpMenu.empty()) {
-                if (button == 64) selectedhelp = std::max(0, selectedhelp - 1);
-                else selectedhelp = std::min((int)helpMenu.size() - 1, selectedhelp + 1);
-
-            }
-            
-            /*
-            // Don't need this heare its done in draw_ui
-            // 2. DEFAULT: Volume Control
-            else if (currentMenu == NONE) {
-                if (button == 64) mpv_command_string(mpv, "add volume 5");
-                else mpv_command_string(mpv, "add volume -5");
-
-            }
-			*/
-			
-            return true;
-        }
-		
 
         
 
-        // 4. Config MENU LOGIC
+        // 3. Config MENU LOGIC
         if (currentMenu == CONFIG) {
             bool stateChanged = false;
 
@@ -1421,8 +1410,8 @@ void enable_mouse_tracking() {
     } 
    
   
-const std::string HELP_VERSION = "v1.0"; 
-bool draw_help_menu() {
+const std::string HELP_VERSION = "v1.0.1";
+bool draw_help_menu_bak() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
         std::stringstream buffer;
     
@@ -1439,11 +1428,11 @@ bool draw_help_menu() {
     std::string firstLine;
     std::getline(checkFile, firstLine);
      // If the version tag is missing or old, trigger an update
-     if (firstLine != ("# HELP_VERSION: " + HELP_VERSION)) {
+     if (firstLine != ("HELP MENU: " + HELP_VERSION)) {
             needUpdate = true;
         }
 
-    
+
 
    // 2. Auto-Generate if missing
    if (needUpdate) {
@@ -1451,7 +1440,7 @@ bool draw_help_menu() {
     if (!checkFile.is_open()) {
         std::ofstream outfile(path);
         if (outfile.is_open()) {
-        	outfile << "      HELP MENU: " << HELP_VERSION << "\n";      
+        	outfile << "HELP MENU: " << HELP_VERSION << "\n";
             outfile << "  Mouse Events Main Menu\n\n";
             outfile << "Middle           : Toggle audio mute\n";
             outfile << "Scroll           : Increase/Decrease volume\n"; 
@@ -1522,7 +1511,7 @@ bool draw_help_menu() {
 
         buffer << get_ui_header(w.ws_row);
         const std::string h1 = ";35H";
-        const std::string row1 = ";27H";
+        const std::string row1 = ";19H";
 
         //buffer << "\033[5" << h1 <<  ORANGE << "--- Help Menu ---" << BASE_FONT;
         //int maxVisible = 15;
@@ -1623,7 +1612,7 @@ bool draw_help_menu() {
 	
 	
 	
-    bool draw_help_menu_old() {
+    bool draw_help_menu() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
         std::stringstream buffer;
