@@ -86,7 +86,8 @@ int kbhit() {
 
        // std::cout << "\033[?1000h" << "\033[?1006h";
        // std::fflush(stdout);
-        
+       
+        // Enable Mouse Tracking
         std::cout << "\033[?1049h" << "\033[?1000h" << "\033[?1006h";
         std::fflush(stdout);
     }
@@ -293,6 +294,9 @@ const std::string BASE_URL = "https://somafm.com/";
 
 using json = nlohmann::json;
 std::vector<std::string> favUrls;
+std::vector<std::string> helpMenu;
+int selectedhelp = 0;
+int scrollhelpOffset = 0;
 int selectedFav = 0;
 int scrollOffset = 0;
 bool showFavorites = false;
@@ -714,6 +718,7 @@ void init_visuals() {
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
         // 4.
+
         visualWin = SDL_CreateWindow("SuperMusicThingy Visualizer",
                                      SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                      800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -948,11 +953,26 @@ void init_visuals() {
         return bar;
     }
 
+// Disable all common mouse tracking modes
+void disable_mouse_tracking() {
+   // std::cout //<< "\033[?1000l"  // Disable mouse click tracking
+              //<< "\033[?1002l"  // Disable mouse button event tracking
+    std::cout   << "\033[?1003l"  // Disable all mouse tracking (including movement)
+             // << "\033[?1006l"  // Disable SGR extended mode
+              << std::flush;
+}
+
+// Re-enable mouse tracking
+void enable_mouse_tracking() {
+    // Usually, you only need 1000h or 1002h and 1006h for your UI
+    std::cout << "\033[?1000h\033[?1006h" << std::flush;
+}
 
     // Mouse Events
     bool check_ui_click(int x, int y, int button) {
         if (button == 3) return false;
-        bool stateChanged = false;
+        bool stateChanged = false;      
+        
         // 1. HELP MENU
         if (currentMenu == HELP) {
             // Check for any valid Left (0) or Right (2) click on buttons
@@ -991,7 +1011,7 @@ void init_visuals() {
         }
 
 
-        /*
+       
 
         // 3. Favorites & Config CONTEXT-AWARE SCROLLING / Audo volume scrolling
         if (button == 64 || button == 65) {
@@ -1006,17 +1026,26 @@ void init_visuals() {
                 if (button == 64) selectedConfig = std::max(0, selectedConfig - 1);
                 else selectedConfig = std::min(6, selectedConfig + 1);
 
+            }            
+            else if (currentMenu == HELP && !helpMenu.empty()) {
+                if (button == 64) selectedhelp = std::max(0, selectedhelp - 1);
+                else selectedhelp = std::min((int)helpMenu.size() - 1, selectedhelp + 1);
+
             }
+            
+            /*
+            // Don't need this heare its done in draw_ui
             // 2. DEFAULT: Volume Control
             else if (currentMenu == NONE) {
                 if (button == 64) mpv_command_string(mpv, "add volume 5");
                 else mpv_command_string(mpv, "add volume -5");
 
             }
-
+			*/
+			
             return true;
         }
-		*/
+		
 
         
 
@@ -1051,8 +1080,8 @@ void init_visuals() {
 
 		          
             // SETTINGS TOGGLE (Middle Click)
-            bool handled = false;
-            if (button == 1 && !handled) {           	
+            if (button == 1) {              
+                      	
                 stateChanged = true; // Any middle click here triggers a redraw
                 if (selectedConfig == 0) cfg.autoShuffle = !cfg.autoShuffle;
                 else if (selectedConfig == 1) cfg.showNotifications = !cfg.showNotifications;
@@ -1063,8 +1092,13 @@ void init_visuals() {
                     #ifdef USE_PROJECTM
                     if (cfg.showVisuals) {
                         if (!visualsRunning && !is_native_tty()) { 
+                                #ifdef __HAIKU__
+      						   // Fix for Haiku Terminal - disable mouse tracking while enabling this
+       							if (isatty(STDOUT_FILENO))
+            					std::cout << "\033[?1003l\033[?1000l" << std::flush;        						
+        						#endif
                         init_visuals();
-                        handled = true; 
+                                     
                         }
                     } else if (visualsRunning) {
                         visualsRunning = false;
@@ -1088,13 +1122,18 @@ void init_visuals() {
                     toggleTheme();
                 }
                  save_config();
-                 saveMessageTimer = std::time(nullptr) + 3;       
+                 saveMessageTimer = std::time(nullptr) + 3;
+                     #ifdef __HAIKU__
+   					 // Fix for Haiku Terminal - renable mouse tracking    				
+       				 std::cout << "\033[?1003h\033[?1000h" << std::flush;    					
+  				 	 #endif               
             } 
             
             if (stateChanged) {
                 draw_ui();
                 std::cout << std::flush;
-            }		
+            }
+		
             return true; 
         }
 
@@ -1333,7 +1372,7 @@ void init_visuals() {
             if (c == '-') { set_volume('-'); return false; }
             if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
             if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; needsRedraw = true; return true; }
-            if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
+            if (c == 'h') { currentMenu = HELP; selectedhelp = 0; needsRedraw = true; return true; }
             if (c == 'q') { keep_running = 0; return true; }
             if (c == 'b' || c == 27) {
                currentMenu = NONE;
@@ -1380,9 +1419,211 @@ void init_visuals() {
         
         return true; 
     } 
+   
+  
+const std::string HELP_VERSION = "v1.0"; 
+bool draw_help_menu() {
+        struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        std::stringstream buffer;
+    
+    // 1. Get File Path
+    std::string home = getenv("HOME") ? getenv("HOME") : ".";
+    #ifdef __HAIKU__
+    std::string path = home + "/config/settings/SuperMusicThingy/help.txt";
+    #else
+    std::string path = home + "/.config/SuperMusicThingy/help.txt";
+    #endif
+    
+    std::ifstream checkFile(path);
+	bool needUpdate = false;
+    std::string firstLine;
+    std::getline(checkFile, firstLine);
+     // If the version tag is missing or old, trigger an update
+     if (firstLine != ("# HELP_VERSION: " + HELP_VERSION)) {
+            needUpdate = true;
+        }
+
+    
+
+   // 2. Auto-Generate if missing
+   if (needUpdate) {
+   // std::ifstream checkFile(path);
+    if (!checkFile.is_open()) {
+        std::ofstream outfile(path);
+        if (outfile.is_open()) {
+        	outfile << "      HELP MENU: " << HELP_VERSION << "\n";      
+            outfile << "  Mouse Events Main Menu\n\n";
+            outfile << "Middle           : Toggle audio mute\n";
+            outfile << "Scroll           : Increase/Decrease volume\n"; 
+            
+			outfile <<  "\n\n";
+			
+            outfile << "  Mouse Events Sub Menus\n\n";
+            outfile << "Middle           : Play/Update selection\n";  
+            outfile << "Scroll           : Scroll up/down selection\n";
+            outfile << "Right            : Return to Main Menu\n";
+            
+            outfile <<  "\n\n";
+            
+            #ifdef USE_PROJECTM
+            outfile << "   Mouse Events Visualizer Window\n\n";
+            outfile << "Middle           : Toggle audio mute\n";
+            outfile << "Scroll           : Increase/Decrease volume\n";
+            outfile << "Right            : Play a random station\n";
+            outfile << "Left x2          : Toggle fullscreen visual window\n";            
+            outfile << "\n\n";            
+            #endif
+            
+      		outfile << "    More Key Events\n\n";
+        	outfile << "[f] Play Fav     : Play a random favorite\n";
+      		outfile << "[l] List Favs    : Open scrollable favorite menu\n";
+        	outfile << "[a] Add Fav      : Save current station to favorites list\n";
+        	outfile << "[d] Delete Fav   : Remove current station from favorites list\n";
+        	outfile << "[+/-] Volume     : Increase/Decrease volume\n";
+        	outfile << "[j/k] Scroll     : Scroll up/down selection\n";
+        	outfile << "[enter] Enter    : Update/Play selection\n";
+        	outfile << "[m] Mute         : Toggle audio mute\n";
+        	#ifdef USE_PROJECTM
+        	outfile << "[k] Fullscreen   : Toggle fullscreen visual window\n";
+        	outfile << "[v] Shuffle      : Shuffle milk drop presets\n";
+        	#endif
+        	outfile << "[x] Stop         : Stop the music\n";
+        	outfile << "[p] Toggle       : Play/Pause the music\n";       
+        	
+        	if (!is_native_tty()) {
+  
+            #ifndef __HAIKU__
+            //outfile << "* Visuals: Set pavucontrol to switch recording to 'Monitor\n";
+            outfile << "\nMilkdrop presets: $HOME/.config/SuperMusicThingy/milk_presets\n";
+            #else
+            outfile << "\nMilkdrop presets: $HOME/config/settings/SuperMusicThingy/milk_presets\n";
+            #endif
+             }                
+            outfile.close();
+          }
+        }
+    }
+      checkFile.close();
+
+       // 1. Load Help
+        std::string homeHelp = getenv("HOME") ? getenv("HOME") : ".";
+        #ifdef __HAIKU__
+        std::ifstream helpfile(homeHelp + "/config/settings/SuperMusicThingy/help.txt");
+        
+        #else
+        std::ifstream helpfile(homeHelp + "/.config/SuperMusicThingy/help.txt");
+        #endif
+
+        helpMenu.clear();
+        std::string helpline;
+        while (std::getline(helpfile, helpline)) if (!helpline.empty()) helpMenu.push_back(helpline);
+ 
+        // 2. Build UI
+
+        buffer << get_ui_header(w.ws_row);
+        const std::string h1 = ";35H";
+        const std::string row1 = ";27H";
+
+        //buffer << "\033[5" << h1 <<  ORANGE << "--- Help Menu ---" << BASE_FONT;
+        //int maxVisible = 15;
+        int maxVisible = w.ws_row - 10;
+        if (helpMenu.empty()) {
+            buffer << "\033[7" << row1 << "  (No help menu yet)";
+        } else {
+            if (selectedhelp < scrollhelpOffset) scrollhelpOffset = selectedhelp;
+            if (selectedhelp >= scrollhelpOffset + maxVisible) scrollhelpOffset = selectedhelp - maxVisible + 1;
+
+            for (int i = 0; i < maxVisible && (i + scrollhelpOffset) < (int)helpMenu.size(); ++i) {
+                int idx = i + scrollhelpOffset;
+                buffer << "\033[" << (7 + i) << row1;
+                if (idx == selectedhelp) buffer << ORANGE << "   " <<  ORANGE << helpMenu[idx] << BASE_FONT;
+                else buffer << "   " << helpMenu[idx];
+            }
+        }
+
+        buffer << get_ui_footer(w.ws_row);
+        buffer << RESET;
+        std::cout << buffer.str() << std::flush;
 
 
-    bool draw_help_menu() {
+        // G. KEYBOARD INPUT
+        if (kbhit()) {
+            char input;
+            if (read(STDIN_FILENO, &input, 1) != 1) return false;
+
+            if (input == '\033') {
+                char buf[64];
+                memset(buf, 0, sizeof(buf)); 
+                int n = read(STDIN_FILENO, buf, sizeof(buf) - 1); 
+                
+                if (n > 0) {
+                    buf[n] = '\0';
+                    
+                    // 1. Handle Haiku/ANSI Scroll Wheel (O or [)
+                    if (buf[0] == 'O' || (buf[0] == '[' && buf[1] != '<')) {
+                        if (buf[1] == 'A') input = 'j';
+                        else if (buf[1] == 'B') input = 'k';
+                        
+                        // ONLY clear the "junk" for these keyboard-style scrolls
+                        while (kbhit()) { char junk; read(STDIN_FILENO, &junk, 1); }
+                    }
+                    // 2. Handle SGR Mouse Click/Scroll (<)
+                    else if (buf[0] == '[' && buf[1] == '<') {
+                        int button, x, y; char mode;
+                        if (sscanf(&buf[2], "%d;%d;%d%c", &button, &x, &y, &mode) == 4) {
+                            if (button == 64) input = 'j';
+                            else if (button == 65) input = 'k';
+                            if (mode == 'M') { 
+                                // ACTUAL MOUSE CLICK
+                                check_ui_click(x, y, button);
+                                needsRedraw = true;
+                                return true; 
+                            }
+                        }
+                    }
+                }
+                // PROTECT: Eat the escape so it doesn't trigger 'a' or 'b'
+                if (input != 'j' && input != 'k') return true; 
+            }
+
+
+            // --- REGULAR KEYBOARD INPUT ---
+            char c = std::tolower((unsigned char)input);
+
+            // Handle Movement
+            if (c == 'j' && selectedhelp > 0) {
+                selectedhelp--;
+                needsRedraw = true;
+                return true;
+            }
+            if (c == 'k' && selectedhelp < (int)helpMenu.size() - 1) {
+                selectedhelp++;
+                needsRedraw = true;
+                return true;
+            }
+
+            // Actions
+            if (c == 's') { play_random(); currentSong = "Buffering..."; needsRedraw = true; return true; }
+            if (c == 'q') { keep_running = 0; return true; }
+            if (c == 'b' || c == 27) {
+                currentMenu = NONE;
+                return false; // Exit menu
+            }
+
+            // Enter Key to Play
+            if ((c == '\n' || c == '\r') && !helpMenu.empty()) {  
+                return false; 
+            }
+        } // End of if (kbhit())
+
+        return true; // Keep menu open
+    }
+
+	
+	
+	
+	
+    bool draw_help_menu_old() {
         struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
         std::stringstream buffer;
@@ -1486,7 +1727,7 @@ void init_visuals() {
                 if (c == '+') { set_volume('+'); return false; }
                 if (c == '-') { set_volume('-'); return false; }
                 if (c == 'c') { currentMenu = CONFIG; needsRedraw = true; return true; }
-                if (c == 'l') { currentMenu = FAVORITES; selectedFav = 0; needsRedraw = true; return true; }
+                if (c == 'l') { currentMenu = FAVORITES; selectedhelp = 0; needsRedraw = true; return true; }
                 if (c == 'h') { currentMenu = HELP; needsRedraw = true; return true; }
                 if (c == 'b' || c == 27 || c == 'h') {
                     currentMenu = NONE;
@@ -2851,7 +3092,7 @@ void init_visuals() {
         
         // Shutdown mpv backend
         if (mpv) mpv_terminate_destroy(mpv);
-       
+
         // Finite
         return 0;
     }
