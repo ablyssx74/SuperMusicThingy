@@ -3,7 +3,7 @@
 ## <p align="center"> <img width="48" height="48" align="top" alt="icon" src="https://github.com/user-attachments/assets/40b6432d-33e5-4946-8eed-9f0508000b23" />SuperMusicThingy </p>
 ### <p align="center"> SuperMusicThingy is a free streaming terminal media client for [SomaFM](https://somafm.com/)<br> Fast, light, and fun! </p>
 #### <p align="center">Screenshots
-<img width="200" height="180" align="center" alt="Screenshot1" src="https://github.com/user-attachments/assets/cfdaf54e-b502-4317-89b9-365cdd11dd6c" /><img width="200" height="180" align="center" alt="Screenshot2" src="https://github.com/user-attachments/assets/8d00ca64-6a20-4193-9841-005beab8e61b" /><img width="200" height="180" align="center" alt="Screenshot3" src="https://github.com/user-attachments/assets/c1575020-3bb6-45f4-a6b3-4fe4c3f495dc" /></p>
+<p align="center"><img width="200" height="180" align="center" alt="Screenshot1" src="https://github.com/user-attachments/assets/cfdaf54e-b502-4317-89b9-365cdd11dd6c" /><img width="200" height="180" align="center" alt="Screenshot2" src="https://github.com/user-attachments/assets/8d00ca64-6a20-4193-9841-005beab8e61b" /><img width="200" height="180" align="center" alt="Screenshot3" src="https://github.com/user-attachments/assets/c1575020-3bb6-45f4-a6b3-4fe4c3f495dc" /></p></p>
 
 ### Includes
 
