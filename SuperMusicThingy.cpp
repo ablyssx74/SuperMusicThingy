@@ -1641,7 +1641,7 @@ bool draw_help_menu_bak() {
 
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BASE_FONT << "]         : Toggle audio mute";
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BASE_FONT << "]         : Increase/Decrease volume"; 
-            buffer << "\033[" << r++ << row2 << " [" << ORANGE << "Right"  << BASE_FONT << "]         : Play a random station";
+            buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Right"  << BASE_FONT << "]         : Play a random station";
             buffer << "\033[" << r++ << row1 << "";
 
             buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BASE_FONT << "";

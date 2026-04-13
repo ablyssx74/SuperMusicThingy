@@ -98,6 +98,22 @@ ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
 fi
 
+f1() {
+		echo -e "${LIGHT_BLUE}"
+		git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
+		cd ${supermusicthingyDir}
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
+		[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+		[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+	
+	}
+
+
+
 if [[ "$thisProjectm" == "2" ]];then 
 		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
 		cd ${projectmDir}
@@ -109,17 +125,7 @@ if [[ "$thisProjectm" == "2" ]];then
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
 		cmake --build . -- -j4 && cmake --build . --target install 
 		
-		echo -e "${LIGHT_BLUE}"
-		git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
-		cd ${supermusicthingyDir}
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
-		[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
-		[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
-		
+		f1	
 		
 		elif [[ "$thisProjectm" == "1" ]];then 
 			echo
@@ -135,16 +141,8 @@ fi
 
 if [[ "$answer" ]];then 
 	[[ "$thisProjectm" == "1" ]] && skipprojectm="true" 
-	echo -e "${LIGHT_BLUE}"
-	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
-	cd ${supermusicthingyDir}
-	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
-	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
-	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
-	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
-	mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
-	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
-	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+	
+	f1
 
 else
 			echo -en "\n${LIGHT_BLUE}Error code 4: Invalid input\n"
