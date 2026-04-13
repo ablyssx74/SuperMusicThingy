@@ -98,9 +98,43 @@ ${LIGHT_PURPLE}>>Select Option: 1 or 2: ")" thisProjectm
 echo -e "${LIGHT_BLUE}${LIGHT_PURPLE}"
 fi
 
+if [[ "$thisProjectm" == "2" ]];then 
+		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
+		cd ${projectmDir}
+		git fetch --all --tags
+		git submodule init
+		git submodule update
+		mkdir build
+		cd build
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
+		cmake --build . -- -j4 && cmake --build . --target install 
+		
+		echo -e "${LIGHT_BLUE}"
+		git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
+		cd ${supermusicthingyDir}
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
+		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
+		[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+		[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+		
+		
+		elif [[ "$thisProjectm" == "1" ]];then 
+			echo
+		elif [[ "$skipprojectm" ]];then
+			echo
 
-if [[ "$thisProjectm" == "1" || "$answer" == "2" ]];then 
-	skipprojectm="true" 
+
+	else
+			echo -en "\n${LIGHT_BLUE}Error code 3: Invalid input\n"
+			exit 1
+fi
+
+
+if [[ "$answer" ]];then 
+	[[ "$thisProjectm" == "1" ]] && skipprojectm="true" 
 	echo -e "${LIGHT_BLUE}"
 	git clone https://github.com/ablyssx74/SuperMusicThingy.git ${supermusicthingyDir}
 	cd ${supermusicthingyDir}
@@ -112,22 +146,11 @@ if [[ "$thisProjectm" == "1" || "$answer" == "2" ]];then
 	[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 	[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 
-
-elif [[ ! "$skipprojectm" && "$thisProjectm" == "1" ]];then 
-		git clone https://github.com/projectM-visualizer/projectm.git ${projectmDir}
-		cd ${projectmDir}
-		git fetch --all --tags
-		git submodule init
-		git submodule update
-		mkdir build
-		cd build
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/boot/home/config/non-packaged ..
-		cmake --build . -- -j && cmake --build . --target install 
-		
-		else
-			echo -en "\n${LIGHT_BLUE}Error code 3: Invalid input\n"
+else
+			echo -en "\n${LIGHT_BLUE}Error code 4: Invalid input\n"
 			exit 1
 fi
+
 
 if [[ ! -e ${supermusicthingyDir}/hpkgs/${appname}/.PackageInfo ]];then
 echo -n "name	${appname}

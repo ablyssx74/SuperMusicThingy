@@ -1,0 +1,2784 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+    searched_directories:
+      - "/boot/home/Dev/SuperMusicThingy/uname"
+      - "/boot/home/config/non-packaged/bin/uname"
+      - "/boot/home/config/bin/uname"
+      - "/boot/home/config/apps/uname"
+      - "/boot/system/non-packaged/bin/uname"
+    found: "/bin/uname"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Haiku - R1~beta5+development - x86_64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeUnixFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gmake"
+      - "make"
+      - "smake"
+    candidate_directories:
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/boot/home/Dev/SuperMusicThingy/gmake"
+      - "/boot/home/config/non-packaged/bin/gmake"
+      - "/boot/home/config/bin/gmake"
+      - "/boot/home/config/apps/gmake"
+      - "/boot/system/non-packaged/bin/gmake"
+      - "/bin/gmake"
+      - "/boot/system/apps/gmake"
+      - "/boot/system/preferences/gmake"
+      - "/boot/home/Dev/SuperMusicThingy/make"
+      - "/boot/home/config/non-packaged/bin/make"
+      - "/boot/home/config/bin/make"
+      - "/boot/home/config/apps/make"
+      - "/boot/system/non-packaged/bin/make"
+    found: "/bin/make"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompiler.cmake:73 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:64 (_cmake_find_compiler)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER"
+    description: "C compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "cc"
+      - "gcc"
+      - "cl"
+      - "bcc"
+      - "xlc"
+      - "icx"
+      - "clang"
+    candidate_directories:
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/boot/home/Dev/SuperMusicThingy/cc"
+      - "/boot/home/config/non-packaged/bin/cc"
+      - "/boot/home/config/bin/cc"
+      - "/boot/home/config/apps/cc"
+      - "/boot/system/non-packaged/bin/cc"
+    found: "/bin/cc"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "/boot/system/data/cmake/Modules/"
+    found: "/boot/system/data/cmake/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/4.1.5/CompilerIdC/a.out
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_AR"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ar"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/ar"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_RANLIB"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ranlib"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/ranlib"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_STRIP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "strip"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/strip"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_LINKER"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "ld"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/ld"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "nm"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/nm"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJDUMP"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objdump"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/objdump"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_OBJCOPY"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "objcopy"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/objcopy"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_READELF"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "readelf"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/readelf"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_DLLTOOL"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "dlltool"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/dlltool"
+      - "/boot/home/Dev/SuperMusicThingy/dlltool"
+      - "/boot/home/config/non-packaged/bin/dlltool"
+      - "/boot/home/config/bin/dlltool"
+      - "/boot/home/config/apps/dlltool"
+      - "/boot/system/non-packaged/bin/dlltool"
+      - "/boot/system/apps/dlltool"
+      - "/boot/system/preferences/dlltool"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_ADDR2LINE"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "addr2line"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    found: "/bin/addr2line"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeFindBinUtils.cmake:238 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_TAPI"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "tapi"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/tapi"
+      - "/boot/home/Dev/SuperMusicThingy/tapi"
+      - "/boot/home/config/non-packaged/bin/tapi"
+      - "/boot/home/config/bin/tapi"
+      - "/boot/home/config/apps/tapi"
+      - "/boot/system/non-packaged/bin/tapi"
+      - "/boot/system/apps/tapi"
+      - "/boot/system/preferences/tapi"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-13.3"
+      - "gcc-ar-13"
+      - "gcc-ar13"
+      - "gcc-ar"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/gcc-ar-13.3"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar-13.3"
+      - "/boot/home/config/non-packaged/bin/gcc-ar-13.3"
+      - "/boot/home/config/bin/gcc-ar-13.3"
+      - "/boot/home/config/apps/gcc-ar-13.3"
+      - "/boot/system/non-packaged/bin/gcc-ar-13.3"
+      - "/boot/system/apps/gcc-ar-13.3"
+      - "/boot/system/preferences/gcc-ar-13.3"
+      - "/bin/gcc-ar-13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar-13"
+      - "/boot/home/config/non-packaged/bin/gcc-ar-13"
+      - "/boot/home/config/bin/gcc-ar-13"
+      - "/boot/home/config/apps/gcc-ar-13"
+      - "/boot/system/non-packaged/bin/gcc-ar-13"
+      - "/boot/system/apps/gcc-ar-13"
+      - "/boot/system/preferences/gcc-ar-13"
+      - "/bin/gcc-ar13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar13"
+      - "/boot/home/config/non-packaged/bin/gcc-ar13"
+      - "/boot/home/config/bin/gcc-ar13"
+      - "/boot/home/config/apps/gcc-ar13"
+      - "/boot/system/non-packaged/bin/gcc-ar13"
+      - "/boot/system/apps/gcc-ar13"
+      - "/boot/system/preferences/gcc-ar13"
+    found: "/bin/gcc-ar"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCCompiler.cmake:201 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_C_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-13.3"
+      - "gcc-ranlib-13"
+      - "gcc-ranlib13"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/gcc-ranlib-13.3"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib-13.3"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib-13.3"
+      - "/boot/home/config/bin/gcc-ranlib-13.3"
+      - "/boot/home/config/apps/gcc-ranlib-13.3"
+      - "/boot/system/non-packaged/bin/gcc-ranlib-13.3"
+      - "/boot/system/apps/gcc-ranlib-13.3"
+      - "/boot/system/preferences/gcc-ranlib-13.3"
+      - "/bin/gcc-ranlib-13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib-13"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib-13"
+      - "/boot/home/config/bin/gcc-ranlib-13"
+      - "/boot/home/config/apps/gcc-ranlib-13"
+      - "/boot/system/non-packaged/bin/gcc-ranlib-13"
+      - "/boot/system/apps/gcc-ranlib-13"
+      - "/boot/system/preferences/gcc-ranlib-13"
+      - "/bin/gcc-ranlib13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib13"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib13"
+      - "/boot/home/config/bin/gcc-ranlib13"
+      - "/boot/home/config/apps/gcc-ranlib13"
+      - "/boot/system/non-packaged/bin/gcc-ranlib13"
+      - "/boot/system/apps/gcc-ranlib13"
+      - "/boot/system/preferences/gcc-ranlib13"
+    found: "/bin/gcc-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompiler.cmake:54 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCXXCompiler.cmake:69 (_cmake_find_compiler)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER"
+    description: "CXX compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CC"
+      - "c++"
+      - "g++"
+      - "aCC"
+      - "cl"
+      - "bcc"
+      - "xlC"
+      - "icpx"
+      - "icx"
+      - "clang++"
+    candidate_directories:
+      - "/bin/"
+    searched_directories:
+      - "/bin/CC"
+    found: "/bin/c++"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "/boot/system/data/cmake/Modules/"
+    found: "/boot/system/data/cmake/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/4.1.5/CompilerIdCXX/a.out
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:18 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_AR"
+    description: "A wrapper around 'ar' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ar-13.3"
+      - "gcc-ar-13"
+      - "gcc-ar13"
+      - "gcc-ar"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/gcc-ar-13.3"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar-13.3"
+      - "/boot/home/config/non-packaged/bin/gcc-ar-13.3"
+      - "/boot/home/config/bin/gcc-ar-13.3"
+      - "/boot/home/config/apps/gcc-ar-13.3"
+      - "/boot/system/non-packaged/bin/gcc-ar-13.3"
+      - "/boot/system/apps/gcc-ar-13.3"
+      - "/boot/system/preferences/gcc-ar-13.3"
+      - "/bin/gcc-ar-13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar-13"
+      - "/boot/home/config/non-packaged/bin/gcc-ar-13"
+      - "/boot/home/config/bin/gcc-ar-13"
+      - "/boot/home/config/apps/gcc-ar-13"
+      - "/boot/system/non-packaged/bin/gcc-ar-13"
+      - "/boot/system/apps/gcc-ar-13"
+      - "/boot/system/preferences/gcc-ar-13"
+      - "/bin/gcc-ar13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ar13"
+      - "/boot/home/config/non-packaged/bin/gcc-ar13"
+      - "/boot/home/config/bin/gcc-ar13"
+      - "/boot/home/config/apps/gcc-ar13"
+      - "/boot/system/non-packaged/bin/gcc-ar13"
+      - "/boot/system/apps/gcc-ar13"
+      - "/boot/system/preferences/gcc-ar13"
+    found: "/bin/gcc-ar"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:30 (find_program)"
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_RANLIB"
+    description: "A wrapper around 'ranlib' adding the appropriate '--plugin' option for the GCC compiler"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gcc-ranlib-13.3"
+      - "gcc-ranlib-13"
+      - "gcc-ranlib13"
+      - "gcc-ranlib"
+    candidate_directories:
+      - "/bin/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+    searched_directories:
+      - "/bin/gcc-ranlib-13.3"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib-13.3"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib-13.3"
+      - "/boot/home/config/bin/gcc-ranlib-13.3"
+      - "/boot/home/config/apps/gcc-ranlib-13.3"
+      - "/boot/system/non-packaged/bin/gcc-ranlib-13.3"
+      - "/boot/system/apps/gcc-ranlib-13.3"
+      - "/boot/system/preferences/gcc-ranlib-13.3"
+      - "/bin/gcc-ranlib-13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib-13"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib-13"
+      - "/boot/home/config/bin/gcc-ranlib-13"
+      - "/boot/home/config/apps/gcc-ranlib-13"
+      - "/boot/system/non-packaged/bin/gcc-ranlib-13"
+      - "/boot/system/apps/gcc-ranlib-13"
+      - "/boot/system/preferences/gcc-ranlib-13"
+      - "/bin/gcc-ranlib13"
+      - "/boot/home/Dev/SuperMusicThingy/gcc-ranlib13"
+      - "/boot/home/config/non-packaged/bin/gcc-ranlib13"
+      - "/boot/home/config/bin/gcc-ranlib13"
+      - "/boot/home/config/apps/gcc-ranlib13"
+      - "/boot/system/non-packaged/bin/gcc-ranlib13"
+      - "/boot/system/apps/gcc-ranlib13"
+      - "/boot/system/preferences/gcc-ranlib13"
+    found: "/bin/gcc-ranlib"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw"
+      binary: "/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw'
+        
+        Run Build Command(s): /bin/cmake -E env VERBOSE=1 /bin/make -f Makefile cmTC_a511d/fast
+        /bin/make  -f CMakeFiles/cmTC_a511d.dir/build.make CMakeFiles/cmTC_a511d.dir/build
+        make[1]: Entering directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw'
+        Building C object CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o
+        /bin/cc   -v -o CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -c /boot/system/data/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/bin/cc
+        Target: x86_64-unknown-haiku
+        Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib
+        Thread model: posix
+        Supported LTO compression algorithms: zlib
+        gcc version 13.3.0 (2023_08_10) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/cc1 -quiet -v -iprefix /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/ /boot/system/data/cmake/Modules/CMakeCCompilerABI.c -fPIC -Wno-multichar -fno-omit-frame-pointer -quiet -dumpdir CMakeFiles/cmTC_a511d.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp//cc6zrpbT.s
+        GNU C17 (2023_08_10) version 13.3.0 (x86_64-unknown-haiku)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.0, MPC version 1.2.1, isl version none
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed"
+        ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"
+        ignoring nonexistent directory "/boot/system/non-packaged/develop/headers"
+        ignoring nonexistent directory "/boot/system/develop/headers/os/be_apps/Deskbar"
+        ignoring nonexistent directory "/boot/system/develop/headers/3rdparty"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed
+         /boot/system/develop/headers/os
+         /boot/system/develop/headers/os/app
+         /boot/system/develop/headers/os/device
+         /boot/system/develop/headers/os/drivers
+         /boot/system/develop/headers/os/game
+         /boot/system/develop/headers/os/interface
+         /boot/system/develop/headers/os/kernel
+         /boot/system/develop/headers/os/locale
+         /boot/system/develop/headers/os/mail
+         /boot/system/develop/headers/os/media
+         /boot/system/develop/headers/os/midi
+         /boot/system/develop/headers/os/midi2
+         /boot/system/develop/headers/os/net
+         /boot/system/develop/headers/os/opengl
+         /boot/system/develop/headers/os/storage
+         /boot/system/develop/headers/os/support
+         /boot/system/develop/headers/os/translation
+         /boot/system/develop/headers/os/add-ons/graphics
+         /boot/system/develop/headers/os/add-ons/input_server
+         /boot/system/develop/headers/os/add-ons/mail_daemon
+         /boot/system/develop/headers/os/add-ons/registrar
+         /boot/system/develop/headers/os/add-ons/screen_saver
+         /boot/system/develop/headers/os/add-ons/tracker
+         /boot/system/develop/headers/os/be_apps/NetPositive
+         /boot/system/develop/headers/os/be_apps/Tracker
+         /boot/system/develop/headers/bsd
+         /boot/system/develop/headers/glibc
+         /boot/system/develop/headers/gnu
+         /boot/system/develop/headers/posix
+         /boot/system/develop/headers
+        End of search list.
+        Compiler executable checksum: 1f4ec07baa0b8a24af1da5dc0192f767
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/as -v -V -Qy --64 -o CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o /tmp//cc6zrpbT.s
+        GNU assembler version 2.45.1 (x86_64-unknown-haiku) using BFD version (GNU Binutils) 2.45.1
+        COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/
+        BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_a511d
+        /bin/cmake -E cmake_link_script CMakeFiles/cmTC_a511d.dir/link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=/bin/cc
+        COLLECT_LTO_WRAPPER=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper
+        Target: x86_64-unknown-haiku
+        Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib
+        Thread model: posix
+        Supported LTO compression algorithms: zlib
+        gcc version 13.3.0 (2023_08_10) 
+        COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/
+        BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a511d' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_a511d.'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2 -plugin /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so -plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp//ccXhzyR4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lroot -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64_haiku -shared -no-undefined -o cmTC_a511d /boot/system/develop/lib/crti.o /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o /boot/system/develop/lib/start_dyn.o /boot/system/develop/lib/init_term_dyn.o -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0 -L/boot/system/develop/tools/bin/../lib/gcc -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../.. -L/boot/system/develop/lib CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lroot -lgcc --push-state --as-needed -lgcc_s --pop-state /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o /boot/system/develop/lib/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a511d' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_a511d.'
+        /bin/cc  -v CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -o cmTC_a511d
+        make[1]: Leaving directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+          add: [/boot/system/develop/headers/os]
+          add: [/boot/system/develop/headers/os/app]
+          add: [/boot/system/develop/headers/os/device]
+          add: [/boot/system/develop/headers/os/drivers]
+          add: [/boot/system/develop/headers/os/game]
+          add: [/boot/system/develop/headers/os/interface]
+          add: [/boot/system/develop/headers/os/kernel]
+          add: [/boot/system/develop/headers/os/locale]
+          add: [/boot/system/develop/headers/os/mail]
+          add: [/boot/system/develop/headers/os/media]
+          add: [/boot/system/develop/headers/os/midi]
+          add: [/boot/system/develop/headers/os/midi2]
+          add: [/boot/system/develop/headers/os/net]
+          add: [/boot/system/develop/headers/os/opengl]
+          add: [/boot/system/develop/headers/os/storage]
+          add: [/boot/system/develop/headers/os/support]
+          add: [/boot/system/develop/headers/os/translation]
+          add: [/boot/system/develop/headers/os/add-ons/graphics]
+          add: [/boot/system/develop/headers/os/add-ons/input_server]
+          add: [/boot/system/develop/headers/os/add-ons/mail_daemon]
+          add: [/boot/system/develop/headers/os/add-ons/registrar]
+          add: [/boot/system/develop/headers/os/add-ons/screen_saver]
+          add: [/boot/system/develop/headers/os/add-ons/tracker]
+          add: [/boot/system/develop/headers/os/be_apps/NetPositive]
+          add: [/boot/system/develop/headers/os/be_apps/Tracker]
+          add: [/boot/system/develop/headers/bsd]
+          add: [/boot/system/develop/headers/glibc]
+          add: [/boot/system/develop/headers/gnu]
+          add: [/boot/system/develop/headers/posix]
+          add: [/boot/system/develop/headers]
+        end of search list found
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+        collapse include dir [/boot/system/develop/headers/os] ==> [/boot/system/develop/headers/os]
+        collapse include dir [/boot/system/develop/headers/os/app] ==> [/boot/system/develop/headers/os/app]
+        collapse include dir [/boot/system/develop/headers/os/device] ==> [/boot/system/develop/headers/os/device]
+        collapse include dir [/boot/system/develop/headers/os/drivers] ==> [/boot/system/develop/headers/os/drivers]
+        collapse include dir [/boot/system/develop/headers/os/game] ==> [/boot/system/develop/headers/os/game]
+        collapse include dir [/boot/system/develop/headers/os/interface] ==> [/boot/system/develop/headers/os/interface]
+        collapse include dir [/boot/system/develop/headers/os/kernel] ==> [/boot/system/develop/headers/os/kernel]
+        collapse include dir [/boot/system/develop/headers/os/locale] ==> [/boot/system/develop/headers/os/locale]
+        collapse include dir [/boot/system/develop/headers/os/mail] ==> [/boot/system/develop/headers/os/mail]
+        collapse include dir [/boot/system/develop/headers/os/media] ==> [/boot/system/develop/headers/os/media]
+        collapse include dir [/boot/system/develop/headers/os/midi] ==> [/boot/system/develop/headers/os/midi]
+        collapse include dir [/boot/system/develop/headers/os/midi2] ==> [/boot/system/develop/headers/os/midi2]
+        collapse include dir [/boot/system/develop/headers/os/net] ==> [/boot/system/develop/headers/os/net]
+        collapse include dir [/boot/system/develop/headers/os/opengl] ==> [/boot/system/develop/headers/os/opengl]
+        collapse include dir [/boot/system/develop/headers/os/storage] ==> [/boot/system/develop/headers/os/storage]
+        collapse include dir [/boot/system/develop/headers/os/support] ==> [/boot/system/develop/headers/os/support]
+        collapse include dir [/boot/system/develop/headers/os/translation] ==> [/boot/system/develop/headers/os/translation]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/graphics] ==> [/boot/system/develop/headers/os/add-ons/graphics]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/input_server] ==> [/boot/system/develop/headers/os/add-ons/input_server]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/mail_daemon] ==> [/boot/system/develop/headers/os/add-ons/mail_daemon]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/registrar] ==> [/boot/system/develop/headers/os/add-ons/registrar]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/screen_saver] ==> [/boot/system/develop/headers/os/add-ons/screen_saver]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/tracker] ==> [/boot/system/develop/headers/os/add-ons/tracker]
+        collapse include dir [/boot/system/develop/headers/os/be_apps/NetPositive] ==> [/boot/system/develop/headers/os/be_apps/NetPositive]
+        collapse include dir [/boot/system/develop/headers/os/be_apps/Tracker] ==> [/boot/system/develop/headers/os/be_apps/Tracker]
+        collapse include dir [/boot/system/develop/headers/bsd] ==> [/boot/system/develop/headers/bsd]
+        collapse include dir [/boot/system/develop/headers/glibc] ==> [/boot/system/develop/headers/glibc]
+        collapse include dir [/boot/system/develop/headers/gnu] ==> [/boot/system/develop/headers/gnu]
+        collapse include dir [/boot/system/develop/headers/posix] ==> [/boot/system/develop/headers/posix]
+        collapse include dir [/boot/system/develop/headers] ==> [/boot/system/develop/headers]
+        implicit include dirs: [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed;/boot/system/develop/headers/os;/boot/system/develop/headers/os/app;/boot/system/develop/headers/os/device;/boot/system/develop/headers/os/drivers;/boot/system/develop/headers/os/game;/boot/system/develop/headers/os/interface;/boot/system/develop/headers/os/kernel;/boot/system/develop/headers/os/locale;/boot/system/develop/headers/os/mail;/boot/system/develop/headers/os/media;/boot/system/develop/headers/os/midi;/boot/system/develop/headers/os/midi2;/boot/system/develop/headers/os/net;/boot/system/develop/headers/os/opengl;/boot/system/develop/headers/os/storage;/boot/system/develop/headers/os/support;/boot/system/develop/headers/os/translation;/boot/system/develop/headers/os/add-ons/graphics;/boot/system/develop/headers/os/add-ons/input_server;/boot/system/develop/headers/os/add-ons/mail_daemon;/boot/system/develop/headers/os/add-ons/registrar;/boot/system/develop/headers/os/add-ons/screen_saver;/boot/system/develop/headers/os/add-ons/tracker;/boot/system/develop/headers/os/be_apps/NetPositive;/boot/system/develop/headers/os/be_apps/Tracker;/boot/system/develop/headers/bsd;/boot/system/develop/headers/glibc;/boot/system/develop/headers/gnu;/boot/system/develop/headers/posix;/boot/system/develop/headers]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw']
+        ignore line: []
+        ignore line: [Run Build Command(s): /bin/cmake -E env VERBOSE=1 /bin/make -f Makefile cmTC_a511d/fast]
+        ignore line: [/bin/make  -f CMakeFiles/cmTC_a511d.dir/build.make CMakeFiles/cmTC_a511d.dir/build]
+        ignore line: [make[1]: Entering directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw']
+        ignore line: [Building C object CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/bin/cc   -v -o CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -c /boot/system/data/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/bin/cc]
+        ignore line: [Target: x86_64-unknown-haiku]
+        ignore line: [Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 13.3.0 (2023_08_10) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/']
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/cc1 -quiet -v -iprefix /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/ /boot/system/data/cmake/Modules/CMakeCCompilerABI.c -fPIC -Wno-multichar -fno-omit-frame-pointer -quiet -dumpdir CMakeFiles/cmTC_a511d.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp//cc6zrpbT.s]
+        ignore line: [GNU C17 (2023_08_10) version 13.3.0 (x86_64-unknown-haiku)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.0  MPC version 1.2.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"]
+        ignore line: [ignoring nonexistent directory "/boot/system/non-packaged/develop/headers"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/headers/os/be_apps/Deskbar"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/headers/3rdparty"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+        ignore line: [ /boot/system/develop/headers/os]
+        ignore line: [ /boot/system/develop/headers/os/app]
+        ignore line: [ /boot/system/develop/headers/os/device]
+        ignore line: [ /boot/system/develop/headers/os/drivers]
+        ignore line: [ /boot/system/develop/headers/os/game]
+        ignore line: [ /boot/system/develop/headers/os/interface]
+        ignore line: [ /boot/system/develop/headers/os/kernel]
+        ignore line: [ /boot/system/develop/headers/os/locale]
+        ignore line: [ /boot/system/develop/headers/os/mail]
+        ignore line: [ /boot/system/develop/headers/os/media]
+        ignore line: [ /boot/system/develop/headers/os/midi]
+        ignore line: [ /boot/system/develop/headers/os/midi2]
+        ignore line: [ /boot/system/develop/headers/os/net]
+        ignore line: [ /boot/system/develop/headers/os/opengl]
+        ignore line: [ /boot/system/develop/headers/os/storage]
+        ignore line: [ /boot/system/develop/headers/os/support]
+        ignore line: [ /boot/system/develop/headers/os/translation]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/graphics]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/input_server]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/mail_daemon]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/registrar]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/screen_saver]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/tracker]
+        ignore line: [ /boot/system/develop/headers/os/be_apps/NetPositive]
+        ignore line: [ /boot/system/develop/headers/os/be_apps/Tracker]
+        ignore line: [ /boot/system/develop/headers/bsd]
+        ignore line: [ /boot/system/develop/headers/glibc]
+        ignore line: [ /boot/system/develop/headers/gnu]
+        ignore line: [ /boot/system/develop/headers/posix]
+        ignore line: [ /boot/system/develop/headers]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 1f4ec07baa0b8a24af1da5dc0192f767]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/']
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/as -v -V -Qy --64 -o CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o /tmp//cc6zrpbT.s]
+        ignore line: [GNU assembler version 2.45.1 (x86_64-unknown-haiku) using BFD version (GNU Binutils) 2.45.1]
+        ignore line: [COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/]
+        ignore line: [BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_a511d]
+        ignore line: [/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a511d.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper]
+        ignore line: [Target: x86_64-unknown-haiku]
+        ignore line: [Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 13.3.0 (2023_08_10) ]
+        ignore line: [COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/]
+        ignore line: [BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a511d' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_a511d.']
+        link line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2 -plugin /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so -plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp//ccXhzyR4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lroot -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64_haiku -shared -no-undefined -o cmTC_a511d /boot/system/develop/lib/crti.o /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o /boot/system/develop/lib/start_dyn.o /boot/system/develop/lib/init_term_dyn.o -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0 -L/boot/system/develop/tools/bin/../lib/gcc -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../.. -L/boot/system/develop/lib CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lroot -lgcc --push-state --as-needed -lgcc_s --pop-state /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o /boot/system/develop/lib/crtn.o]
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp//ccXhzyR4.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lroot] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64_haiku] ==> ignore
+          arg [-shared] ==> ignore
+          arg [-no-undefined] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_a511d] ==> ignore
+          arg [/boot/system/develop/lib/crti.o] ==> obj [/boot/system/develop/lib/crti.o]
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o] ==> obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o]
+          arg [/boot/system/develop/lib/start_dyn.o] ==> obj [/boot/system/develop/lib/start_dyn.o]
+          arg [/boot/system/develop/lib/init_term_dyn.o] ==> obj [/boot/system/develop/lib/init_term_dyn.o]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc] ==> dir [/boot/system/develop/tools/bin/../lib/gcc]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..]
+          arg [-L/boot/system/develop/lib] ==> dir [/boot/system/develop/lib]
+          arg [CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lroot] ==> lib [root]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o] ==> obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o]
+          arg [/boot/system/develop/lib/crtn.o] ==> obj [/boot/system/develop/lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a511d' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_a511d.']
+        ignore line: [/bin/cc  -v CMakeFiles/cmTC_a511d.dir/CMakeCCompilerABI.c.o -o cmTC_a511d]
+        ignore line: [make[1]: Leaving directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-rRIhZw']
+        ignore line: []
+        ignore line: []
+        collapse obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o]
+        collapse obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc] ==> [/boot/system/develop/tools/lib/gcc]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib] ==> [/boot/system/develop/tools/x86_64-unknown-haiku/lib]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..] ==> [/boot/system/develop/tools/lib]
+        collapse library dir [/boot/system/develop/lib] ==> [/boot/system/develop/lib]
+        implicit libs: [gcc;gcc_s;root;gcc;gcc_s]
+        implicit objs: [/boot/system/develop/lib/crti.o;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o;/boot/system/develop/lib/start_dyn.o;/boot/system/develop/lib/init_term_dyn.o;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o;/boot/system/develop/lib/crtn.o]
+        implicit dirs: [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0;/boot/system/develop/tools/lib/gcc;/boot/system/develop/tools/x86_64-unknown-haiku/lib;/boot/system/develop/tools/lib;/boot/system/develop/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ"
+      binary: "/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ'
+        
+        Run Build Command(s): /bin/cmake -E env VERBOSE=1 /bin/make -f Makefile cmTC_5ae28/fast
+        /bin/make  -f CMakeFiles/cmTC_5ae28.dir/build.make CMakeFiles/cmTC_5ae28.dir/build
+        make[1]: Entering directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ'
+        Building CXX object CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o
+        /bin/c++   -v -o CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -c /boot/system/data/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/bin/c++
+        Target: x86_64-unknown-haiku
+        Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib
+        Thread model: posix
+        Supported LTO compression algorithms: zlib
+        gcc version 13.3.0 (2023_08_10) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/cc1plus -quiet -v -iprefix /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/ /boot/system/data/cmake/Modules/CMakeCXXCompilerABI.cpp -fPIC -Wno-multichar -fno-omit-frame-pointer -quiet -dumpdir CMakeFiles/cmTC_5ae28.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -Wno-ctor-dtor-privacy -o /tmp//ccqmzqXP.s
+        GNU C++17 (2023_08_10) version 13.3.0 (x86_64-unknown-haiku)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.0, MPC version 1.2.1, isl version none
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include"
+        ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed"
+        ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"
+        ignoring nonexistent directory "/boot/system/non-packaged/develop/headers"
+        ignoring nonexistent directory "/boot/system/develop/headers/os/be_apps/Deskbar"
+        ignoring nonexistent directory "/boot/system/develop/headers/3rdparty"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed
+         /boot/system/develop/headers/os
+         /boot/system/develop/headers/os/app
+         /boot/system/develop/headers/os/device
+         /boot/system/develop/headers/os/drivers
+         /boot/system/develop/headers/os/game
+         /boot/system/develop/headers/os/interface
+         /boot/system/develop/headers/os/kernel
+         /boot/system/develop/headers/os/locale
+         /boot/system/develop/headers/os/mail
+         /boot/system/develop/headers/os/media
+         /boot/system/develop/headers/os/midi
+         /boot/system/develop/headers/os/midi2
+         /boot/system/develop/headers/os/net
+         /boot/system/develop/headers/os/opengl
+         /boot/system/develop/headers/os/storage
+         /boot/system/develop/headers/os/support
+         /boot/system/develop/headers/os/translation
+         /boot/system/develop/headers/os/add-ons/graphics
+         /boot/system/develop/headers/os/add-ons/input_server
+         /boot/system/develop/headers/os/add-ons/mail_daemon
+         /boot/system/develop/headers/os/add-ons/registrar
+         /boot/system/develop/headers/os/add-ons/screen_saver
+         /boot/system/develop/headers/os/add-ons/tracker
+         /boot/system/develop/headers/os/be_apps/NetPositive
+         /boot/system/develop/headers/os/be_apps/Tracker
+         /boot/system/develop/headers/bsd
+         /boot/system/develop/headers/glibc
+         /boot/system/develop/headers/gnu
+         /boot/system/develop/headers/posix
+         /boot/system/develop/headers
+        End of search list.
+        Compiler executable checksum: db6f05ef68b9c3d66d7b5f6b0b8be62d
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/as -v -V -Qy --64 -o CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o /tmp//ccqmzqXP.s
+        GNU assembler version 2.45.1 (x86_64-unknown-haiku) using BFD version (GNU Binutils) 2.45.1
+        COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/
+        BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_5ae28
+        /bin/cmake -E cmake_link_script CMakeFiles/cmTC_5ae28.dir/link.txt --verbose=1
+        Using built-in specs.
+        COLLECT_GCC=/bin/c++
+        COLLECT_LTO_WRAPPER=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper
+        Target: x86_64-unknown-haiku
+        Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib
+        Thread model: posix
+        Supported LTO compression algorithms: zlib
+        gcc version 13.3.0 (2023_08_10) 
+        COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/
+        BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ae28' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5ae28.'
+         /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2 -plugin /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so -plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp//ccnYrdEU.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lroot -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64_haiku -shared -no-undefined -o cmTC_5ae28 /boot/system/develop/lib/crti.o /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o /boot/system/develop/lib/start_dyn.o /boot/system/develop/lib/init_term_dyn.o -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0 -L/boot/system/develop/tools/bin/../lib/gcc -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../.. -L/boot/system/develop/lib CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lgcc_s -lgcc -lroot -lgcc_s -lgcc /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o /boot/system/develop/lib/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ae28' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5ae28.'
+        /bin/c++  -v CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_5ae28
+        make[1]: Leaving directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:217 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++]
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku]
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward]
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+          add: [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+          add: [/boot/system/develop/headers/os]
+          add: [/boot/system/develop/headers/os/app]
+          add: [/boot/system/develop/headers/os/device]
+          add: [/boot/system/develop/headers/os/drivers]
+          add: [/boot/system/develop/headers/os/game]
+          add: [/boot/system/develop/headers/os/interface]
+          add: [/boot/system/develop/headers/os/kernel]
+          add: [/boot/system/develop/headers/os/locale]
+          add: [/boot/system/develop/headers/os/mail]
+          add: [/boot/system/develop/headers/os/media]
+          add: [/boot/system/develop/headers/os/midi]
+          add: [/boot/system/develop/headers/os/midi2]
+          add: [/boot/system/develop/headers/os/net]
+          add: [/boot/system/develop/headers/os/opengl]
+          add: [/boot/system/develop/headers/os/storage]
+          add: [/boot/system/develop/headers/os/support]
+          add: [/boot/system/develop/headers/os/translation]
+          add: [/boot/system/develop/headers/os/add-ons/graphics]
+          add: [/boot/system/develop/headers/os/add-ons/input_server]
+          add: [/boot/system/develop/headers/os/add-ons/mail_daemon]
+          add: [/boot/system/develop/headers/os/add-ons/registrar]
+          add: [/boot/system/develop/headers/os/add-ons/screen_saver]
+          add: [/boot/system/develop/headers/os/add-ons/tracker]
+          add: [/boot/system/develop/headers/os/be_apps/NetPositive]
+          add: [/boot/system/develop/headers/os/be_apps/Tracker]
+          add: [/boot/system/develop/headers/bsd]
+          add: [/boot/system/develop/headers/glibc]
+          add: [/boot/system/develop/headers/gnu]
+          add: [/boot/system/develop/headers/posix]
+          add: [/boot/system/develop/headers]
+        end of search list found
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++]
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku]
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward]
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+        collapse include dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+        collapse include dir [/boot/system/develop/headers/os] ==> [/boot/system/develop/headers/os]
+        collapse include dir [/boot/system/develop/headers/os/app] ==> [/boot/system/develop/headers/os/app]
+        collapse include dir [/boot/system/develop/headers/os/device] ==> [/boot/system/develop/headers/os/device]
+        collapse include dir [/boot/system/develop/headers/os/drivers] ==> [/boot/system/develop/headers/os/drivers]
+        collapse include dir [/boot/system/develop/headers/os/game] ==> [/boot/system/develop/headers/os/game]
+        collapse include dir [/boot/system/develop/headers/os/interface] ==> [/boot/system/develop/headers/os/interface]
+        collapse include dir [/boot/system/develop/headers/os/kernel] ==> [/boot/system/develop/headers/os/kernel]
+        collapse include dir [/boot/system/develop/headers/os/locale] ==> [/boot/system/develop/headers/os/locale]
+        collapse include dir [/boot/system/develop/headers/os/mail] ==> [/boot/system/develop/headers/os/mail]
+        collapse include dir [/boot/system/develop/headers/os/media] ==> [/boot/system/develop/headers/os/media]
+        collapse include dir [/boot/system/develop/headers/os/midi] ==> [/boot/system/develop/headers/os/midi]
+        collapse include dir [/boot/system/develop/headers/os/midi2] ==> [/boot/system/develop/headers/os/midi2]
+        collapse include dir [/boot/system/develop/headers/os/net] ==> [/boot/system/develop/headers/os/net]
+        collapse include dir [/boot/system/develop/headers/os/opengl] ==> [/boot/system/develop/headers/os/opengl]
+        collapse include dir [/boot/system/develop/headers/os/storage] ==> [/boot/system/develop/headers/os/storage]
+        collapse include dir [/boot/system/develop/headers/os/support] ==> [/boot/system/develop/headers/os/support]
+        collapse include dir [/boot/system/develop/headers/os/translation] ==> [/boot/system/develop/headers/os/translation]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/graphics] ==> [/boot/system/develop/headers/os/add-ons/graphics]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/input_server] ==> [/boot/system/develop/headers/os/add-ons/input_server]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/mail_daemon] ==> [/boot/system/develop/headers/os/add-ons/mail_daemon]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/registrar] ==> [/boot/system/develop/headers/os/add-ons/registrar]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/screen_saver] ==> [/boot/system/develop/headers/os/add-ons/screen_saver]
+        collapse include dir [/boot/system/develop/headers/os/add-ons/tracker] ==> [/boot/system/develop/headers/os/add-ons/tracker]
+        collapse include dir [/boot/system/develop/headers/os/be_apps/NetPositive] ==> [/boot/system/develop/headers/os/be_apps/NetPositive]
+        collapse include dir [/boot/system/develop/headers/os/be_apps/Tracker] ==> [/boot/system/develop/headers/os/be_apps/Tracker]
+        collapse include dir [/boot/system/develop/headers/bsd] ==> [/boot/system/develop/headers/bsd]
+        collapse include dir [/boot/system/develop/headers/glibc] ==> [/boot/system/develop/headers/glibc]
+        collapse include dir [/boot/system/develop/headers/gnu] ==> [/boot/system/develop/headers/gnu]
+        collapse include dir [/boot/system/develop/headers/posix] ==> [/boot/system/develop/headers/posix]
+        collapse include dir [/boot/system/develop/headers] ==> [/boot/system/develop/headers]
+        implicit include dirs: [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed;/boot/system/develop/headers/os;/boot/system/develop/headers/os/app;/boot/system/develop/headers/os/device;/boot/system/develop/headers/os/drivers;/boot/system/develop/headers/os/game;/boot/system/develop/headers/os/interface;/boot/system/develop/headers/os/kernel;/boot/system/develop/headers/os/locale;/boot/system/develop/headers/os/mail;/boot/system/develop/headers/os/media;/boot/system/develop/headers/os/midi;/boot/system/develop/headers/os/midi2;/boot/system/develop/headers/os/net;/boot/system/develop/headers/os/opengl;/boot/system/develop/headers/os/storage;/boot/system/develop/headers/os/support;/boot/system/develop/headers/os/translation;/boot/system/develop/headers/os/add-ons/graphics;/boot/system/develop/headers/os/add-ons/input_server;/boot/system/develop/headers/os/add-ons/mail_daemon;/boot/system/develop/headers/os/add-ons/registrar;/boot/system/develop/headers/os/add-ons/screen_saver;/boot/system/develop/headers/os/add-ons/tracker;/boot/system/develop/headers/os/be_apps/NetPositive;/boot/system/develop/headers/os/be_apps/Tracker;/boot/system/develop/headers/bsd;/boot/system/develop/headers/glibc;/boot/system/develop/headers/gnu;/boot/system/develop/headers/posix;/boot/system/develop/headers]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "/boot/system/data/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
+        ignore line: [Change Dir: '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ']
+        ignore line: []
+        ignore line: [Run Build Command(s): /bin/cmake -E env VERBOSE=1 /bin/make -f Makefile cmTC_5ae28/fast]
+        ignore line: [/bin/make  -f CMakeFiles/cmTC_5ae28.dir/build.make CMakeFiles/cmTC_5ae28.dir/build]
+        ignore line: [make[1]: Entering directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ']
+        ignore line: [Building CXX object CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/bin/c++   -v -o CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -c /boot/system/data/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/bin/c++]
+        ignore line: [Target: x86_64-unknown-haiku]
+        ignore line: [Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 13.3.0 (2023_08_10) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/']
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/cc1plus -quiet -v -iprefix /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/ /boot/system/data/cmake/Modules/CMakeCXXCompilerABI.cpp -fPIC -Wno-multichar -fno-omit-frame-pointer -quiet -dumpdir CMakeFiles/cmTC_5ae28.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -Wno-ctor-dtor-privacy -o /tmp//ccqmzqXP.s]
+        ignore line: [GNU C++17 (2023_08_10) version 13.3.0 (x86_64-unknown-haiku)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.0  MPC version 1.2.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include"]
+        ignore line: [ignoring duplicate directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/tools/bin/../lib/gcc/../../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/include"]
+        ignore line: [ignoring nonexistent directory "/boot/system/non-packaged/develop/headers"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/headers/os/be_apps/Deskbar"]
+        ignore line: [ignoring nonexistent directory "/boot/system/develop/headers/3rdparty"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/x86_64-unknown-haiku]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include/c++/backward]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include]
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/include-fixed]
+        ignore line: [ /boot/system/develop/headers/os]
+        ignore line: [ /boot/system/develop/headers/os/app]
+        ignore line: [ /boot/system/develop/headers/os/device]
+        ignore line: [ /boot/system/develop/headers/os/drivers]
+        ignore line: [ /boot/system/develop/headers/os/game]
+        ignore line: [ /boot/system/develop/headers/os/interface]
+        ignore line: [ /boot/system/develop/headers/os/kernel]
+        ignore line: [ /boot/system/develop/headers/os/locale]
+        ignore line: [ /boot/system/develop/headers/os/mail]
+        ignore line: [ /boot/system/develop/headers/os/media]
+        ignore line: [ /boot/system/develop/headers/os/midi]
+        ignore line: [ /boot/system/develop/headers/os/midi2]
+        ignore line: [ /boot/system/develop/headers/os/net]
+        ignore line: [ /boot/system/develop/headers/os/opengl]
+        ignore line: [ /boot/system/develop/headers/os/storage]
+        ignore line: [ /boot/system/develop/headers/os/support]
+        ignore line: [ /boot/system/develop/headers/os/translation]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/graphics]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/input_server]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/mail_daemon]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/registrar]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/screen_saver]
+        ignore line: [ /boot/system/develop/headers/os/add-ons/tracker]
+        ignore line: [ /boot/system/develop/headers/os/be_apps/NetPositive]
+        ignore line: [ /boot/system/develop/headers/os/be_apps/Tracker]
+        ignore line: [ /boot/system/develop/headers/bsd]
+        ignore line: [ /boot/system/develop/headers/glibc]
+        ignore line: [ /boot/system/develop/headers/gnu]
+        ignore line: [ /boot/system/develop/headers/posix]
+        ignore line: [ /boot/system/develop/headers]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: db6f05ef68b9c3d66d7b5f6b0b8be62d]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/']
+        ignore line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/as -v -V -Qy --64 -o CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o /tmp//ccqmzqXP.s]
+        ignore line: [GNU assembler version 2.45.1 (x86_64-unknown-haiku) using BFD version (GNU Binutils) 2.45.1]
+        ignore line: [COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/]
+        ignore line: [BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_5ae28]
+        ignore line: [/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5ae28.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper]
+        ignore line: [Target: x86_64-unknown-haiku]
+        ignore line: [Configured with: /sources/gcc-13.3.0/configure --build=x86_64-unknown-haiku --prefix=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools --libexecdir=/packages/gcc-13.3.0_2023_08_10-6/.self/develop/tools/lib --mandir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/man --docdir=/packages/gcc-13.3.0_2023_08_10-6/.self/documentation/packages/gcc --enable-threads=posix --disable-nls --enable-shared --with-gnu-ld --with-gnu-as --enable-version-specific-runtime-libs --enable-languages=c,c++,fortran,jit,objc --enable-lto --enable-frame-pointer --with-pkgversion=2023_08_10 --enable-__cxa-atexit --with-system-zlib --enable-checking=release --with-bug-url=http://dev.haiku-os.org/ --with-default-libstdcxx-abi=gcc4-compatible --enable-libssp --enable-libsanitizer --enable-host-shared --disable-multilib]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib]
+        ignore line: [gcc version 13.3.0 (2023_08_10) ]
+        ignore line: [COMPILER_PATH=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/bin/]
+        ignore line: [BELIBRARIES=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/:/boot/system/develop/tools/bin/../lib/gcc/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib/:/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../:/boot/system/develop/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ae28' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5ae28.']
+        link line: [ /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2 -plugin /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so -plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp//ccnYrdEU.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lroot -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64_haiku -shared -no-undefined -o cmTC_5ae28 /boot/system/develop/lib/crti.o /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o /boot/system/develop/lib/start_dyn.o /boot/system/develop/lib/init_term_dyn.o -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0 -L/boot/system/develop/tools/bin/../lib/gcc -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib -L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../.. -L/boot/system/develop/lib CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lgcc_s -lgcc -lroot -lgcc_s -lgcc /boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o /boot/system/develop/lib/crtn.o]
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp//ccnYrdEU.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lroot] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64_haiku] ==> ignore
+          arg [-shared] ==> ignore
+          arg [-no-undefined] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_5ae28] ==> ignore
+          arg [/boot/system/develop/lib/crti.o] ==> obj [/boot/system/develop/lib/crti.o]
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o] ==> obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o]
+          arg [/boot/system/develop/lib/start_dyn.o] ==> obj [/boot/system/develop/lib/start_dyn.o]
+          arg [/boot/system/develop/lib/init_term_dyn.o] ==> obj [/boot/system/develop/lib/init_term_dyn.o]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc] ==> dir [/boot/system/develop/tools/bin/../lib/gcc]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib]
+          arg [-L/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..] ==> dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..]
+          arg [-L/boot/system/develop/lib] ==> dir [/boot/system/develop/lib]
+          arg [CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lroot] ==> lib [root]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o] ==> obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o]
+          arg [/boot/system/develop/lib/crtn.o] ==> obj [/boot/system/develop/lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ae28' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5ae28.']
+        ignore line: [/bin/c++  -v CMakeFiles/cmTC_5ae28.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_5ae28]
+        ignore line: [make[1]: Leaving directory '/boot/home/Dev/SuperMusicThingy/build_SuperMusicThingyNebula/CMakeFiles/CMakeScratch/TryCompile-DS1KsQ']
+        ignore line: []
+        ignore line: []
+        collapse obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o]
+        collapse obj [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0] ==> [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc] ==> [/boot/system/develop/tools/lib/gcc]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../../../x86_64-unknown-haiku/lib] ==> [/boot/system/develop/tools/x86_64-unknown-haiku/lib]
+        collapse library dir [/boot/system/develop/tools/bin/../lib/gcc/x86_64-unknown-haiku/13.3.0/../../..] ==> [/boot/system/develop/tools/lib]
+        collapse library dir [/boot/system/develop/lib] ==> [/boot/system/develop/lib]
+        implicit libs: [stdc++;gcc_s;gcc;root;gcc_s;gcc]
+        implicit objs: [/boot/system/develop/lib/crti.o;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtbeginS.o;/boot/system/develop/lib/start_dyn.o;/boot/system/develop/lib/init_term_dyn.o;/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0/crtendS.o;/boot/system/develop/lib/crtn.o]
+        implicit dirs: [/boot/system/develop/tools/lib/gcc/x86_64-unknown-haiku/13.3.0;/boot/system/develop/tools/lib/gcc;/boot/system/develop/tools/x86_64-unknown-haiku/lib;/boot/system/develop/tools/lib;/boot/system/develop/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:69 (find_program)"
+      - "CMakeLists.txt:33 (find_package)"
+    mode: "program"
+    variable: "PKG_CONFIG_EXECUTABLE"
+    description: "pkg-config executable"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "pkg-config"
+      - "pkgconf"
+    candidate_directories:
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/bin/"
+      - "/boot/system/non-packaged/sbin/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/bin/"
+      - "/boot/system/sbin/"
+      - "/boot/system/"
+    searched_directories:
+      - "/boot/home/Dev/SuperMusicThingy/pkg-config"
+      - "/boot/home/Dev/SuperMusicThingy/pkgconf"
+      - "/boot/home/config/non-packaged/bin/pkg-config"
+      - "/boot/home/config/non-packaged/bin/pkgconf"
+      - "/boot/home/config/bin/pkg-config"
+      - "/boot/home/config/bin/pkgconf"
+      - "/boot/home/config/apps/pkg-config"
+      - "/boot/home/config/apps/pkgconf"
+      - "/boot/system/non-packaged/bin/pkg-config"
+      - "/boot/system/non-packaged/bin/pkgconf"
+    found: "/bin/pkg-config"
+    search_context:
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:307 (find_library)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:357 (_pkg_find_libs)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:695 (_pkg_recalculate)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:867 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:49 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_MPV_mpv"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "mpv"
+    candidate_directories:
+      - "/packages/mpv-0.41.0-1/.self/develop/lib/"
+    found: "/packages/mpv-0.41.0-1/.self/develop/lib/libmpv.so"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:307 (find_library)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:357 (_pkg_find_libs)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:695 (_pkg_recalculate)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:867 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:51 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_CURL_curl"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "curl"
+    candidate_directories:
+      - "/packages/curl-8.19.0-1/.self/develop/lib/"
+    found: "/packages/curl-8.19.0-1/.self/develop/lib/libcurl.so"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "CMakeLists.txt:53 (find_path)"
+    mode: "path"
+    variable: "JSON_INCLUDE_DIR"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "nlohmann/json.hpp"
+    candidate_directories:
+      - "/boot/home/config/non-packaged/include/"
+      - "/boot/home/config/non-packaged/lib/pkgconfig/"
+      - "/usr/local/include/"
+      - "/usr/include/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/include/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/include/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/headers/"
+      - "/boot/system/develop/headers/os/"
+      - "/boot/system/develop/headers/os/app/"
+      - "/boot/system/develop/headers/os/device/"
+      - "/boot/system/develop/headers/os/drivers/"
+      - "/boot/system/develop/headers/os/game/"
+      - "/boot/system/develop/headers/os/interface/"
+      - "/boot/system/develop/headers/os/kernel/"
+      - "/boot/system/develop/headers/os/locale/"
+      - "/boot/system/develop/headers/os/mail/"
+      - "/boot/system/develop/headers/os/media/"
+      - "/boot/system/develop/headers/os/midi/"
+      - "/boot/system/develop/headers/os/midi2/"
+      - "/boot/system/develop/headers/os/net/"
+      - "/boot/system/develop/headers/os/opengl/"
+      - "/boot/system/develop/headers/os/storage/"
+      - "/boot/system/develop/headers/os/support/"
+      - "/boot/system/develop/headers/os/translation/"
+      - "/boot/system/develop/headers/os/add-ons/graphics/"
+      - "/boot/system/develop/headers/os/add-ons/input_server/"
+      - "/boot/system/develop/headers/os/add-ons/screen_saver/"
+      - "/boot/system/develop/headers/os/add-ons/tracker/"
+      - "/boot/system/develop/headers/os/be_apps/Deskbar/"
+      - "/boot/system/develop/headers/os/be_apps/NetPositive/"
+      - "/boot/system/develop/headers/os/be_apps/Tracker/"
+      - "/boot/system/develop/headers/3rdparty/"
+      - "/boot/system/develop/headers/bsd/"
+      - "/boot/system/develop/headers/glibc/"
+      - "/boot/system/develop/headers/gnu/"
+      - "/boot/system/develop/headers/posix/"
+      - "/boot/system/develop/headers/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+    searched_directories:
+      - "/boot/home/config/non-packaged/include/nlohmann/json.hpp"
+      - "/boot/home/config/non-packaged/lib/pkgconfig/nlohmann/json.hpp"
+      - "/usr/local/include/nlohmann/json.hpp"
+      - "/usr/include/nlohmann/json.hpp"
+      - "/boot/home/Dev/SuperMusicThingy/nlohmann/json.hpp"
+      - "/boot/home/config/non-packaged/bin/nlohmann/json.hpp"
+      - "/boot/home/config/bin/nlohmann/json.hpp"
+      - "/boot/home/config/apps/nlohmann/json.hpp"
+      - "/boot/system/non-packaged/bin/nlohmann/json.hpp"
+      - "/bin/nlohmann/json.hpp"
+      - "/boot/system/apps/nlohmann/json.hpp"
+      - "/boot/system/preferences/nlohmann/json.hpp"
+      - "/boot/system/non-packaged/include/nlohmann/json.hpp"
+      - "/boot/system/non-packaged/nlohmann/json.hpp"
+      - "/boot/system/include/nlohmann/json.hpp"
+      - "/boot/system/nlohmann/json.hpp"
+      - "/boot/system/non-packaged/develop/headers/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/app/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/device/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/drivers/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/game/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/interface/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/kernel/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/locale/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/mail/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/media/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/midi/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/midi2/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/net/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/opengl/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/storage/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/support/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/translation/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/add-ons/graphics/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/add-ons/input_server/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/add-ons/screen_saver/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/add-ons/tracker/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/be_apps/Deskbar/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/be_apps/NetPositive/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/os/be_apps/Tracker/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/3rdparty/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/bsd/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/glibc/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/gnu/nlohmann/json.hpp"
+      - "/boot/system/develop/headers/posix/nlohmann/json.hpp"
+    found: "/boot/system/develop/headers/"
+    search_context:
+      CMAKE_INCLUDE_PATH:
+        - "/boot/home/config/non-packaged/include"
+        - "/boot/home/config/non-packaged/lib/pkgconfig"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_INCLUDE_PATH:
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+        - "/boot/system/non-packaged/develop/headers"
+        - "/boot/system/develop/headers/os"
+        - "/boot/system/develop/headers/os/app"
+        - "/boot/system/develop/headers/os/device"
+        - "/boot/system/develop/headers/os/drivers"
+        - "/boot/system/develop/headers/os/game"
+        - "/boot/system/develop/headers/os/interface"
+        - "/boot/system/develop/headers/os/kernel"
+        - "/boot/system/develop/headers/os/locale"
+        - "/boot/system/develop/headers/os/mail"
+        - "/boot/system/develop/headers/os/media"
+        - "/boot/system/develop/headers/os/midi"
+        - "/boot/system/develop/headers/os/midi2"
+        - "/boot/system/develop/headers/os/net"
+        - "/boot/system/develop/headers/os/opengl"
+        - "/boot/system/develop/headers/os/storage"
+        - "/boot/system/develop/headers/os/support"
+        - "/boot/system/develop/headers/os/translation"
+        - "/boot/system/develop/headers/os/add-ons/graphics"
+        - "/boot/system/develop/headers/os/add-ons/input_server"
+        - "/boot/system/develop/headers/os/add-ons/screen_saver"
+        - "/boot/system/develop/headers/os/add-ons/tracker"
+        - "/boot/system/develop/headers/os/be_apps/Deskbar"
+        - "/boot/system/develop/headers/os/be_apps/NetPositive"
+        - "/boot/system/develop/headers/os/be_apps/Tracker"
+        - "/boot/system/develop/headers/3rdparty"
+        - "/boot/system/develop/headers/bsd"
+        - "/boot/system/develop/headers/glibc"
+        - "/boot/system/develop/headers/gnu"
+        - "/boot/system/develop/headers/posix"
+        - "/boot/system/develop/headers"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "CMakeLists.txt:65 (find_library)"
+    mode: "library"
+    variable: "OPENAL_LIB"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "openal"
+    candidate_directories:
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+      - "/boot/system/develop/lib/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+    searched_directories:
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+    found: "/boot/system/develop/lib/libopenal.so"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:307 (find_library)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:357 (_pkg_find_libs)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:695 (_pkg_recalculate)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:867 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:74 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_SDL2_SDL2"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "SDL2"
+    candidate_directories:
+      - "/packages/libsdl2-2.32.10-2/.self/develop/lib/"
+    found: "/packages/libsdl2-2.32.10-2/.self/develop/lib/libSDL2.so"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:307 (find_library)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:357 (_pkg_find_libs)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:695 (_pkg_recalculate)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:867 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:101 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_PM4_projectM-4"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "projectM-4"
+    candidate_directories:
+      - "/boot/system/lib/"
+      - "/boot/home/config/non-packaged/lib/"
+    searched_directories:
+      - "/boot/system/lib/"
+      - "/boot/home/config/non-packaged/lib/"
+    found: false
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:307 (find_library)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:357 (_pkg_find_libs)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:695 (_pkg_recalculate)"
+      - "/boot/system/data/cmake/Modules/FindPkgConfig.cmake:867 (_pkg_check_modules_internal)"
+      - "CMakeLists.txt:101 (pkg_check_modules)"
+    mode: "library"
+    variable: "pkgcfg_lib_PM4_GL"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GL"
+    candidate_directories:
+      - "/boot/system/lib/"
+      - "/boot/home/config/non-packaged/lib/"
+    found: "/boot/system/lib/libGL.so"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "CMakeLists.txt:105 (find_library)"
+    mode: "library"
+    variable: "PROJECTM_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "projectM-4"
+      - "projectM"
+      - "libprojectM-4"
+    candidate_directories:
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/system/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+      - "/boot/system/develop/lib/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+    searched_directories:
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/system/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+      - "/boot/system/develop/lib/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/system/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+      - "/boot/system/develop/lib/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+      - "/boot/home/config/non-packaged/lib/"
+      - "/boot/system/lib/"
+      - "/boot/home/Dev/SuperMusicThingy/"
+      - "/boot/home/config/non-packaged/bin/"
+      - "/boot/home/config/bin/"
+      - "/boot/home/config/apps/"
+      - "/boot/system/non-packaged/bin/"
+      - "/bin/"
+      - "/boot/system/apps/"
+      - "/boot/system/preferences/"
+      - "/boot/system/non-packaged/lib/"
+      - "/boot/system/non-packaged/"
+      - "/boot/system/lib/"
+      - "/boot/system/"
+      - "/boot/system/non-packaged/develop/lib/"
+      - "/boot/system/develop/lib/"
+      - "/boot/system/develop/"
+      - "/boot/system/non-packaged/develop/"
+    found: false
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "/boot/home/config/non-packaged/lib"
+      ENV{PATH}:
+        - "."
+        - "/boot/home/config/non-packaged/bin"
+        - "/boot/home/config/bin"
+        - "/boot/home/config/apps"
+        - "/boot/system/non-packaged/bin"
+        - "/bin"
+        - "/boot/system/apps"
+        - "/boot/system/preferences"
+      CMAKE_INSTALL_PREFIX: "/boot/system"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+        - "/boot/system/non-packaged"
+        - "/boot/system"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+        - "/boot/system/non-packaged/develop/lib"
+        - "/boot/system/develop/lib"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+        - "/boot/system/develop"
+        - "/boot/system/non-packaged/develop"
+...

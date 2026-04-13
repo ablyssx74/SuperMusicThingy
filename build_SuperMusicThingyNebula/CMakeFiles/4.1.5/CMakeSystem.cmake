@@ -1,0 +1,15 @@
+set(CMAKE_HOST_SYSTEM "Haiku-R1~beta5+development")
+set(CMAKE_HOST_SYSTEM_NAME "Haiku")
+set(CMAKE_HOST_SYSTEM_VERSION "R1~beta5+development")
+set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
+
+
+
+set(CMAKE_SYSTEM "Haiku-R1~beta5+development")
+set(CMAKE_SYSTEM_NAME "Haiku")
+set(CMAKE_SYSTEM_VERSION "R1~beta5+development")
+set(CMAKE_SYSTEM_PROCESSOR "x86_64")
+
+set(CMAKE_CROSSCOMPILING "FALSE")
+
+set(CMAKE_SYSTEM_LOADED 1)

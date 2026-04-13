@@ -981,7 +981,7 @@ void init_visuals() {
             }
 
             /*
-             *          // Don't need this heare its done in draw_ui
+             *          // Don't need this here its done in draw_ui
              *          // 2. DEFAULT: Volume Control
              *          else if (currentMenu == NONE) {
              *              if (button == 64) mpv_command_string(mpv, "add volume 5");
@@ -1196,7 +1196,11 @@ void init_visuals() {
                 toggle_mute();
                 stateChanged = true;
             }
-
+            // Right Click: Shuffle
+            if (button == 2) {
+                play_random();
+                stateChanged = true;
+            }
             // Top Bar Buttons (Row 2)
             if (button == 0 && y == 2) {
                 // Shuffle
@@ -1637,6 +1641,7 @@ bool draw_help_menu_bak() {
 
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Middle" << BASE_FONT << "]         : Toggle audio mute";
             buffer << "\033[" << r++ << row1 << " [" << ORANGE << "Scroll" << BASE_FONT << "]         : Increase/Decrease volume"; 
+            buffer << "\033[" << r++ << row2 << " [" << ORANGE << "Right"  << BASE_FONT << "]         : Play a random station";
             buffer << "\033[" << r++ << row1 << "";
 
             buffer << "\033[" << r++ << h2 << ORANGE << "Mouse Events Sub Menus" << BASE_FONT << "";
