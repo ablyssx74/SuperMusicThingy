@@ -22,7 +22,7 @@
   
 
 
-### Build Latest SuperMusicThingy
+### Build Latest SuperMusicThingy with projectm enabled
 ```shell
 #Download the source
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
