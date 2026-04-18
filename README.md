@@ -47,8 +47,8 @@ cmake --build build
 sudo cmake --install build
 ```
 ### Preferred Methods For Haiku
--    1. The preferred methis is just to use ```make package```<br>
--    2. Use HaikuHpkg.sh
+-    The preferred method is just to use ```make package```<br><br>
+-    Use HaikuHpkg.sh
 -	 HaikuHpkg.sh will walk you some questions that the simple ```make package``` does not provide. <br>
 -    creating SuperMusicThingy.hpkg on the Desktop<br>
 -	 Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) <br>
