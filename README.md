@@ -37,15 +37,21 @@ cmake --build build
 sudo cmake --install build
 ```
 ```shell
-# Build without projectm
+# Easy Build without projectm using make
+make package
+```
+# Build without projectm using cmake
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 sudo cmake --install build
 ```
-### Preferred Method For Haiku
--	 This will create SuperMusicThingy.hpkg on the Desktop<br>
+### Preferred Methods For Haiku
+-    1. The preferred methis is just to use ```make package```<br>
+-    2. Use HaikuHpkg.sh
+-	 HaikuHpkg.sh will walk you some questions that the simple ```make package``` does not provide. <br>
+-    creating SuperMusicThingy.hpkg on the Desktop<br>
 -	 Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) <br>
--	 If building without projectm visuals select option 2 after running ./HaikuHpkg.sh <br>
+-	 For exampe, If building without projectm visuals select option 2 after running ./HaikuHpkg.sh <br>
 -	 If building with projectm select option 1. <br>
 -	 Visuals require [Haiku Nightly](https://download.haiku-os.org/nightly-images/x86_64/), a Turing+ GPU supported Nvidia card, [libglvnd-1.7.0-4-x86_64.hpkg](https://github.com/X547/nvidia-haiku/releases/download/v0.0.1/libglvnd-1.7.0-4-x86_64.hpkg) and [nebula-0.0.2-1.x86_64.hpkg](https://github.com/X547/nvidia-haiku/releases/download/v0.0.2/nebula-0.0.2-1.x86_64.hpkg). 
 ```shell
