@@ -38,6 +38,8 @@ sudo cmake --install build
 ```
 ```shell
 # Easy Build without projectm using make
+make
+# If Haiku:
 make package
 ```
 # Build without projectm using cmake
