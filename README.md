@@ -22,7 +22,7 @@
   
 
 
-# Build Latest SuperMusicThingy with projectm enabled
+### Build Latest SuperMusicThingy with projectm enabled
 ```shell
 #Download the source
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
@@ -37,7 +37,7 @@ cmake --build build
 sudo cmake --install build
 ```
 
-# Build without projectm using cmake
+### Build without projectm using cmake
 ```shell
 # Easy Build without projectm using make
 make
