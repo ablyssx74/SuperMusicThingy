@@ -15,7 +15,7 @@
 -	 fade in/out on song change. 
 -	 config manger.
 -	 a CLI API backend for sending keyboard shortcuts like vol_up, shuffle, status.
-### Tested on CachyOS and Haiku OS x86_64
+### Tested on CachyOS, Haiku OS x86_64 abd x86
 
 ### Presets 
 -   Download from a huge selection of [presets](https://github.com/projectM-visualizer/projectm?tab=readme-ov-file#presets) and install in SuperMusicThingy config presets folder.<br> I recommend [projectm_presets](http://spiegelmc.com/pub/projectm_presets.zip).
