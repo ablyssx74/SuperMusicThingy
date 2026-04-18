@@ -24,12 +24,11 @@
 
 ### Build Latest SuperMusicThingy with projectm enabled
 ```shell
-#Download the source
+# Download the source
+# Assumes projectm is installed
 git clone https://github.com/ablyssx74/SuperMusicThingy.git
 cd SuperMusicThingy
-```
 
-```shell
 # Build wtih projectm
 # Default install prefix: /usr/local/bin
 cmake -B build
