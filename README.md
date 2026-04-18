@@ -41,6 +41,7 @@ sudo cmake --install build
 make package
 ```
 # Build without projectm using cmake
+```
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
 sudo cmake --install build
