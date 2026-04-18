@@ -36,13 +36,14 @@ cmake -B build
 cmake --build build
 sudo cmake --install build
 ```
+
+# Build without projectm using cmake
 ```shell
 # Easy Build without projectm using make
 make
 # If Haiku:
 make package
 ```
-# Build without projectm using cmake
 ```
 cmake -B build -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 cmake --build build
@@ -50,7 +51,7 @@ sudo cmake --install build
 ```
 ### Preferred Methods For Haiku
 -    The preferred method is just to use ```make package```<br><br>
--    Use HaikuHpkg.sh
+-    A alternativelyUse you can use HaikuHpkg.sh <br>
 -	 HaikuHpkg.sh will walk you some questions that the simple ```make package``` does not provide. <br>
 -    creating SuperMusicThingy.hpkg on the Desktop<br>
 -	 Download: [HaikuHpkg.zip](https://github.com/ablyssx74/SuperMusicThingy/releases/download/v1.0.0/HaikuHpkg.zip) <br>
