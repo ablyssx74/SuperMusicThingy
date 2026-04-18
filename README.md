@@ -50,7 +50,7 @@ make && make package
 ```
 <br>
 -  Alternatively, you can use HaikuHpkg.sh for custom settings like default to konsole and/or install projectm<br>
--	 HaikuHpkg.sh will walk you some questions that the simple ```make package``` does not provide eventually creating SuperMusicThingy.hpkg on the Desktop<br>
+-	 HaikuHpkg.sh will walk you some questions that the simple step above does not provide eventually creating SuperMusicThingy.hpkg on the Desktop<br>
 
 -	 For exampe, If building without projectm visuals select option 2 after running ./HaikuHpkg.sh <br>
 -	 If building with projectm select option 1. <br>
