@@ -1,5 +1,8 @@
 # Optimized Haiku Build Script
 SHELL := /bin/bash
+PACKAGE_DIR := build/package
+NAME = SuperMusicThingy
+VERSION = 1.0.0
 
 UNAME_M := $(shell uname -p)
 ifeq ($(UNAME_M), x86)
@@ -8,11 +11,13 @@ CC = gcc-x86
 MAKE := setarch x86 $(MAKE)
 ARCH = x86_gcc2
 SIMD_FLAGS := -O2
+INCLUDE = -L/boot/system/lib/x86 
 else ifeq ($(UNAME_M), x86_64)
 CXX = g++ -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF -DUSE_KONSOLE_ON_HAIKU=OFF
 CC = gcc
 ARCH = x86_64
 SIMD_FLAGS := -O3
+INCLUDE = -L/boot/system/lib
 endif
 
 
@@ -29,32 +34,21 @@ HAIKU_LIBS = -lnetwork -lroot -lpthread
 all: build
 
 build: 
-	@echo "--------- Building SuperMusicThingy $(ARCH) ---------"
+	@echo "--------- Building $(NAME) $(ARCH) ---------"
 
-	$(CXX) -o SuperMusicThingy -L/boot/system/lib/x86 $(BUILD_FLAGS) $(EXTRA_LIBS) $(HAIKU_LIBS) $(LD_OPTIMIZE) SuperMusicThingy.cpp
-	mimeset -f SuperMusicThingy
-
-UNAME_M := $(shell uname -p)
-ifeq ($(UNAME_M), x86)
-    ARCH = x86_gcc2
-else ifeq ($(UNAME_M), x86_64)
-    ARCH = x86_64
-endif    
-
-
-PACKAGE_DIR := build/package
-NAME = SuperMusicThingy
-VERSION = 1.0.0
+	$(CXX) -o $(NAME) $(INCLUDE) $(BUILD_FLAGS) $(EXTRA_LIBS) $(HAIKU_LIBS) $(LD_OPTIMIZE) $(NAME).cpp
+	mimeset -f $(NAME)
 
 package: all
 	@[ -n "$(PACKAGE_DIR)" ] || { echo "PACKAGE_DIR is undefined"; exit 1; }
 	rm -rf "./$(PACKAGE_DIR)"
 	mkdir -p $(PACKAGE_DIR)
-	sed -e 's/$$(NAME)/$(NAME)/g' -e 's/$$(VERSION)/$(VERSION)/g' -e 's/$$(ARCH)/$(ARCH)/' -e 's/$$(YEAR)/$(shell date +%Y)/' PackageInfo.tpl > $(PACKAGE_DIR)/.PackageInfo
+	sed -e 's/$$(NAME)/$(NAME)/g' -e 's/$$(VERSION)/$(VERSION)/g' -e 's/$$(ARCH)/$(ARCH)/' -e 's/$$(YEAR)/$(shell date +%Y)/' $(NAME).tpl > $(PACKAGE_DIR)/.PackageInfo
 	mkdir -p $(PACKAGE_DIR)/apps
 	mkdir -p $(PACKAGE_DIR)/bin
 	mkdir -p $(PACKAGE_DIR)/data/deskbar/menu/Applications
-	xres -o $(NAME) SuperMusicThingy.rsrc  
+	rc -o $(NAME).rsrc $(NAME).rdef 
+	xres -o $(NAME) $(NAME).rsrc  
 	mimeset -f $(NAME)
 	cp $(NAME) $(PACKAGE_DIR)/apps/$(NAME)
 	ln -s ../apps/$(NAME) $(PACKAGE_DIR)/bin/$(NAME)
@@ -63,6 +57,10 @@ package: all
 
 
 clean:
-	rm -f SuperMusicThingy
+	rm -f $(NAME)
+	rm -f $(NAME).rsrc
+	rm -fr build*
+	rm -r *.hpkg
+
 
 

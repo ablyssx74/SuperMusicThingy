@@ -105,10 +105,10 @@ f1() {
 		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/apps
 		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/bin
 		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/${appname}/icon/
-		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
+		#mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application
 		mkdir -p ${supermusicthingyDir}/hpkgs/${appname}/data/deskbar/menu/Applications
-		[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
-		[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+		#[[ "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
+		#[[ ! "$skipprojectm" ]] && touch ${supermusicthingyDir}/hpkgs/${appname}/data/mime_db/application/x-vnd.${appname,,}
 	
 	}
 
