@@ -37,7 +37,6 @@ build:
 	@echo "--------- Building $(NAME) $(ARCH) ---------"
 
 	$(CXX) -o $(NAME) $(INCLUDE) $(BUILD_FLAGS) $(EXTRA_LIBS) $(HAIKU_LIBS) $(LD_OPTIMIZE) $(NAME).cpp
-	mimeset -f $(NAME)
 
 package: all
 	@[ -n "$(PACKAGE_DIR)" ] || { echo "PACKAGE_DIR is undefined"; exit 1; }
