@@ -1,8 +1,8 @@
 name			$(NAME)
 version			$(VERSION)-1
 architecture	$(ARCH)
-summary 		"Portable streaming media client for SomaFM"
-description 	"SuperMusicThingy is a free streaming media client for SomaFM. Fast, light, and fun!"
+summary 		"Portable streaming terminal media client for SomaFM"
+description 	"SuperMusicThingy is a free streaming terminal media client for SomaFM. Fast, light, and fun!"
 packager		"ablyss <jb@epluribusunix.net>"
 vendor			"Haiku Project"
 licenses {
@@ -20,12 +20,11 @@ requires {
 	mpv_x86
 	openal_x86
 	curl_x86
-	
 }	
 urls {
-	"https://github.com/ablyssx74/HaikuSuperMusicThingy"
+	"https://github.com/ablyssx74/SuperMusicThingy"
 }
 source-urls {
 # Download
-	"https://github.com/ablyssx74/HaikuSuperMusicThingy/archive/refs/tags/v1.0.0.tar.gz"
+	"https://github.com/ablyssx74/SuperMusicThingy/archive/refs/tags/v1.0.0.tar.gz"
 }
