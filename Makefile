@@ -4,8 +4,8 @@ PACKAGE_DIR := build/package
 NAME = SuperMusicThingy
 VERSION = 1.0.0
 
-UNAME_M := $(shell uname -p)
-ifeq ($(UNAME_M), x86)
+UNAME_M := $(shell uname -m)
+ifeq ($(UNAME_M), BePC)
 CXX = g++-x86 -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 CC = gcc-x86
 MAKE := setarch x86 $(MAKE)
@@ -13,7 +13,7 @@ ARCH = x86_gcc2
 SIMD_FLAGS := -O2
 INCLUDE = -L/boot/system/lib/x86 
 TPL_FILE := $(NAME)_x86.tpl
-else ifeq ($(UNAME_M), x86_64)
+else
 CXX = g++ -DENABLE_PROJECTM=OFF -DENABLE_SDL2=OFF -DENABLE_GL=OFF
 ARCH = x86_64
 SIMD_FLAGS := -O3
